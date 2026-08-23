@@ -422,6 +422,13 @@ body::-webkit-scrollbar-thumb:hover{background:var(--ink-faint)}
       <p class="note" style="margin-top:12px">Original quick-reference notes written for this site: the formulas, rules and facts each subtest leans on. Open one, skim it, then take that subtest.</p>
     </section>
 
+    <section class="section" id="mos-sec">
+      <span class="lbl">Train for a job — MOS mode</span>
+      <p class="note" style="margin:0 0 16px">Army jobs are gated by <strong>line scores</strong> — composites built from specific subtests. Pick a target below to drill exactly the subtests that feed its composite, and get an unofficial line-score estimate at the end. Every job listed here requires <strong>no security clearance</strong>, so it stays open to permanent residents — but requirements move, so confirm the details with a recruiter before you sign anything.</p>
+      <div class="modes" id="mos-cards"></div>
+      <p class="note" style="margin-top:14px">How the composites are built — <span class="mono">VE</span> = WK + PC combined · <span class="mono">GT</span> = VE + AR · <span class="mono">CL</span> = VE + AR + MK · <span class="mono">EL</span> = GS + AR + MK + EI · <span class="mono">ST</span> = GS + VE + MK + MC.</p>
+    </section>
+
     <section class="section" id="pick-subtest" style="display:none">
       <span class="lbl">Which subtest?</span>
       <div class="modes" id="subtest-modes"></div>
@@ -2699,6 +2706,31 @@ function aoSVG(pairs, connect){
   return `<svg viewBox="0 0 180 70" class="ao-svg" role="img" aria-label="geometric shapes">${line}${g}${dots}</svg>`;
 }
 
+/* ================= MOS mode (no-clearance jobs) ================= */
+const MOS_COMPOSITES = {
+  GT: { name: 'General Technical', parts: ['VE','AR'] },
+  CL: { name: 'Clerical',          parts: ['VE','AR','MK'] },
+  EL: { name: 'Electronics',       parts: ['GS','AR','MK','EI'] },
+  ST: { name: 'Skilled Technical', parts: ['GS','VE','MK','MC'] }
+};
+const MOS_LIST = [
+  { id: '68A', title: '68A · Biomedical Equipment Specialist', req: [['EL',107]],
+    note: 'Maintains and repairs medical equipment. ~41-week school at JBSA Fort Sam Houston. No security clearance.' },
+  { id: '68C', title: '68C · Practical Nurse (LPN)', req: [['ST',101],['GT',107]],
+    note: '52-week school at Fort Sam Houston; graduates sit the NCLEX-PN — the Army trains you from zero. No security clearance.' },
+  { id: '92A', title: '92A · Automated Logistical Specialist', req: [['CL',90]],
+    note: 'Supply and warehouse systems; strong promotion lane, real lifting, needs normal color vision. No security clearance.' },
+  { id: '36B', title: '36B · Financial Management Technician', req: [['CL',101]],
+    note: 'Pay, budgets and travel vouchers — the office lane. ~9-week school. No clearance; a background check covers the money handling.' }
+];
+function mosSubtests(m){
+  const wanted = [];
+  m.req.forEach(rq => MOS_COMPOSITES[rq[0]].parts.forEach(p => {
+    (p === 'VE' ? ['WK','PC'] : [p]).forEach(code => { if (wanted.indexOf(code) === -1) wanted.push(code); });
+  }));
+  return SUBTESTS.filter(s => wanted.indexOf(s.code) !== -1);
+}
+
 /* ================= start screen ================= */
 (function initStart(){
   $('#stat-pool').textContent = POOL_TOTAL + '+';
@@ -2706,6 +2738,17 @@ function aoSVG(pairs, connect){
   $('#study-wrap').innerHTML = STUDY.map(s => `
     <details class="study-d"><summary><span class="tcode">${s.code}</span> ${s.name}</summary>
     <div class="study-b">${s.body}</div></details>`).join('');
+  $('#mos-cards').innerHTML = MOS_LIST.map(m => `
+    <button class="mode" data-mos="${m.id}">
+      <span class="n">${m.req.map(r => r[0] + ' \u2265 ' + r[1]).join(' \u00b7 ')} \u00b7 ${mosSubtests(m).length} subtests \u00b7 ${mosSubtests(m).length * 10} items</span>
+      <h3>${m.title}</h3>
+      <p>${m.note}</p>
+    </button>`).join('');
+  $$('#mos-cards .mode').forEach(btn => btn.addEventListener('click', () => {
+    const m = MOS_LIST.find(x => x.id === btn.dataset.mos);
+    startExam(mosSubtests(m));
+    EX.mos = m;
+  }));
   $('#blueprint-body').innerHTML = BLUEPRINT.map(b => `
     <tr class="${b.afqt ? '' : 'dim'}">
       <td><span class="tcode">${b.code}</span> &nbsp;${b.name}</td>
@@ -3041,6 +3084,37 @@ function renderResults(){
       </div>`;
   }
 
+  let mosBlock = '';
+  if (EX.mos){
+    const pcts = {};
+    rows.forEach(r => { pcts[r.p.code] = r.pctv; });
+    const wkr = get('WK'), pcr = get('PC');
+    if (wkr && pcr) pcts.VE = (wkr.right + pcr.right) / (wkr.total + pcr.total);
+    const stdEst = p => Math.max(23, Math.min(77, Math.round(50 + (p - .5) * 54)));
+    mosBlock = EX.mos.req.map(rq => {
+      const comp = MOS_COMPOSITES[rq[0]], need = rq[1];
+      if (comp.parts.some(pt => pcts[pt] === undefined)) return '';
+      const stds = comp.parts.map(pt => stdEst(pcts[pt]));
+      const est = Math.round(2 * stds.reduce((a, b) => a + b, 0) / stds.length);
+      const diff = est - need;
+      const verdict = diff >= 15 ? 'Comfortably over the line on this drill — hold it there.'
+                    : diff >= 0 ? 'Over the line on this drill, with ' + diff + ' to spare. Keep stacking reps.'
+                    : 'Short of the line by ' + (-diff) + '. Open the study sheets for ' + comp.parts.join(', ').replace('VE', 'WK/PC') + ' and drill again.';
+      return `
+      <div class="afqt">
+        <div><div class="big">${est}</div></div>
+        <div class="meta">
+          <h3>${rq[0]} \u00b7 ${comp.name} \u2014 needs \u2265 ${need}</h3>
+          <p><strong>${EX.mos.title}.</strong> ${verdict}</p>
+        </div>
+      </div>`;
+    }).join('');
+    if (mosBlock){
+      mosBlock += '<div class="workings"><b>How this estimate was built</b><br>' +
+        EX.mos.req.map(rq => rq[0] + ' = ' + MOS_COMPOSITES[rq[0]].parts.join(' + ')).join(' &nbsp;\u00b7&nbsp; ') +
+        '<br>Your percent correct on each subtest is mapped to an estimated standard score (about 50 = average), then combined and scaled to the line-score range, where roughly 100 is average. A 10-question drill is a rough signal \u2014 trust the trend across several sittings, not one run. Only a real ASVAB produces official line scores.</div>';
+    }
+  }
   const d = EX.started;
   $('#results-body').innerHTML = `
     <div class="report">
@@ -3048,7 +3122,7 @@ function renderResults(){
         <span class="t">Score report</span>
         <span class="d">${d.toLocaleDateString()} \u00b7 ${d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} \u00b7 ${EX.timed ? 'TIMED' : 'UNTIMED'}</span>
       </div>
-      ${afqtBlock}
+      ${mosBlock}${afqtBlock}
       <table class="scoretab">
         <thead><tr><th>Subtest</th><th>Score</th><th style="width:150px">Correct</th><th>Time left</th></tr></thead>
         <tbody>${rows.map(r => `

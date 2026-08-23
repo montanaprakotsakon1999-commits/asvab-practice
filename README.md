@@ -15,6 +15,7 @@ A free, self-contained ASVAB practice exam that runs entirely in the browser —
 - Complete **review mode** with an explanation for every question, filterable to missed / skipped / flagged
 - Three modes: full 90-item ASVAB, AFQT-only (the 4 subtests that decide enlistment), or single-subtest drill
 - Keyboard-friendly: A–D to answer, arrows to move, F to flag
+- **MOS mode** — pick a target no-clearance Army job (68A, 68C, 92A, 36B), drill exactly the subtests behind its line-score composite, and get an unofficial line-score estimate vs. the requirement
 - **Dark mode by default**, with a light theme one click away (remembered per browser); printing always uses the light palette
 
 ## About the questions
