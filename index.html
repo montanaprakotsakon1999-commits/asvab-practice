@@ -322,6 +322,8 @@ footer a{color:var(--form)}
   padding:5px 10px;transition:border-color .15s ease,color .15s ease;white-space:nowrap;
 }
 .theme-btn:hover{border-color:var(--form);color:var(--form)}
+button.mark{background:none;color:var(--ink);cursor:pointer;transition:border-color .15s ease,color .15s ease,box-shadow .15s ease}
+button.mark:hover{border-color:var(--form);color:var(--form);box-shadow:0 0 24px -8px var(--form)}
 ::selection{background:var(--form-tint)}
 html{scrollbar-color:var(--card-2) var(--paper)}
 body::-webkit-scrollbar{width:11px}
@@ -370,7 +372,7 @@ body::-webkit-scrollbar-thumb:hover{background:var(--ink-faint)}
 
 <header class="masthead">
   <div class="masthead-in">
-    <span class="mark">ASVAB</span>
+    <button class="mark" id="home-btn" type="button" aria-label="Return to the start screen" title="Back to start">ASVAB</button>
     <span class="sub">PRACTICE EXAM · 9 SUBTESTS · NEW DRAW EVERY SITTING</span>
     <button class="theme-btn" id="theme-btn" type="button" aria-label="Switch color theme">LIGHT MODE</button>
   </div>
@@ -2793,6 +2795,22 @@ function mosSubtests(m){
   });
   paint();
 })();
+
+/* ================= home button ================= */
+function goHome(){
+  const examOpen = !$('#screen-exam').classList.contains('hidden');
+  if (examOpen && EX){
+    if (!confirm("Leave this exam and return to the start screen? This sitting won't be scored.")) return;
+    stopAdvance();
+    clearInterval(tick);
+    EX = null;
+  }
+  $('#screen-exam').classList.add('hidden');
+  $('#screen-results').classList.add('hidden');
+  $('#screen-start').classList.remove('hidden');
+  window.scrollTo(0, 0);
+}
+$('#home-btn').addEventListener('click', goHome);
 
 /* ================= exam state ================= */
 let EX = null, tick = null;
