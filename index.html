@@ -349,7 +349,23 @@ body::-webkit-scrollbar-thumb:hover{background:var(--ink-faint)}
 .btn{transition:background .12s ease,color .12s ease,border-color .12s ease,box-shadow .12s ease}
 .btn.form:hover{box-shadow:0 0 20px -8px var(--form)}
 .mark{box-shadow:0 0 22px -10px var(--form)}
+/* focused MOS card — gold */
+:root{--gold:#E9C462;--gold-tint:rgba(233,196,98,.13)}
+:root[data-theme="light"]{--gold:#8F6E16;--gold-tint:rgba(143,110,22,.12)}
+.mode.focus{
+  border-left:4px solid var(--gold);
+  background:linear-gradient(135deg,var(--gold-tint),var(--card) 60%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 16px 36px -22px var(--shadow),0 0 30px -12px var(--gold);
+}
+.mode.focus .n{color:var(--gold)}
+.mode.focus:hover{border-color:var(--gold);box-shadow:0 6px 0 -2px var(--shadow),0 0 34px -10px var(--gold)}
+.focus-tag{
+  float:right;font-family:var(--sans);font-size:9px;letter-spacing:.14em;font-weight:700;
+  color:var(--gold);border:1px solid var(--gold);padding:2px 6px;border-radius:2px;margin:1px 0 0 8px;
+}
 @media print{
+  :root,:root[data-theme="light"]{--gold:#8F6E16;--gold-tint:rgba(143,110,22,.12)}
+
   :root,:root[data-theme="light"]{
     --paper:#fff;--card:#fff;--card-2:#F2F4F2;--ink:#16211D;--ink-soft:#5A6862;--ink-faint:#8B9691;
     --ink-strong:#000;--form:#2C6A5B;--form-fill:#2C6A5B;--form-hover:#235448;--form-text:#fff;
@@ -2716,12 +2732,12 @@ const MOS_COMPOSITES = {
   ST: { name: 'Skilled Technical', parts: ['GS','VE','MK','MC'] }
 };
 const MOS_LIST = [
+  { id: '92A', title: '92A · Automated Logistical Specialist', req: [['CL',90]], focus: 1,
+    note: 'Supply and warehouse systems; strong promotion lane, real lifting, needs normal color vision. No security clearance.' },
   { id: '68A', title: '68A · Biomedical Equipment Specialist', req: [['EL',107]],
     note: 'Maintains and repairs medical equipment. ~41-week school at JBSA Fort Sam Houston. No security clearance.' },
   { id: '68C', title: '68C · Practical Nurse (LPN)', req: [['ST',101],['GT',107]],
     note: '52-week school at Fort Sam Houston; graduates sit the NCLEX-PN — the Army trains you from zero. No security clearance.' },
-  { id: '92A', title: '92A · Automated Logistical Specialist', req: [['CL',90]],
-    note: 'Supply and warehouse systems; strong promotion lane, real lifting, needs normal color vision. No security clearance.' },
   { id: '36B', title: '36B · Financial Management Technician', req: [['CL',101]],
     note: 'Pay, budgets and travel vouchers — the office lane. ~9-week school. No clearance; a background check covers the money handling.' }
 ];
@@ -2741,8 +2757,8 @@ function mosSubtests(m){
     <details class="study-d"><summary><span class="tcode">${s.code}</span> ${s.name}</summary>
     <div class="study-b">${s.body}</div></details>`).join('');
   $('#mos-cards').innerHTML = MOS_LIST.map(m => `
-    <button class="mode" data-mos="${m.id}">
-      <span class="n">${m.req.map(r => r[0] + ' \u2265 ' + r[1]).join(' \u00b7 ')} \u00b7 ${mosSubtests(m).length} subtests \u00b7 ${mosSubtests(m).length * 10} items</span>
+    <button class="mode${m.focus ? ' focus' : ''}" data-mos="${m.id}">
+      <span class="n">${m.req.map(r => r[0] + ' \u2265 ' + r[1]).join(' \u00b7 ')} \u00b7 ${mosSubtests(m).length} subtests \u00b7 ${mosSubtests(m).length * 10} items</span>${m.focus ? '<span class="focus-tag">\u2605 MY FOCUS</span>' : ''}
       <h3>${m.title}</h3>
       <p>${m.note}</p>
     </button>`).join('');
