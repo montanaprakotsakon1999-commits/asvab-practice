@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ASVAB Practice Exam — Full Test Bank</title>
-<meta name="description" content="A free ASVAB practice exam drawing from 300+ original questions plus endlessly generated math items — randomized every sitting, with per-subtest timers, an answer sheet, and an AFQT score estimate.">
+<meta name="description" content="A free ASVAB practice exam drawing from 500+ original questions plus endlessly generated math items — randomized every sitting, with study sheets, per-subtest timers, an answer sheet, and an AFQT score estimate.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
@@ -103,6 +103,18 @@ h1,h2,h3,.lbl,button,.code{font-family:var(--sans)}
 .switch input{width:17px;height:17px;accent-color:var(--form);cursor:pointer}
 .note{font-size:14px;color:var(--ink-soft);max-width:64ch}
 .note strong{color:var(--ink)}
+
+/* ---------- study sheets ---------- */
+.study-d{border:1px solid var(--rule);border-left:4px solid var(--form);background:var(--card);border-radius:2px;margin-bottom:8px}
+.study-d summary{cursor:pointer;padding:12px 16px;font-family:var(--sans);font-weight:600;font-size:15px;display:flex;align-items:center;gap:10px;list-style:none}
+.study-d summary::-webkit-details-marker{display:none}
+.study-d summary::after{content:"+";margin-left:auto;font-family:var(--mono);color:var(--form);font-size:17px;font-weight:600}
+.study-d[open] summary::after{content:"\2212"}
+.study-b{padding:2px 18px 16px;font-size:15px;line-height:1.6;border-top:1px dashed var(--rule)}
+.study-b b{display:block;font-family:var(--sans);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--form);margin-top:14px}
+.study-b ul{margin:6px 0 4px;padding-left:20px}
+.study-b li{margin-bottom:5px}
+.study-b i{font-style:italic}
 
 /* ---------- exam bar ---------- */
 .exambar{
@@ -291,7 +303,7 @@ footer a{color:var(--form)}
       <h1>Sit the whole test.<br>Then find out <em>where you actually stand.</em></h1>
       <p class="lede">Nine timed subtests, an answer sheet that fills in as you go, and a score report that shows how the AFQT number is built from your verbal and math results. Every sitting is a fresh random draw from an original bank — plus math and shape items generated on the spot — so no two exams are alike.</p>
       <div class="stat-row">
-        <div class="stat"><b id="stat-pool">300+</b><span>Question pool</span></div>
+        <div class="stat"><b id="stat-pool">500+</b><span>Question pool</span></div>
         <div class="stat"><b>9</b><span>Subtests</span></div>
         <div class="stat"><b>62</b><span>Minutes</span></div>
         <div class="stat"><b>4</b><span>Count toward AFQT</span></div>
@@ -323,6 +335,12 @@ footer a{color:var(--form)}
       </div>
     </section>
 
+    <section class="section" id="study-sec">
+      <span class="lbl">Study sheets — review before you drill</span>
+      <div id="study-wrap"></div>
+      <p class="note" style="margin-top:12px">Original quick-reference notes written for this site: the formulas, rules and facts each subtest leans on. Open one, skim it, then take that subtest.</p>
+    </section>
+
     <section class="section" id="pick-subtest" style="display:none">
       <span class="lbl">Which subtest?</span>
       <div class="modes" id="subtest-modes"></div>
@@ -344,7 +362,7 @@ footer a{color:var(--form)}
 
     <footer>
       <span class="lbl">About these questions</span>
-      Every question here is original, written for this site — a bank of 310 written items, plus arithmetic, algebra and shape questions generated with fresh numbers on every run. They follow the published ASVAB format and content areas but are not taken from any copyrighted test-prep book or from the actual ASVAB, which is a controlled Department of Defense test. Score estimates are unofficial — only a real ASVAB administered at a MEPS or MET site produces a score the military will use.
+      Every question and study sheet here is original, written for this site — a bank of <span id="pool-n">500</span> written items, plus arithmetic, algebra and shape questions generated with fresh numbers on every run. The material follows the published ASVAB format and content areas but none of it is taken from any copyrighted test-prep book or from the actual ASVAB, which is a controlled Department of Defense test. Score estimates are unofficial — only a real ASVAB administered at a MEPS or MET site produces a score the military will use.
     </footer>
   </div>
 </main>
@@ -394,7 +412,7 @@ footer a{color:var(--form)}
    Every item is original, written for this site. Format and content
    areas follow the published ASVAB blueprint (DoD); no questions are
    reproduced from any test-prep publication or from the live ASVAB.
-   The bank below holds 310 written items; on top of that, arithmetic,
+   The bank below holds 512 written items; on top of that, arithmetic,
    algebra/geometry and assembling-objects items are GENERATED with
    fresh random numbers on every sitting, so no two exams repeat.
    ===================================================================== */
@@ -1768,8 +1786,798 @@ const GEN = {
 /* how many of each exam's 10 items come from the generators */
 const GEN_MIX = { AR: 4, MK: 4, AO: 5 };
 
-const BANK = { GS: BANK_GS, AR: BANK_AR, WK: BANK_WK, PC: BANK_PC, MK: BANK_MK,
-               EI: BANK_EI, AS: BANK_AS, MC: BANK_MC, AO: BANK_AO };
+Object.assign(PASSAGES, {
+  p13:"A pre-drive inspection takes four minutes and follows a fixed route around the vehicle. Start at the driver's door and move clockwise. First, check the tires on that side for pressure and tread, and look under the vehicle for fresh fluid on the ground. At the front, check that headlights and turn signals are clean and unbroken, then open the hood and check the oil and coolant levels. Continue down the passenger side, repeating the tire checks, and finish at the rear with the brake lights and the license plate lamp. Only after the walk-around is complete should the driver start the engine — a leak spotted on the pavement costs a minute to find now and an engine later.",
+  p14:"The base pool posts the same three rules every summer, and the lifeguards say each one traces back to a real rescue. Children under ten must be within arm's reach of an adult in the water, not merely watched from a chair. Diving is allowed only at the marked end, because the shallow end is four feet deep and a head-first entry there has ended two summers with ambulance calls. And when the whistle sounds three times, everyone exits the water immediately — not at the end of a lap, not after one more jump. The rules are short enough to memorize in a minute, which is exactly the point: in the water, trouble moves faster than a lecture.",
+  p15:"To the editor: The council says painted bicycle lanes are coming 'when the budget allows,' which in this town means never. I ride Fourth Avenue every morning, and I count more bicycles there each year — commuters, students, delivery riders — sharing one narrow lane with trucks. Paint is cheap. The crews that re-stripe parking spaces every spring could stripe a bike lane in the same week with the same equipment. What the council lacks is not money but a sense of urgency, and I suspect that will arrive only after an accident forces the issue. Why wait for one? Stripe the lane this spring.",
+  p16:"Changing a flat tire is a sequence, and the order matters more than strength. Park on firm, level ground and set the parking brake before anything else. Loosen each lug nut about half a turn while the flat tire still touches the pavement — on the ground, the tire cannot spin against the wrench. Only then jack the vehicle up until the flat clears the ground, remove the nuts and the wheel, and hang the spare. Thread the nuts by hand, snug them in a star pattern, and lower the vehicle before the final tightening. Torquing the nuts fully while the wheel hangs in the air just spins the wheel — the step people reverse most often.",
+  p17:"Look closely at a long highway bridge and you will find deliberate interruptions in the deck: toothed steel joints that run from curb to curb. These expansion joints are the bridge's answer to the seasons. Steel and concrete swell in summer heat and shrink in winter cold, and across a span of several hundred feet the change adds up to inches. A deck built as one rigid piece would have nowhere to send that movement; the material would buckle upward in July or crack apart in January. The joints give each section room to grow and shrink on its own. The clunk your tires make crossing them is not a flaw in the road — it is the sound of the design working."
+});
+const BANK_PC2 = [
+ {p:"p13",q:"According to the passage, the inspection begins",
+  c:["at the driver's door.","at the rear license plate.","under the hood.","with starting the engine."],a:0,
+  why:"The route starts at the driver's door and moves clockwise; the engine is started only after the walk-around is complete."},
+ {p:"p13",q:"According to the passage, which is checked at the front of the vehicle?",
+  c:["Headlights, oil and coolant","Brake lights","The license plate lamp","The parking brake"],a:0,
+  why:"The front stop covers lights and turn signals, then oil and coolant under the hood. Brake lights and the plate lamp are the rear checks."},
+ {p:"p13",q:"The passage implies that finding a fluid leak during the walk-around",
+  c:["can prevent serious engine damage later.","means the vehicle can never be driven.","is the mechanic's job, not the driver's.","only matters in cold weather."],a:0,
+  why:"The last sentence weighs a minute spent finding a leak now against 'an engine later' — early detection avoids the bigger loss."},
+ {p:"p14",q:"Under the pool's rules, children under ten must be",
+  c:["within arm's reach of an adult in the water.","watched from a lifeguard chair.","kept in the shallow end at all times.","accompanied by two adults."],a:0,
+  why:"The rule is explicit: within arm's reach of an adult in the water, 'not merely watched from a chair.'"},
+ {p:"p14",q:"The passage suggests the rules are kept short so that",
+  c:["they can be recalled instantly in an emergency.","the signs cost less to print.","younger children can read them.","lifeguards have less to enforce."],a:0,
+  why:"Short enough to memorize in a minute 'is exactly the point,' because trouble in the water 'moves faster than a lecture.'"},
+ {p:"p15",q:"The author's main purpose in this letter is to",
+  c:["persuade the council to stripe a bike lane now.","describe morning traffic on Fourth Avenue.","praise the crews who re-stripe parking spaces.","announce a new cycling club."],a:0,
+  why:"Every paragraph pushes toward the closing demand — 'Stripe the lane this spring.' The traffic description is evidence, not the point."},
+ {p:"p15",q:"The author mentions the crews that re-stripe parking spaces in order to show that",
+  c:["the town already has the equipment and labor to do the job.","parking is more important to the council than safety.","the crews are underpaid.","bike lanes wear out every spring."],a:0,
+  why:"The comparison proves feasibility: same crews, same equipment, same week. It supports the claim that the missing ingredient is urgency, not money."},
+ {p:"p15",q:"The author's tone toward the council is best described as",
+  c:["impatient and critical.","admiring.","fearful.","indifferent."],a:0,
+  why:"Phrases like 'in this town means never' and 'what the council lacks is not money but a sense of urgency' carry sharp impatience."},
+ {p:"p16",q:"According to the passage, the lug nuts should first be loosened",
+  c:["while the flat tire is still on the ground.","after the vehicle is fully jacked up.","after the spare is mounted.","only at a repair shop."],a:0,
+  why:"On the ground, the tire can't spin against the wrench. Jacking up first is called out as the step people reverse most often."},
+ {p:"p16",q:"According to the passage, the final tightening of the nuts happens",
+  c:["after the vehicle is lowered.","while the wheel hangs in the air.","before the spare is hung.","before the jack is used."],a:0,
+  why:"Snug in a star pattern, lower the vehicle, then tighten fully — torquing in the air just spins the wheel."},
+ {p:"p17",q:"According to the passage, expansion joints are necessary because",
+  c:["bridge materials swell and shrink with temperature.","they reduce traffic noise.","bridges must flex in strong wind.","tires need texture for grip."],a:0,
+  why:"Steel and concrete change size with the seasons — inches across a long span — and the joints give each section room to move."},
+ {p:"p17",q:"The passage states that without expansion joints, a bridge deck could",
+  c:["buckle in summer or crack in winter.","become too slippery to drive on.","sink into the riverbed.","collect dangerous amounts of ice."],a:0,
+  why:"A rigid deck would have nowhere to send the movement: buckling upward in July, cracking apart in January."}
+];
+
+const BANK_GS2 = [
+ {q:"The largest bone in the human body is the",
+  c:["skull.","femur.","spine.","humerus."],a:1,
+  why:"The femur — the thigh bone — is the longest and strongest bone in the body. The humerus is the upper-arm bone."},
+ {q:"The heart is made of which type of muscle?",
+  c:["Voluntary skeletal muscle","Involuntary cardiac muscle","Smooth muscle controlled at will","Ligament tissue"],a:1,
+  why:"Cardiac muscle is found only in the heart and contracts on its own, without conscious control. Skeletal muscle is the voluntary kind that moves your limbs."},
+ {q:"In the lungs, oxygen enters the blood through tiny air sacs called",
+  c:["bronchi.","villi.","alveoli.","capillary valves."],a:2,
+  why:"The alveoli are millions of thin-walled sacs where oxygen crosses into the blood and carbon dioxide crosses out. The bronchi are the larger tubes that carry air to them."},
+ {q:"The muscle that contracts to draw air into the lungs is the",
+  c:["diaphragm.","bicep.","esophagus.","trachea."],a:0,
+  why:"When the dome-shaped diaphragm below the lungs contracts and flattens, the chest cavity expands and air is pulled in. The trachea is the windpipe, not a muscle."},
+ {q:"The basic working cell of the nervous system is the",
+  c:["neuron.","red blood cell.","platelet.","hormone."],a:0,
+  why:"Neurons carry electrical signals throughout the body. Hormones are chemical messengers of a different system — the endocrine system."},
+ {q:"Antibiotics are effective against infections caused by",
+  c:["viruses.","bacteria.","all pathogens equally.","vitamin deficiencies."],a:1,
+  why:"Antibiotics kill or slow bacteria; they do nothing against viruses like colds and flu — which is why doctors don't prescribe them for viral illness."},
+ {q:"In the scientific name Canis familiaris, the word Canis identifies the organism’s",
+  c:["species.","genus.","kingdom.","habitat."],a:1,
+  why:"Scientific names are genus then species. Canis is the genus shared by dogs and wolves; familiaris names the particular species."},
+ {q:"A severe lack of vitamin C causes which condition?",
+  c:["Scurvy","Rickets","Anemia","Night blindness"],a:0,
+  why:"Scurvy — historically the sailor’s disease — comes from too little vitamin C. Rickets is linked to vitamin D, anemia to iron, and night blindness to vitamin A."},
+ {q:"The nutrient the body uses mainly to build and repair muscle and other tissue is",
+  c:["protein.","sugar.","fat.","fiber."],a:0,
+  why:"Proteins supply amino acids, the building blocks of tissue. Carbohydrates and fats are primarily energy sources; fiber aids digestion."},
+ {q:"Most earthquakes and volcanoes occur",
+  c:["near the boundaries of tectonic plates.","at the centers of continents.","only under the ocean.","randomly across Earth’s surface."],a:0,
+  why:"Earth’s crust is broken into moving plates. Where plates collide, separate or grind past each other, stress builds and releases — the Pacific ‘Ring of Fire’ is a chain of such boundaries."},
+ {q:"Marble, which forms when limestone is transformed by heat and pressure, is an example of",
+  c:["igneous rock.","sedimentary rock.","metamorphic rock.","volcanic glass."],a:2,
+  why:"Metamorphic means changed in form: an existing rock is remade by heat and pressure without fully melting. Melting and cooling would make igneous rock."},
+ {q:"In the water cycle, the correct order of the main steps is",
+  c:["evaporation, condensation, precipitation.","condensation, evaporation, precipitation.","precipitation, condensation, evaporation.","evaporation, precipitation, condensation."],a:0,
+  why:"Water evaporates into vapor, condenses into clouds, then falls as precipitation. The cycle repeats, but each loop runs in that order."},
+ {q:"Nearly all weather occurs in which layer of the atmosphere?",
+  c:["The troposphere","The stratosphere","The thermosphere","The exosphere"],a:0,
+  why:"The troposphere is the lowest layer, holding most of the atmosphere’s water vapor — so clouds, storms and wind live there. Jets often climb into the calmer stratosphere to fly above the weather."},
+ {q:"A fast-moving cold front pushing into warm, moist air typically produces",
+  c:["brief, intense thunderstorms.","weeks of unchanged weather.","clear skies immediately.","only light morning fog."],a:0,
+  why:"The dense cold air wedges under the warm air and shoves it sharply upward, building tall storm clouds — often a squall line, then cooler, clearer air behind."},
+ {q:"Which cloud type is associated with thunderstorms?",
+  c:["Cumulonimbus","Cirrus","Stratus","Fog"],a:0,
+  why:"Cumulonimbus are the towering anvil-topped clouds of thunderstorms. Cirrus are thin and icy at high altitude; stratus are flat gray layers."},
+ {q:"The largest planet in the solar system is",
+  c:["Jupiter.","Saturn.","Earth.","Neptune."],a:0,
+  why:"Jupiter holds more mass than all the other planets combined. Saturn is second."},
+ {q:"The asteroid belt lies between the orbits of",
+  c:["Mars and Jupiter.","Earth and Mars.","Jupiter and Saturn.","Mercury and Venus."],a:0,
+  why:"The belt of rocky debris circles the sun between the inner rocky planets and the outer gas giants — between Mars and Jupiter."},
+ {q:"A light-year is a unit of",
+  c:["distance.","time.","brightness.","speed."],a:0,
+  why:"It is the distance light travels in one year — about six trillion miles. The name trips people into answering time."},
+ {q:"Which part of the electromagnetic spectrum has the longest wavelength?",
+  c:["Radio waves","X-rays","Visible light","Gamma rays"],a:0,
+  why:"From longest to shortest: radio, microwave, infrared, visible, ultraviolet, X-ray, gamma. Longer wavelength means lower energy."},
+ {q:"Sunburn is caused mainly by which kind of radiation?",
+  c:["Ultraviolet","Infrared","Radio","Visible blue light"],a:0,
+  why:"Ultraviolet light carries enough energy to damage skin cells. Infrared is felt as heat but does not burn skin the way UV does."},
+ {q:"A straw in a glass of water appears bent at the surface because light",
+  c:["changes speed and bends when passing between water and air.","is reflected off the bottom of the glass.","is absorbed by the water.","travels in curves through liquids."],a:0,
+  why:"That bending at the boundary between materials is refraction — the same principle eyeglass and camera lenses use."},
+ {q:"When the north poles of two magnets are pushed toward each other, the magnets",
+  c:["repel each other.","attract each other.","lose their magnetism.","heat up rapidly."],a:0,
+  why:"Like poles repel; opposite poles attract — the magnetic version of the rule for electric charges."},
+ {q:"A solution with a pH of 9 is best described as",
+  c:["basic (alkaline).","acidic.","neutral.","impossible — pH stops at 7."],a:0,
+  why:"The scale runs 0–14 with 7 neutral. Above 7 is basic — soap and baking soda live up there; below 7 is acidic."},
+ {q:"On the periodic table, the horizontal rows are called",
+  c:["periods.","groups.","families.","series-shells."],a:0,
+  why:"Rows are periods; the vertical columns are groups (or families), whose members share similar chemical behavior."},
+ {q:"The lightest and most abundant element in the universe is",
+  c:["hydrogen.","oxygen.","helium.","carbon."],a:0,
+  why:"Hydrogen is element number 1 — a single proton — and makes up most of the universe’s ordinary matter. Helium is second on both counts."},
+ {q:"A molecule of carbon dioxide (CO₂) contains",
+  c:["one carbon atom and two oxygen atoms.","two carbon atoms and one oxygen atom.","one carbon atom and one oxygen atom.","two carbon atoms and two oxygen atoms."],a:0,
+  why:"The subscript 2 belongs to the oxygen. One carbon, two oxygens. CO — one of each — is carbon monoxide, a different and poisonous gas."},
+ {q:"Iron rusting is an example of a",
+  c:["chemical change.","physical change.","change of state.","nuclear reaction."],a:0,
+  why:"Rusting creates a new substance — iron oxide — so it is chemical. Melting, freezing and cutting change form but not identity; those are physical changes."},
+ {q:"In an ecosystem, organisms such as fungi and bacteria that break down dead material are called",
+  c:["decomposers.","producers.","predators.","parasites."],a:0,
+  why:"Decomposers recycle nutrients from dead plants and animals back into the soil, closing the loop between producers and consumers."},
+ {q:"Which unit is used to measure liquid volume in the metric system?",
+  c:["The liter","The gram","The meter","The newton"],a:0,
+  why:"Liters (and milliliters) measure volume. Grams measure mass, meters measure length, and newtons measure force."},
+ {q:"A moving object continues moving in a straight line unless acted on by an outside force. This is a statement of",
+  c:["Newton’s first law (inertia).","Newton’s third law.","the law of conservation of mass.","Bernoulli’s principle."],a:0,
+  why:"Newton’s first law — the law of inertia. Objects at rest stay at rest, and objects in motion keep their motion, until a force intervenes."}
+];
+
+const BANK_WK2 = [
+ {q:"<span class=\"kw\">Benevolent</span> most nearly means",
+  c:["kindly.","wealthy.","forceful.","reluctant."],a:0,
+  why:"The roots bene- (good) and vol- (wish) build the meaning: wishing others well. A benevolent leader acts with kindness."},
+ {q:"<span class=\"kw\">Malicious</span> most nearly means",
+  c:["spiteful.","careless.","delicious.","enormous."],a:0,
+  why:"The root mal- means bad, as in malfunction. Malicious conduct is meant to cause harm."},
+ {q:"The patient suffered from <span class=\"kw\">chronic</span> back pain. Chronic most nearly means",
+  c:["long-lasting.","imaginary.","mild.","sudden."],a:0,
+  why:"The root chron- means time, as in chronological. Chronic conditions persist over a long time — the opposite of acute, which strikes suddenly."},
+ {q:"<span class=\"kw\">Audible</span> most nearly means",
+  c:["able to be heard.","easily broken.","clearly visible.","out of tune."],a:0,
+  why:"The root aud- means hear, as in audio and audience. A barely audible whisper can just be heard."},
+ {q:"<span class=\"kw\">Credible</span> most nearly means",
+  c:["believable.","fearful.","valuable.","critical."],a:0,
+  why:"The root cred- means believe, as in credit and creed. A credible witness is one you can believe."},
+ {q:"<span class=\"kw\">Dictate</span> most nearly means",
+  c:["command.","erase.","predict.","refuse."],a:0,
+  why:"The root dict- means speak or say, as in dictionary and verdict. To dictate terms is to state them with authority."},
+ {q:"<span class=\"kw\">Thermal</span> most nearly means",
+  c:["relating to heat.","relating to weight.","relating to sound.","relating to distance."],a:0,
+  why:"The root therm- means heat, as in thermometer and thermos. Thermal underwear keeps heat in."},
+ {q:"<span class=\"kw\">Portable</span> most nearly means",
+  c:["easily carried.","water-resistant.","permanently fixed.","inexpensive."],a:0,
+  why:"The root port- means carry, as in transport and porter. Portable gear is built to be carried."},
+ {q:"<span class=\"kw\">Circumvent</span> most nearly means",
+  c:["get around.","announce.","strengthen.","measure."],a:0,
+  why:"Circum- means around (circumference) and ven- means come or go. To circumvent a rule is to find a way around it."},
+ {q:"<span class=\"kw\">Transmit</span> most nearly means",
+  c:["send.","hide.","repair.","stop."],a:0,
+  why:"Trans- means across and mit- means send, as in mission. A radio transmits a signal across distance."},
+ {q:"<span class=\"kw\">Precede</span> most nearly means",
+  c:["come before.","follow behind.","interrupt.","repeat."],a:0,
+  why:"Pre- means before. Thunder is preceded by lightning. Don’t confuse it with proceed, which means to go forward."},
+ {q:"<span class=\"kw\">Postpone</span> most nearly means",
+  c:["delay.","cancel forever.","begin early.","complete."],a:0,
+  why:"Post- means after: to postpone is to push something to a later time — delayed, not canceled."},
+ {q:"<span class=\"kw\">Submerge</span> most nearly means",
+  c:["put underwater.","divide in half.","lift overhead.","dry out."],a:0,
+  why:"Sub- means under, as in submarine. To submerge something is to sink it below the surface."},
+ {q:"The radio contact was <span class=\"kw\">intermittent</span> during the storm. Intermittent most nearly means",
+  c:["stopping and starting.","loud and clear.","permanently lost.","continuous."],a:0,
+  why:"Inter- means between: intermittent events happen with gaps between them. Continuous is the opposite."},
+ {q:"<span class=\"kw\">Confide</span> most nearly means",
+  c:["entrust a secret.","argue loudly.","take captive.","forget entirely."],a:0,
+  why:"Con- (with) plus fid- (trust, as in fidelity): to confide in someone is to share private matters trusting they’ll keep them."},
+ {q:"<span class=\"kw\">Revive</span> most nearly means",
+  c:["bring back to life.","review carefully.","turn away.","make smaller."],a:0,
+  why:"Re- (again) plus viv- (life, as in survive): to revive is to restore life or energy — reviving a patient, or an old tradition."},
+ {q:"<span class=\"kw\">Adept</span> most nearly means",
+  c:["skilled.","hesitant.","adopted.","hostile."],a:0,
+  why:"Adept means highly skilled — adept at navigation. Adopted is a sound-alike trap."},
+ {q:"<span class=\"kw\">Arid</span> most nearly means",
+  c:["extremely dry.","high in the mountains.","bitterly cold.","densely wooded."],a:0,
+  why:"Arid describes desert-dry land or climate. It can also describe anything lifeless and dull — an arid lecture."},
+ {q:"<span class=\"kw\">Bleak</span> most nearly means",
+  c:["gloomy.","shiny.","noisy.","crowded."],a:0,
+  why:"A bleak outlook or a bleak landscape is cold, bare and discouraging."},
+ {q:"<span class=\"kw\">Eloquent</span> most nearly means",
+  c:["well-spoken.","very old.","overdressed.","silent."],a:0,
+  why:"The root loqu- means speak, as in loquacious. An eloquent speaker uses language with force and grace."},
+ {q:"The recruit tried to <span class=\"kw\">feign</span> illness to skip the drill. Feign most nearly means",
+  c:["fake.","cure.","spread.","describe."],a:0,
+  why:"To feign is to pretend — related to the word feint, a fake move in boxing or fencing."},
+ {q:"<span class=\"kw\">Hoist</span> most nearly means",
+  c:["lift.","fold.","tie down.","polish."],a:0,
+  why:"To hoist is to raise, often with rope or tackle — hoisting a flag, hoisting cargo aboard."},
+ {q:"<span class=\"kw\">Immense</span> most nearly means",
+  c:["huge.","instant.","invisible.","immature."],a:0,
+  why:"Immense means enormous beyond ordinary measure — an immense desert, immense pressure."},
+ {q:"<span class=\"kw\">Jeopardy</span> most nearly means",
+  c:["danger.","curiosity.","celebration.","fairness."],a:0,
+  why:"To be in jeopardy is to be at risk of harm or loss — a mission in jeopardy."},
+ {q:"<span class=\"kw\">Kindle</span> most nearly means",
+  c:["ignite.","extinguish.","carve.","chill."],a:0,
+  why:"To kindle a fire is to light it; kindling is the small dry wood that catches first. It extends to feelings — kindling enthusiasm. Extinguish is the opposite."},
+ {q:"<span class=\"kw\">Lament</span> most nearly means",
+  c:["mourn.","brag.","laminate.","predict."],a:0,
+  why:"To lament is to express grief or deep regret. Laminate is a sound-alike trap."},
+ {q:"The stream <span class=\"kw\">meanders</span> through the valley. Meanders most nearly means",
+  c:["winds.","floods.","freezes.","roars."],a:0,
+  why:"To meander is to follow a winding, wandering course — true of slow rivers and of unfocused conversations."},
+ {q:"<span class=\"kw\">Negligible</span> most nearly means",
+  c:["too small to matter.","carelessly done.","impossible to see.","poorly made."],a:0,
+  why:"Negligible means insignificant — a negligible amount can be neglected. Carelessly done is the trap: that is negligent, its cousin."},
+ {q:"<span class=\"kw\">Obscure</span> most nearly means",
+  c:["unclear.","obvious.","observant.","enormous."],a:0,
+  why:"Obscure means hard to see or understand — an obscure reference, a meaning obscured by jargon. Obvious is the opposite."},
+ {q:"<span class=\"kw\">Placid</span> most nearly means",
+  c:["calm.","flavorless.","muddy.","stubborn."],a:0,
+  why:"A placid lake is smooth and undisturbed; a placid temperament is hard to ruffle."},
+ {q:"<span class=\"kw\">Tangible</span> most nearly means",
+  c:["able to be touched.","tangled.","temporary.","tasteful."],a:0,
+  why:"The root tang- means touch. Tangible things are real and physical — tangible evidence you can hold in your hand."},
+ {q:"<span class=\"kw\">Undermine</span> most nearly means",
+  c:["weaken.","support.","dig upward.","measure."],a:0,
+  why:"Literally to dig beneath: to undermine authority or confidence is to weaken it from below. Support is the opposite."},
+ {q:"Public interest in the story began to <span class=\"kw\">wane</span>. Wane most nearly means",
+  c:["fade.","grow.","explode.","repeat."],a:0,
+  why:"To wane is to shrink gradually, as the moon wanes after full. Wax — the moon’s opposite phase — means to grow."},
+ {q:"<span class=\"kw\">Zenith</span> most nearly means",
+  c:["highest point.","lowest point.","starting line.","final warning."],a:0,
+  why:"The zenith is the point directly overhead in the sky, so figuratively it is the peak — a career at its zenith. The low point is the nadir."},
+ {q:"<span class=\"kw\">Abrupt</span> most nearly means",
+  c:["sudden.","polite.","gradual.","distant."],a:0,
+  why:"An abrupt stop or an abrupt reply happens sharply and without warning. Gradual is the opposite."},
+ {q:"<span class=\"kw\">Bolster</span> most nearly means",
+  c:["support.","steal.","loosen.","conceal."],a:0,
+  why:"A bolster is literally a supporting cushion; to bolster morale or an argument is to prop it up."},
+ {q:"<span class=\"kw\">Concur</span> most nearly means",
+  c:["agree.","conquer.","collide.","object."],a:0,
+  why:"Con- (together) + cur- (run): opinions that run together. ‘I concur’ means ‘I agree.’ Conquer is a sound-alike trap."},
+ {q:"<span class=\"kw\">Deplete</span> most nearly means",
+  c:["use up.","refill.","fold neatly.","complain."],a:0,
+  why:"To deplete supplies is to drain them down. Replenish — refill — is its opposite."},
+ {q:"<span class=\"kw\">Evade</span> most nearly means",
+  c:["avoid.","invade.","assist.","erase."],a:0,
+  why:"E- (out, away) + vad- (go): to evade is to slip away from — evading capture, evading a question. Invade shares the root but points the other way."},
+ {q:"Small businesses began to <span class=\"kw\">flourish</span> along the new rail line. Flourish most nearly means",
+  c:["thrive.","struggle.","relocate.","advertise."],a:0,
+  why:"The root flor- means flower: to flourish is to grow vigorously, to bloom. Struggle is close to its opposite."}
+];
+
+const BANK_AR2 = [
+ {q:"Which of the following numbers is prime?",
+  c:["21","27","29","33"],a:2,ord:1,
+  why:"29 has no divisors except 1 and itself. 21 = 3 × 7, 27 = 3 × 9, and 33 = 3 × 11."},
+ {q:"Two shuttle buses leave the depot together. One returns every 6 minutes, the other every 8 minutes. In how many minutes will they next leave the depot together?",
+  c:["14","24","36","48"],a:1,
+  why:"The answer is the least common multiple of 6 and 8. Multiples of 8: 8, 16, 24 — and 24 is also a multiple of 6. LCM = 24 minutes."},
+ {q:"A volunteer has 24 pens and 36 pencils to pack into identical kits with nothing left over. What is the greatest number of kits she can make?",
+  c:["6","8","12","24"],a:2,
+  why:"The greatest common factor of 24 and 36 is 12 — twelve kits, each with 2 pens and 3 pencils. A larger number of kits would split the pens unevenly."},
+ {q:"Which of the following numbers is evenly divisible by 3?",
+  c:["731","741","751","761"],a:1,ord:1,
+  why:"A number is divisible by 3 when its digits sum to a multiple of 3: 7 + 4 + 1 = 12. The others sum to 11, 13 and 14."},
+ {q:"A club must schedule 5 different speakers in order. How many different orders are possible? (5!)",
+  c:["25","60","120","240"],a:2,
+  why:"5! = 5 × 4 × 3 × 2 × 1 = 120. Each slot has one fewer choice than the slot before."},
+ {q:"What is the next number in the sequence 4, 11, 18, 25, …?",
+  c:["30","32","33","36"],a:1,
+  why:"Each term increases by 7, so 25 + 7 = 32."},
+ {q:"What is the next number in the sequence 3, 6, 12, 24, …?",
+  c:["30","36","42","48"],a:3,
+  why:"Each term doubles, so 24 × 2 = 48. Checking differences first (3, 6, 12) reveals the pattern is multiplication, not addition."},
+ {q:"A driver covers 120 miles in 2 hours, then 180 miles in 3 hours. What is the average speed for the whole trip?",
+  c:["55 mph","58 mph","60 mph","65 mph"],a:2,
+  why:"Average speed = total distance ÷ total time = 300 ÷ 5 = 60 mph. (Here both legs were also 60 mph — but always divide totals, never average the speeds blindly.)"},
+ {q:"A grocer blends 2 pounds of coffee costing $8 per pound with 3 pounds costing $3 per pound. What is the cost per pound of the blend?",
+  c:["$4.60","$5.00","$5.50","$6.00"],a:1,
+  why:"Total cost: 2 × 8 + 3 × 3 = $25 for 5 pounds, so $5 per pound. The $5.50 trap averages $8 and $3 without weighting."},
+ {q:"A jar holds 12 coins, all nickels and dimes, worth $0.90 in total. How many dimes are in the jar?",
+  c:["4","5","6","8"],a:2,
+  why:"If all 12 were nickels they'd be worth 60¢. Each dime swapped in adds 5¢, and 90 − 60 = 30 means 6 swaps — 6 dimes (and 6 nickels: 30¢ + 60¢ = 90¢ ✓)."},
+ {q:"Maria is twice as old as her brother, who is 8. How old will Maria be in 5 years?",
+  c:["16","18","21","26"],a:2,
+  why:"Maria is 2 × 8 = 16 now, so in 5 years she'll be 21. Answering 16 stops one step early."},
+ {q:"A salesman earns a 4 percent commission on everything he sells. What is his commission on $6,500 in sales?",
+  c:["$240","$260","$300","$325"],a:1,
+  why:"6,500 × 0.04 = $260."},
+ {q:"A dinner bill is $64. Adding a 15 percent tip, what is the total paid?",
+  c:["$70.40","$73.60","$76.80","$79.00"],a:1,
+  why:"The tip is 64 × 0.15 = $9.60, so the total is $73.60. One step: 64 × 1.15."},
+ {q:"A hallway is 27 feet long. How long is it in yards?",
+  c:["3 yards","9 yards","54 yards","81 yards"],a:1,
+  why:"One yard is 3 feet, so 27 ÷ 3 = 9 yards. Multiplying instead of dividing gives the 81 trap."},
+ {q:"A package weighs 56 ounces. What is its weight in pounds?",
+  c:["2.5 pounds","3 pounds","3.5 pounds","4.5 pounds"],a:2,
+  why:"One pound is 16 ounces, and 56 ÷ 16 = 3.5 pounds."},
+ {q:"A duty shift ends at 1830 in military time. What time is that on a standard clock?",
+  c:["4:30 p.m.","6:30 p.m.","8:30 p.m.","6:30 a.m."],a:1,ord:1,
+  why:"Subtract 12 from any military hour of 1300 or later: 18 − 12 = 6, so 1830 is 6:30 p.m."},
+ {q:"At dawn the temperature was −8°F. By noon it had risen 15 degrees. What was the noon temperature?",
+  c:["−7°F","5°F","7°F","23°F"],a:2,
+  why:"−8 + 15 = 7°F. Crossing zero trips people: 8 degrees of the rise get to zero, leaving 7 above."},
+ {q:"A vendor buys a tool set for $340 and sells it for $425. What is the percent profit on the purchase price?",
+  c:["20%","25%","30%","85%"],a:1,
+  why:"Profit is 425 − 340 = $85, and 85 ÷ 340 = 0.25 = 25%. The 85 figure alone is dollars, not percent."},
+ {q:"A soldier's monthly pay is $2,400. One-third goes to rent and one-fourth to food. How much remains?",
+  c:["$800","$1,000","$1,200","$1,400"],a:1,
+  why:"Rent: 2,400 ÷ 3 = $800. Food: 2,400 ÷ 4 = $600. Remaining: 2,400 − 1,400 = $1,000."},
+ {q:"A student reads 45 pages per hour. How long will a 360-page book take?",
+  c:["6 hours","7 hours","8 hours","9 hours"],a:2,
+  why:"360 ÷ 45 = 8 hours."}
+];
+
+const BANK_MK2 = [
+ {q:"Evaluate: 3 + 4 × 2²",
+  c:["19","28","35","56"],a:0,
+  why:"Order of operations: exponent first (2² = 4), then multiply (4 × 4 = 16), then add (3 + 16 = 19). Working left to right gives the traps."},
+ {q:"What is |−7| + |3|?",
+  c:["−10","−4","4","10"],a:3,ord:1,
+  why:"Absolute value is distance from zero, always positive: 7 + 3 = 10."},
+ {q:"The number 4.5 × 10³ is equal to",
+  c:["45","450","4,500","45,000"],a:2,
+  why:"10³ moves the decimal three places right: 4.5 → 4,500."},
+ {q:"What is 2⁻³?",
+  c:["−8","−6","⅛","⅙"],a:2,ord:1,
+  why:"A negative exponent means reciprocal: 2⁻³ = 1/2³ = 1/8. It does not make the number negative."},
+ {q:"Simplify: √50",
+  c:["5√2","2√5","25","√25 + √25"],a:0,ord:1,
+  why:"50 = 25 × 2, so √50 = √25 × √2 = 5√2."},
+ {q:"If x + y = 10 and x − y = 4, what is x?",
+  c:["3","6","7","10"],a:2,
+  why:"Add the two equations: 2x = 14, so x = 7 (and y = 3). Adding eliminates y in one step."},
+ {q:"The solutions of x² − 5x + 6 = 0 are",
+  c:["x = 2 and x = 3.","x = −2 and x = −3.","x = 1 and x = 6.","x = 5 and x = 6."],a:0,
+  why:"Factor: (x − 2)(x − 3) = 0. Two numbers that multiply to +6 and add to −5 are −2 and −3, making the roots 2 and 3."},
+ {q:"Two lines cross, forming four angles. If one angle measures 40°, the angle directly opposite it measures",
+  c:["40°","50°","140°","180°"],a:0,
+  why:"Vertical (opposite) angles are always equal. The two angles beside it are supplementary — 140° each."},
+ {q:"Two angles form a straight line. If one measures 115°, the other measures",
+  c:["55°","65°","75°","115°"],a:1,
+  why:"Angles on a straight line sum to 180°: 180 − 115 = 65°."},
+ {q:"The interior angles of any quadrilateral add up to",
+  c:["180°","270°","360°","540°"],a:2,
+  why:"(n − 2) × 180 with n = 4 gives 360°. A triangle's 180° is the building block: a quadrilateral splits into two triangles."},
+ {q:"The interior angles of a hexagon add up to",
+  c:["540°","640°","720°","900°"],a:2,
+  why:"(6 − 2) × 180 = 720°."},
+ {q:"A cube has edges 4 inches long. What is its total surface area?",
+  c:["16 sq in","64 sq in","96 sq in","128 sq in"],a:2,
+  why:"Each of the 6 faces is 4 × 4 = 16 sq in, and 6 × 16 = 96. The 64 choice is the volume."},
+ {q:"What is the area of a triangle with a base of 10 inches and a height of 6 inches?",
+  c:["16 sq in","30 sq in","60 sq in","120 sq in"],a:1,
+  why:"Area = ½ × base × height = ½ × 10 × 6 = 30. Forgetting the ½ gives 60."},
+ {q:"What is the area of a parallelogram with a base of 8 feet and a height of 5 feet?",
+  c:["13 sq ft","20 sq ft","26 sq ft","40 sq ft"],a:3,
+  why:"Area = base × height = 8 × 5 = 40 sq ft — no ½, unlike a triangle."},
+ {q:"What is the midpoint of the segment joining (2, 4) and (8, 10)?",
+  c:["(4, 6)","(5, 7)","(6, 8)","(10, 14)"],a:1,
+  why:"Average each coordinate: x = (2 + 8)/2 = 5, y = (4 + 10)/2 = 7."},
+ {q:"What is the distance from the point (0, 0) to the point (6, 8)?",
+  c:["7","10","14","48"],a:1,
+  why:"Distance = √(6² + 8²) = √100 = 10 — the 6-8-10 right triangle in disguise."},
+ {q:"In the equation y = 2x + 3, the slope of the line is",
+  c:["2","3","5","x"],a:0,
+  why:"In slope-intercept form y = mx + b, the slope is m — here 2. The 3 is the y-intercept."},
+ {q:"What is ⅔ ÷ ¼?",
+  c:["⅙","½","8⁄3","12"],a:2,ord:1,
+  why:"Dividing by a fraction means multiplying by its reciprocal: ⅔ × 4 = 8/3, or 2⅔."},
+ {q:"What is the reciprocal of 5⁄8?",
+  c:["8⁄5","5⁄8","−5⁄8","1"],a:0,ord:1,
+  why:"Flip the fraction: 8/5. A number times its reciprocal equals 1: 5/8 × 8/5 = 1."},
+ {q:"Written as a decimal, 7 percent is",
+  c:["7.0","0.7","0.07","0.007"],a:2,ord:1,
+  why:"Percent means per hundred: 7 ÷ 100 = 0.07."},
+ {q:"Written as a fraction in lowest terms, 0.375 is",
+  c:["3⁄8","3⁄7","37⁄100","5⁄8"],a:0,ord:1,
+  why:"0.375 = 375/1000, and dividing top and bottom by 125 gives 3/8."},
+ {q:"What is the least common multiple of 4 and 10?",
+  c:["2","14","20","40"],a:2,
+  why:"Multiples of 10: 10, 20 — and 20 is also a multiple of 4. The 40 choice is a common multiple, but not the least; 2 is the greatest common factor."},
+ {q:"What is the greatest common factor of 18 and 45?",
+  c:["3","6","9","90"],a:2,
+  why:"18 = 9 × 2 and 45 = 9 × 5, so 9 is the largest number dividing both. 90 is the least common multiple."},
+ {q:"Written in lowest terms, the ratio 18:24 is",
+  c:["2:3","3:4","4:5","6:8"],a:1,
+  why:"Divide both sides by their common factor 6: 18:24 = 3:4. The 6:8 choice is reduced, but not fully."},
+ {q:"What is 9⁰?",
+  c:["0","1","9","90"],a:1,
+  why:"Any nonzero number raised to the zero power equals 1 — it falls out of the exponent subtraction rule: 9¹ ÷ 9¹ = 9⁰ = 1."}
+];
+
+const BANK_EI2 = [
+ {q:"Conventional current is described as flowing",
+  c:["from the positive terminal to the negative terminal.","from the negative terminal to the positive terminal.","in both directions at once.","only when the circuit is open."],a:0,
+  why:"By convention, circuit diagrams show current flowing + to −. The electrons themselves actually drift the other way (− to +) — both descriptions appear on tests, so know which is being asked."},
+ {q:"A 2-ampere current flows through a 10-ohm resistor. How much power does the resistor dissipate?",
+  c:["5 watts","20 watts","40 watts","100 watts"],a:2,
+  why:"P = I²R = 2² × 10 = 40 watts. Forgetting to square the current gives the 20-watt trap."},
+ {q:"A 100-watt device runs for 10 hours. How much energy does it use?",
+  c:["1 kilowatt-hour","10 kilowatt-hours","100 kilowatt-hours","1,000 kilowatt-hours"],a:0,
+  why:"Energy = power × time = 100 W × 10 h = 1,000 watt-hours = 1 kWh — the unit the electric company bills by."},
+ {q:"A current of 500 milliamperes equals",
+  c:["0.05 ampere.","0.5 ampere.","5 amperes.","50 amperes."],a:1,
+  why:"Milli- means one-thousandth: 500 mA = 500/1000 = 0.5 A."},
+ {q:"A resistance of 2 kilohms equals",
+  c:["20 ohms.","200 ohms.","2,000 ohms.","20,000 ohms."],a:2,
+  why:"Kilo- means one thousand: 2 kΩ = 2,000 Ω."},
+ {q:"In a series circuit with several components, the supply voltage is",
+  c:["divided among the components.","equal across every component.","zero across each component.","doubled at each component."],a:0,
+  why:"Series components share one path, so each takes a portion of the voltage (proportional to its resistance) — the drops add up to the supply. It's current that stays the same in series."},
+ {q:"In a parallel circuit, the voltage across each branch is",
+  c:["the same as the source voltage.","divided among the branches.","always zero.","dependent on the order of the branches."],a:0,
+  why:"Every parallel branch connects directly across the source, so each sees the full voltage. It's the current that divides among branches — the mirror image of the series rule."},
+ {q:"Three bulbs are wired in series. If one bulb burns out, the other two",
+  c:["go dark, because the circuit is broken.","keep burning at the same brightness.","burn brighter.","blink on and off."],a:0,
+  why:"A burned-out filament opens the only path, stopping current everywhere — the old-style Christmas-light problem."},
+ {q:"Three bulbs are wired in parallel. If one bulb burns out, the other two",
+  c:["keep burning.","go dark immediately.","burn at half brightness.","reverse polarity."],a:0,
+  why:"Each parallel branch is its own complete path, so losing one branch doesn't interrupt the others — the reason house wiring is parallel."},
+ {q:"An electric motor converts",
+  c:["electrical energy into mechanical energy.","mechanical energy into electrical energy.","chemical energy into light.","heat into electrical energy."],a:0,
+  why:"Current through coils in a magnetic field produces rotation. A generator is the same machine run backward — motion in, electricity out."},
+ {q:"A generator converts",
+  c:["mechanical energy into electrical energy.","electrical energy into mechanical energy.","light into electrical energy.","electrical energy into heat only."],a:0,
+  why:"Spinning a coil in a magnetic field induces current. That's what turbines do in every power plant, and what a car's alternator does off the engine belt."},
+ {q:"A relay is best described as",
+  c:["a switch operated by an electromagnet.","a device for storing charge.","a type of fuse.","a resistor that varies with light."],a:0,
+  why:"A small control current energizes the relay's coil, and the magnet pulls contacts closed to switch a much larger current — how a car's small ignition switch safely starts a big starter motor."},
+ {q:"In standard U.S. residential wiring, the hot wire is usually colored",
+  c:["black.","green.","white.","bare copper."],a:0,
+  why:"Black (or red for a second hot) carries the live voltage. White is neutral; green or bare copper is ground."},
+ {q:"The colored bands painted on a resistor indicate its",
+  c:["resistance value and tolerance.","maximum voltage.","physical length.","date of manufacture."],a:0,
+  why:"The color code spells out the resistance in ohms plus a tolerance percentage, so values can be read without a meter."},
+ {q:"The continuity setting on a multimeter is used to check whether",
+  c:["a circuit path is unbroken.","a battery is fully charged.","AC frequency is correct.","a wire is properly insulated."],a:0,
+  why:"Continuity sends a tiny current through the path and beeps if it gets through — perfect for finding broken wires and blown fuses."},
+ {q:"Two identical batteries connected in parallel provide",
+  c:["the same voltage as one battery, but supply current for longer.","double the voltage of one battery.","half the voltage of one battery.","no current at all."],a:0,
+  why:"Parallel keeps the voltage the same and adds capacity. Series is the arrangement that adds voltages."},
+ {q:"A transistor is a component that can",
+  c:["amplify a signal or act as a switch.","store large charges indefinitely.","convert light into sound.","increase supply frequency."],a:0,
+  why:"A tiny current or voltage at one terminal controls a larger current through the others — the basis of amplifiers and of digital logic."},
+ {q:"A step-down transformer has a 10-to-1 turns ratio. With 120 volts AC across the primary, the secondary provides about",
+  c:["12 volts.","1.2 volts.","120 volts.","1,200 volts."],a:0,
+  why:"Voltage scales with the turns ratio: 120 ÷ 10 = 12 V — a typical doorbell transformer."},
+ {q:"Electric power is transmitted cross-country at very high voltage because",
+  c:["it reduces energy lost as heat in the lines.","high voltage travels faster.","transformers cannot handle low voltage.","it prevents lightning strikes."],a:0,
+  why:"For the same power, higher voltage means lower current, and line heating loss grows with the square of current (I²R). Transformers step it back down near your home."},
+ {q:"The ampere rating printed on a fuse indicates",
+  c:["the maximum current it allows before blowing.","the voltage it produces.","its resistance in ohms.","the wattage of the device it protects."],a:0,
+  why:"Current above the rating melts the fuse element and opens the circuit. Replacing a fuse with a higher-rated one defeats the protection."}
+];
+
+const BANK_AS2 = [
+ {q:"In a fuel-injection system, the injectors",
+  c:["spray a measured mist of fuel for combustion.","ignite the fuel.","filter dirt from the fuel.","pump exhaust out of the cylinder."],a:0,
+  why:"Injectors atomize fuel under pressure in precisely metered amounts. They replaced the carburetor, which mixed fuel and air by suction."},
+ {q:"In a modern vehicle, the ECU (engine control unit) is",
+  c:["a computer that manages fuel, spark and emissions.","a backup battery.","part of the exhaust plumbing.","a manual choke control."],a:0,
+  why:"Sensors feed the ECU data — air flow, temperature, oxygen in the exhaust — and it continuously adjusts fuel delivery and ignition timing."},
+ {q:"The ignition coil in a gasoline engine",
+  c:["steps battery voltage up to the thousands of volts a spark needs.","keeps the battery charged.","times the opening of the valves.","reduces voltage for the radio."],a:0,
+  why:"A spark must jump the plug gap, which takes tens of thousands of volts. The coil is a transformer that turns 12 volts into that surge."},
+ {q:"Exhaust gases leaving the engine normally pass through these parts in which order?",
+  c:["Exhaust manifold, catalytic converter, muffler, tailpipe","Muffler, catalytic converter, manifold, tailpipe","Tailpipe, muffler, manifold, catalytic converter","Catalytic converter, manifold, tailpipe, muffler"],a:0,ord:1,
+  why:"The manifold collects gases at the engine, the converter cleans them, the muffler quiets them, and the tailpipe releases them."},
+ {q:"The differential in a drivetrain allows",
+  c:["the drive wheels to rotate at different speeds in turns.","the engine to run without fuel.","the brakes to release automatically.","both axles to lock permanently together."],a:0,
+  why:"In a corner the outside wheel travels farther than the inside one. The differential's gears split power while letting the speeds differ — without it, tires would scrub and hop."},
+ {q:"A brake pedal that feels spongy and sinks slowly usually indicates",
+  c:["air in the hydraulic brake lines.","new brake pads.","an overfilled fluid reservoir.","worn tire tread."],a:0,
+  why:"Brake fluid doesn't compress, but air bubbles do — so trapped air turns firm pedal pressure into squish. The fix is bleeding the lines."},
+ {q:"In a vehicle's suspension, the springs (coil or leaf)",
+  c:["support the vehicle's weight and absorb bumps.","stop the wheels from rotating.","connect the transmission to the axle.","hold the brake pads apart."],a:0,
+  why:"Springs carry the load and flex over bumps; the shock absorbers then damp the bouncing the springs would otherwise continue."},
+ {q:"An all-electric vehicle is driven by",
+  c:["an electric motor powered by a battery pack.","a gasoline engine with electric ignition.","compressed air.","a diesel generator under the hood."],a:0,
+  why:"A large battery pack feeds one or more electric motors. There's no combustion engine — hence no fuel system, spark plugs or tailpipe."},
+ {q:"Rotating a vehicle's tires between positions on a schedule",
+  c:["evens out tread wear so the set lasts longer.","increases the air pressure automatically.","re-balances the crankshaft.","hardens the rubber."],a:0,
+  why:"Drive wheels and steering wheels wear tires differently. Swapping positions spreads the wear pattern across all four."},
+ {q:"A car that constantly drifts or pulls to one side on a straight road most likely needs",
+  c:["a wheel alignment.","an oil change.","new spark plugs.","a new muffler."],a:0,
+  why:"When the wheels' angles are out of specification, the car steers itself; uneven tire wear is the other telltale. (A badly underinflated tire on one side can cause the same pull — alignment is the classic answer.)"},
+ {q:"Soldering is a process that joins metal parts by",
+  c:["melting a filler alloy that bonds the surfaces without melting them.","melting the parts themselves together.","gluing with epoxy.","hammering the parts until they interlock."],a:0,
+  why:"Solder — a low-melting alloy — flows over the heated joint and bonds it, standard for electrical connections. Welding is different: it melts the base metal itself."},
+ {q:"Welding differs from soldering in that welding",
+  c:["fuses the base metals themselves with intense heat.","never requires heat.","works only on wood.","uses no filler material of any kind."],a:0,
+  why:"Welding melts the workpieces (often adding filler rod) into one continuous piece, making a far stronger joint than solder's surface bond."},
+ {q:"A bench vise is used to",
+  c:["hold work firmly while it is cut, drilled or filed.","measure round stock.","sharpen drill bits.","press bearings onto shafts."],a:0,
+  why:"Bolted to the bench, its jaws free both of your hands for the actual work. Clamps do the same job where the vise can't reach."},
+ {q:"Which tool measures both the inside and outside diameter of a pipe?",
+  c:["Calipers","A rip saw","A torque wrench","A chalk line"],a:0,
+  why:"Calipers (vernier, dial or digital) measure outside, inside and depth dimensions precisely. A micrometer is even more precise but usually measures outside only."},
+ {q:"A rivet is a fastener best suited for",
+  c:["permanently joining sheet metal.","joints that must be taken apart often.","attaching drywall to studs.","holding wood screws in place."],a:0,
+  why:"The rivet is inserted and its tail is deformed, clamping the sheets for good. Removing one means drilling it out — so use bolts where you'll disassemble."},
+ {q:"Before drilling into metal, a technician strikes a center punch at the mark in order to",
+  c:["make a small dent that keeps the drill bit from wandering.","test the metal's hardness.","remove paint from the surface.","measure the hole's depth."],a:0,
+  why:"The punched dimple gives the spinning bit a seat to start in, so the hole lands exactly on the mark."},
+ {q:"A rasp is a coarse-toothed tool used to",
+  c:["quickly shape and remove wood.","polish metal to a shine.","cut electrical conduit.","spread body filler."],a:0,
+  why:"A rasp's individually raised teeth tear away wood fast; a finer file then smooths the surface. On metal, files — not rasps — do the work."},
+ {q:"Which power saw is designed for cutting curves in wood or thin metal?",
+  c:["Jigsaw","Circular saw","Chainsaw","Table saw"],a:0,
+  why:"The jigsaw's narrow reciprocating blade can steer along a curved line. Circular and table saws excel at straight cuts."},
+ {q:"Compared with a hand-held drill, a drill press's main advantage is",
+  c:["drilling holes at an exact, steady angle — usually perfectly perpendicular.","working without electricity.","drilling without any bit.","being easier to carry up a ladder."],a:0,
+  why:"The workpiece sits on a table and the spindle feeds straight down, so depth and angle are controlled — critical for accurate, repeated holes."},
+ {q:"In a motor oil labeled 10W-30, the W stands for",
+  c:["winter — the first number is the oil's cold-weather viscosity rating.","weight of the bottle.","warranty grade.","water resistance."],a:0,
+  why:"10W describes how the oil flows when cold (lower = thinner at startup); 30 is its viscosity at operating temperature. Multi-grade oil behaves well in both."}
+];
+
+const BANK_MC2 = [
+ {q:"A force of 50 newtons acts on a 10-kilogram cart. Ignoring friction, the cart’s acceleration is",
+  c:["0.2 m/s²","5 m/s²","50 m/s²","500 m/s²"],a:1,
+  why:"Newton’s second law: F = ma, so a = F ÷ m = 50 ÷ 10 = 5 m/s²."},
+ {q:"An astronaut travels from Earth to the moon. Compared with Earth, on the moon the astronaut’s",
+  c:["weight is less but mass is unchanged.","mass is less but weight is unchanged.","mass and weight are both unchanged.","mass and weight are both less."],a:0,
+  why:"Mass — the amount of matter — never changes with location. Weight is gravity’s pull on that mass, and lunar gravity is about one-sixth of Earth’s."},
+ {q:"A crate is pushed to the right with 30 pounds of force while friction resists with 10 pounds. The net force on the crate is",
+  c:["20 pounds to the right.","40 pounds to the right.","10 pounds to the left.","zero."],a:0,
+  why:"Opposing forces subtract: 30 − 10 = 20 pounds in the direction of the larger force."},
+ {q:"An object moving at constant speed in a straight line has",
+  c:["zero net force acting on it.","a large net force pushing it forward.","steadily increasing momentum.","no forces of any kind acting on it."],a:0,
+  why:"Constant velocity means the forces balance — the push exactly cancels friction and drag. Forces exist; they just sum to zero."},
+ {q:"Applying grease or oil between two sliding metal parts",
+  c:["reduces friction and wear.","increases friction for better grip.","hardens both surfaces.","increases the parts’ weight noticeably."],a:0,
+  why:"A lubricant film keeps the surfaces from rubbing metal-on-metal, cutting friction, heat and wear."},
+ {q:"Two teams pull on opposite ends of a single rope. The tension in the rope is",
+  c:["the same at every point along it.","greatest in the middle.","zero at both ends.","greater at the stronger team’s end."],a:0,
+  why:"A rope transmits pull; in a straight, lightweight rope the tension is uniform throughout — each end feels the same force."},
+ {q:"Which shape makes a structure most rigid when used in bridges and towers?",
+  c:["The triangle","The square","The circle","The hexagon"],a:0,
+  why:"A triangle’s angles cannot change without changing a side’s length, so triangular bracing resists deformation. A square racks into a parallelogram unless braced — with a diagonal that turns it into two triangles."},
+ {q:"Gear A drives an idler gear, which drives gear C. Compared with gear A, gear C rotates",
+  c:["in the same direction.","in the opposite direction.","twice as fast, regardless of size.","not at all."],a:0,
+  why:"Each mesh reverses direction: A turns the idler backward, and the idler turns C backward again — back to A’s direction. The idler changes no speeds; it only bridges distance and restores direction."},
+ {q:"Two sprockets connected by a chain, like those on a bicycle, rotate",
+  c:["in the same direction.","in opposite directions.","at identical speeds no matter their size.","only when the same size."],a:0,
+  why:"A chain (or belt) carries motion around without reversing it. Directly meshed gear teeth are what reverse rotation."},
+ {q:"A bicycle’s pedal sprocket has 48 teeth and the rear-wheel sprocket has 12. One full pedal turn spins the rear wheel",
+  c:["4 times.","¼ of a turn.","12 times.","once."],a:0,
+  why:"The chain moves 48 teeth’ worth per pedal turn, and 48 ÷ 12 = 4 rear revolutions — speed multiplied, torque reduced."},
+ {q:"A mechanic pulls with 20 pounds on a wrench 1.5 feet from the bolt’s center. The torque applied is",
+  c:["30 pound-feet.","13.3 pound-feet.","21.5 pound-feet.","300 pound-feet."],a:0,
+  why:"Torque = force × distance from the pivot = 20 × 1.5 = 30 lb-ft."},
+ {q:"A worker lifts a 50-pound box straight up 4 feet. The work done on the box is",
+  c:["200 foot-pounds.","12.5 foot-pounds.","54 foot-pounds.","800 foot-pounds."],a:0,
+  why:"Work = force × distance = 50 × 4 = 200 ft-lb."},
+ {q:"A machine does 200 foot-pounds of work in 4 seconds. Its power output is",
+  c:["50 foot-pounds per second.","800 foot-pounds per second.","204 foot-pounds per second.","25 foot-pounds per second."],a:0,
+  why:"Power = work ÷ time = 200 ÷ 4 = 50 ft-lb/s. Power measures how fast work gets done."},
+ {q:"A pendulum swings back and forth. Its speed is greatest",
+  c:["at the bottom of the swing.","at the top of each swing.","exactly halfway down.","at the same value everywhere."],a:0,
+  why:"Height converts to speed: potential energy at the ends of the swing becomes kinetic energy at the lowest point, where all of it is motion."},
+ {q:"A ball rolling down a long, straight ramp",
+  c:["moves faster and faster.","keeps one constant speed.","slows steadily.","stops halfway."],a:0,
+  why:"Gravity keeps pulling it along the slope, so it accelerates — gaining speed the whole way down (minus a little to friction)."},
+ {q:"No real machine is 100 percent efficient, mainly because",
+  c:["some input energy is lost to friction as heat.","energy is destroyed inside machines.","gravity absorbs part of the work.","machines add extra energy of their own."],a:0,
+  why:"Energy is never destroyed, but friction converts part of the input into heat you can’t use. Efficiency = useful output ÷ input, always under 100%."},
+ {q:"Railroad rails are laid with small gaps between sections because",
+  c:["metal expands in hot weather.","it saves steel.","the gaps reduce noise.","trains need the bumps for traction."],a:0,
+  why:"Heated metal expands; the gaps give each rail room to grow. Without them, summer expansion can buckle the track sideways."},
+ {q:"As a diver descends deeper into water, the pressure on the diver",
+  c:["increases.","decreases.","stays exactly the same.","drops to zero."],a:0,
+  why:"Pressure at depth comes from the weight of the water above — roughly one extra atmosphere for every 33 feet of seawater."},
+ {q:"A ball is thrown straight up. At the very top of its flight, its velocity is",
+  c:["zero for an instant.","at its greatest.","equal to its starting speed.","directed sideways."],a:0,
+  why:"Rising, it slows under gravity until it momentarily stops at the peak — then it falls, speeding up again. (Its acceleration at the top is still g, downward.)"},
+ {q:"A valve with a large-diameter handwheel is easier to turn than the same valve with a small one because the larger wheel",
+  c:["provides more leverage, so less force is needed.","weighs more.","spins the stem faster.","reduces the water pressure."],a:0,
+  why:"A handwheel is a wheel and axle: the bigger the wheel radius, the longer the effort arm, and the less force your hand must supply for the same torque."},
+ {q:"A block and tackle lets one person lift a heavy engine. The trade-off is that the person must",
+  c:["pull much more rope than the height the engine rises.","pull with more force than the engine’s weight.","work faster than the load moves.","stand directly beneath the load."],a:0,
+  why:"Mechanical advantage divides the force but multiplies the rope distance: a 4-to-1 rig means pulling 4 feet of rope per foot of lift. The total work stays the same."},
+ {q:"Water is poured into one side of a U-shaped tube open at both ends. The water will",
+  c:["settle at the same level on both sides.","stay higher on the side it was poured into.","stay higher on the opposite side.","drain out entirely."],a:0,
+  why:"A connected liquid seeks its own level — pressure at the bottom must balance, which happens only when both columns are equally high. Carpenters’ water levels use exactly this."},
+ {q:"An open parachute slows a falling person mainly by",
+  c:["greatly increasing air resistance.","reducing the person’s weight.","canceling gravity.","cooling the surrounding air."],a:0,
+  why:"The huge canopy multiplies drag — the upward air-resistance force — until it nearly balances the person’s weight, so the fall settles at a slow, safe speed."},
+ {q:"A pair of pliers is really two of which simple machine, joined at a pivot?",
+  c:["Levers","Pulleys","Inclined planes","Screws"],a:0,
+  why:"Each handle-and-jaw is a first-class lever with the fulcrum at the pivot pin: long handles, short jaws — force multiplied at the grip."},
+ {q:"Raising a load with a ramp instead of lifting it straight up requires less force. The price is that the load",
+  c:["must travel a longer distance.","gains more energy than it should.","becomes lighter partway up.","must move faster."],a:0,
+  why:"The ramp spreads the same work over a longer path: less force, more distance. Every simple machine makes that same trade."}
+];
+
+const BANK_AO2 = [
+ {base:[["circle","bottom"],["bar","tl"]],
+  options:[[["circle","bottom"],["bar","bl"]],[["circle","left"],["bar","tl"]],[["circle","bottom"],["bar","tl"]],[["square","top"],["bar","tl"]]],a:2},
+ {base:[["arrow","notch"],["ellipse","bottom"]],
+  options:[[["arrow","notch"],["ellipse","bottom"]],[["arrow","tip"],["ellipse","bottom"]],[["arrow","notch"],["ellipse","top"]],[["arrow","notch"],["circle","bottom"]]],a:0},
+ {base:[["cross","lt"],["triangle","apex"]],
+  options:[[["cross","rt"],["triangle","apex"]],[["cross","lt"],["triangle","bl"]],[["cross","lt"],["bar","tl"]],[["cross","lt"],["triangle","apex"]]],a:3},
+ {base:[["bar","midr"],["circle","right"]],
+  options:[[["bar","tr"],["circle","right"]],[["bar","midr"],["circle","right"]],[["bar","midr"],["circle","top"]],[["trapezoid","tr"],["circle","right"]]],a:1},
+ {base:[["ellipse","right"],["square","left"]],
+  options:[[["ellipse","left"],["square","left"]],[["ellipse","right"],["square","tl"]],[["ellipse","right"],["square","left"]],[["ellipse","right"],["cross","lt"]]],a:2},
+ {base:[["triangle","br"],["trapezoid","tl"]],
+  options:[[["triangle","br"],["trapezoid","tl"]],[["triangle","bl"],["trapezoid","tl"]],[["triangle","br"],["trapezoid","br"]],[["circle","right"],["trapezoid","tl"]]],a:0},
+ {base:[["square","bl"],["arrow","tl"]],
+  options:[[["square","br"],["arrow","tl"]],[["square","bl"],["arrow","bl"]],[["square","bl"],["ellipse","left"]],[["square","bl"],["arrow","tl"]]],a:3},
+ {base:[["cross","bl"],["ellipse","top"]],
+  options:[[["cross","tl"],["ellipse","top"]],[["cross","bl"],["ellipse","top"]],[["cross","bl"],["ellipse","left"]],[["arrow","bl"],["ellipse","top"]]],a:1},
+ {base:[["trapezoid","br"],["circle","top"]],
+  options:[[["trapezoid","bl"],["circle","top"]],[["trapezoid","br"],["circle","left"]],[["trapezoid","br"],["circle","top"]],[["trapezoid","br"],["triangle","apex"]]],a:2},
+ {base:[["bar","bl"],["cross","tr"]],
+  options:[[["bar","tl"],["cross","tr"]],[["bar","bl"],["cross","rb"]],[["ellipse","bottom"],["cross","tr"]],[["bar","bl"],["cross","tr"]]],a:3}
+];
+
+/* ---- original per-subtest study sheets (written for this site) ---- */
+const STUDY = [
+ {code:"GS", name:"General Science", body:`
+  <b>Life science</b>
+  <ul>
+   <li>Cell parts: nucleus holds DNA · mitochondria make energy · chloroplasts (plants only) capture light.</li>
+   <li>Blood: red cells carry oxygen (hemoglobin) · white cells fight infection · platelets clot · plasma is the liquid. Made in bone marrow; heart has 4 chambers; arteries go Away.</li>
+   <li>Body systems: gas exchange in alveoli; diaphragm drives breathing; neurons carry signals; kidneys filter blood; starch digestion starts in the mouth.</li>
+   <li>Genetics: gene = unit of heredity; two different alleles = heterozygous. Antibiotics work on bacteria, never viruses.</li>
+   <li>Ecology: producers → consumers → decomposers; mutualism = both benefit.</li>
+  </ul>
+  <b>Earth &amp; space</b>
+  <ul>
+   <li>Rocks: igneous = cooled melt · sedimentary = pressed layers · metamorphic = heat + pressure. Quakes strike at plate boundaries.</li>
+   <li>Weather lives in the troposphere; cold fronts bring storms; cumulonimbus = thunderheads; barometer reads pressure.</li>
+   <li>Planet order: Mercury–Venus–Earth–Mars–(belt)–Jupiter (biggest)–Saturn–Uranus–Neptune. Moon phases = viewing angle of its lit half; tides = moon's gravity; light-year = distance.</li>
+  </ul>
+  <b>Physical science</b>
+  <ul>
+   <li>Water: freezes 0°C/32°F, boils 100°C/212°F at sea level. H₂O = 2 hydrogens + 1 oxygen; atomic number = protons; rows of the periodic table = periods.</li>
+   <li>pH: 7 neutral, below = acid, above = base. Rusting/burning = chemical change; melting/cutting = physical.</li>
+   <li>Sound needs a medium and is fastest in solids; pitch = frequency. Light: refraction bends at boundaries; radio = longest EM waves; UV burns skin. Like poles and like charges repel.</li>
+  </ul>`},
+ {code:"AR", name:"Arithmetic Reasoning", body:`
+  <b>Set-ups to know cold</b>
+  <ul>
+   <li>Percent: part = percent × whole. Discount price = original × (1 − rate); tax/markup = × (1 + rate). Percent change = difference ÷ <i>original</i>.</li>
+   <li>Simple interest: I = P × r × t.</li>
+   <li>Distance: d = r × t. Average speed = total distance ÷ total time — never the average of the two speeds.</li>
+   <li>Work together: add rates. 1/a + 1/b = 1/t; the answer is always less than the faster worker alone.</li>
+   <li>Ratio a:b with total T: each "part" = T ÷ (a + b).</li>
+   <li>Average: total = average × count. To find a needed score, compare totals.</li>
+   <li>Overtime: hours over 40 pay 1.5 × rate.</li>
+  </ul>
+  <b>Conversions</b>
+  <ul>
+   <li>12 in = 1 ft · 3 ft = 1 yd · 5,280 ft = 1 mi · 16 oz = 1 lb · 4 qt = 1 gal · dozen = 12.</li>
+   <li>Military time: subtract 12 from 1300+ (1830 → 6:30 p.m.).</li>
+  </ul>
+  <b>Habits</b>
+  <ul>
+   <li>Read what is actually asked (boys, not girls; total, not tip). Estimate first — one choice is usually close, two are traps from skipped steps.</li>
+  </ul>`},
+ {code:"WK", name:"Word Knowledge", body:`
+  <b>Prefixes</b>
+  <ul>
+   <li>bene- good · mal- bad · pre- before · post- after · sub- under · super- above · circum- around · trans- across · inter- between · anti- against · re- again · e/ex- out.</li>
+  </ul>
+  <b>Roots</b>
+  <ul>
+   <li>dict say · port carry · aud hear · vis/spect see · cred believe · fid trust · viv life · therm heat · chron time · luc/photo light · aqua water · man hand · ped foot · loqu speak · fort strong · nov new.</li>
+  </ul>
+  <b>Suffixes</b>
+  <ul>
+   <li>-able can be done · -ful full of · -less without · -ology study of · -ist one who.</li>
+  </ul>
+  <b>Strategy</b>
+  <ul>
+   <li>Break the word into parts, then check the "charge": does it feel positive or negative? Eliminate choices with the wrong charge.</li>
+   <li>Beware sound-alikes: negligent (careless) vs negligible (tiny) · imminent (about to happen) vs eminent (famous) · wary (cautious) vs weary (tired) · taut (tight) vs taught.</li>
+   <li>In sentence items, the context is the clue — substitute each choice into the sentence and keep the one that preserves the meaning.</li>
+  </ul>`},
+ {code:"PC", name:"Paragraph Comprehension", body:`
+  <b>The four question types</b>
+  <ul>
+   <li><i>Main idea</i>: what the whole passage argues. Usually stated in the first or last sentence; wrong answers are too narrow (one detail) or too broad.</li>
+   <li><i>Detail</i>: stated outright in the text. Find the line — the correct answer restates it in new words.</li>
+   <li><i>Inference</i>: not stated, but forced by what is. Pick the choice the passage supports, not the one you happen to agree with.</li>
+   <li><i>Vocabulary in context</i>: how the word is used <i>here</i>. Substitute each choice back into the sentence.</li>
+  </ul>
+  <b>Method</b>
+  <ul>
+   <li>Read the question first so you know your job, then read the passage looking for it.</li>
+   <li>Answer from the passage only. If you can't point to the sentence that proves your choice, it's probably a trap.</li>
+   <li>Watch for author's-purpose questions: is the writer informing, persuading, or warning? Tone words (praise, alarm, impatience) give it away.</li>
+  </ul>`},
+ {code:"MK", name:"Mathematics Knowledge", body:`
+  <b>Algebra</b>
+  <ul>
+   <li>PEMDAS. Negative exponent = reciprocal (2⁻³ = ⅛); anything⁰ = 1; xᵃ·xᵇ = xᵃ⁺ᵇ.</li>
+   <li>FOIL and factor: x² + (a+b)x + ab = (x + a)(x + b). A squared equation has two roots (±).</li>
+   <li>Inequalities work like equations, but flip the sign when multiplying or dividing by a negative.</li>
+   <li>Slope = rise/run; in y = mx + b, m is slope, b the y-intercept. Midpoint = averages; distance = √(Δx² + Δy²).</li>
+  </ul>
+  <b>Geometry</b>
+  <ul>
+   <li>Angles: straight line 180° · triangle 180° · quadrilateral 360° · polygon (n−2)×180 · complementary 90 · supplementary 180 · vertical angles equal.</li>
+   <li>Areas: rectangle lw · triangle ½bh · parallelogram bh · circle πr² (circumference 2πr). Volumes: box lwh · cylinder πr²h. Cube surface = 6s².</li>
+   <li>Pythagorean: a² + b² = c². Memorize 3-4-5, 5-12-13, 8-15-17 and their multiples.</li>
+  </ul>
+  <b>Numbers</b>
+  <ul>
+   <li>Divide fractions = multiply by reciprocal. 0.375 = ⅜ · 0.25 = ¼ · percent = ÷100. LCM = smallest shared multiple; GCF = largest shared factor. Probability = favorable ÷ total.</li>
+  </ul>`},
+ {code:"EI", name:"Electronics Information", body:`
+  <b>Units &amp; laws</b>
+  <ul>
+   <li>Volt = pressure · amp = current · ohm (Ω) = resistance · watt = power · hertz = frequency · farad = capacitance.</li>
+   <li>Ohm's law: E = I × R (voltage = current × resistance). Power: P = I × E, also P = I²R. Energy is billed in kilowatt-hours.</li>
+   <li>milli = 1/1000 · kilo = 1000 (500 mA = 0.5 A; 2 kΩ = 2000 Ω).</li>
+  </ul>
+  <b>Circuits</b>
+  <ul>
+   <li>Series: one path — same current everywhere, voltage divides, resistances add, one failure kills the circuit.</li>
+   <li>Parallel: full voltage on every branch, current divides, total resistance drops (two equal resistors → half), one failure leaves the rest running. Houses are wired parallel.</li>
+  </ul>
+  <b>Components</b>
+  <ul>
+   <li>Resistor opposes (zigzag symbol, color-band value) · capacitor stores charge · inductor stores in a magnetic field · diode = one-way valve (rectifiers make AC into DC; LED lights) · transistor amplifies or switches · transformer changes AC voltage by turns ratio · fuse/breaker opens on excess current · relay = magnet-operated switch.</li>
+   <li>Motor: electric → mechanical. Generator: mechanical → electric. U.S. outlets: 120 V, 60 Hz AC; black = hot, white = neutral, green/bare = ground. Voltmeter in parallel, ammeter in series.</li>
+  </ul>`},
+ {code:"AS", name:"Auto &amp; Shop", body:`
+  <b>Engine &amp; drivetrain</b>
+  <ul>
+   <li>Four strokes: intake → compression → power → exhaust. Gas engines spark (plug + coil); diesels ignite by compression.</li>
+   <li>Oil lubricates (dipstick checks level; 10W-30: W = winter rating). Coolant loop: thermostat → radiator. Battery 12 V; starter cranks; alternator recharges; ECU runs fuel and spark.</li>
+   <li>Exhaust order: manifold → catalytic converter (emissions) → muffler (noise) → tailpipe.</li>
+   <li>Power path: engine → clutch/transmission → driveshaft → differential (lets wheels corner at different speeds) → wheels. Springs carry the load; shocks stop the bounce; tie rods steer; pads squeeze rotors — spongy pedal = air in the lines.</li>
+  </ul>
+  <b>Shop tools by family</b>
+  <ul>
+   <li>Measure: tape, level (bubble), square, micrometer, calipers (inside + outside).</li>
+   <li>Cut: hacksaw = metal; crosscut/rip = wood; coping/jigsaw = curves; chisel struck by hammer.</li>
+   <li>Turn: Phillips = cross tip; box-end wrench grips all corners; socket + ratchet = speed; torque wrench = exact tightness.</li>
+   <li>Hold: vise, C-clamp, locking pliers. Shape: plane and rasp (wood), file (metal). Join: bolt + nut (removable), rivet (permanent), solder (electrical), weld (fuses the metal itself). Pilot hole stops splitting; punch stops bit wander; higher grit = finer sandpaper; galvanized = zinc-coated.</li>
+  </ul>`},
+ {code:"MC", name:"Mechanical Comprehension", body:`
+  <b>Formulas</b>
+  <ul>
+   <li>F = ma · work = force × distance (no motion, no work) · power = work ÷ time · torque = force × lever arm · pressure = force ÷ area · momentum = mass × velocity.</li>
+   <li>KE grows with speed² (double speed = 4×). PE = weight × height. Mass never changes; weight is gravity's pull.</li>
+   <li>Hydraulics (Pascal): pressure is equal everywhere, so force scales with piston area — small piston in, big piston out.</li>
+  </ul>
+  <b>Simple machines</b>
+  <ul>
+   <li>Lever MA = effort arm ÷ load arm; classes by what's in the middle: 1st fulcrum (seesaw), 2nd load (wheelbarrow), 3rd effort (tweezers, forearm).</li>
+   <li>Pulleys: MA = ropes supporting the load; fixed single pulley only redirects. Ramp/wedge/screw trade distance for force. Wheel &amp; axle: big wheel, less force.</li>
+   <li>Gears meshed = opposite directions and speed inverse to teeth (torque does the reverse); an idler restores direction; belts and chains keep direction.</li>
+  </ul>
+  <b>Principles</b>
+  <ul>
+   <li>Balanced moments: weight × distance equal on both sides. Net force zero = constant speed. Friction wastes work as heat (why efficiency &lt; 100%). Denser sinks; pressure grows with depth; heat expands metal; heat moves by conduction (touch), convection (flow), radiation.</li>
+  </ul>`},
+ {code:"AO", name:"Assembling Objects", body:`
+  <b>How to attack connector problems</b>
+  <ul>
+   <li>Check the <i>shapes</i> first: eliminate any choice that swaps in a different piece. That alone usually kills one or two options.</li>
+   <li>Then check each <i>dot</i>: the connection must touch each shape at the exact marked point — corner vs. edge vs. center matters.</li>
+   <li>Shapes may be rotated between the problem and the answer. Rotation is legal; changing the anchor point is not. Track a distinctive feature (the arrow's tip, the triangle's apex) through the rotation.</li>
+  </ul>
+  <b>Habits</b>
+  <ul>
+   <li>Work by elimination, not recognition — verify the survivor before you mark it.</li>
+   <li>These are speed points: every puzzle uses the same three tricks (wrong shape, wrong anchor, mirrored/rotated piece). Drill until spotting them is automatic.</li>
+  </ul>`}
+];
+
+const BANK = { GS: BANK_GS.concat(BANK_GS2), AR: BANK_AR.concat(BANK_AR2),
+               WK: BANK_WK.concat(BANK_WK2), PC: BANK_PC.concat(BANK_PC2),
+               MK: BANK_MK.concat(BANK_MK2), EI: BANK_EI.concat(BANK_EI2),
+               AS: BANK_AS.concat(BANK_AS2), MC: BANK_MC.concat(BANK_MC2),
+               AO: BANK_AO.concat(BANK_AO2) };
 const POOL_TOTAL = Object.keys(BANK).reduce((n, k) => n + BANK[k].length, 0);
 
 /* seconds per subtest, scaled from the paper version pace for 10 items */
@@ -1813,6 +2621,10 @@ function aoSVG(pairs, connect){
 /* ================= start screen ================= */
 (function initStart(){
   $('#stat-pool').textContent = POOL_TOTAL + '+';
+  const pn = $('#pool-n'); if (pn) pn.textContent = POOL_TOTAL;
+  $('#study-wrap').innerHTML = STUDY.map(s => `
+    <details class="study-d"><summary><span class="tcode">${s.code}</span> ${s.name}</summary>
+    <div class="study-b">${s.body}</div></details>`).join('');
   $('#blueprint-body').innerHTML = BLUEPRINT.map(b => `
     <tr class="${b.afqt ? '' : 'dim'}">
       <td><span class="tcode">${b.code}</span> &nbsp;${b.name}</td>
