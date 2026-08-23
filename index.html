@@ -1,0 +1,2219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ASVAB Practice Exam — Full Test Bank</title>
+<meta name="description" content="A free ASVAB practice exam drawing from 300+ original questions plus endlessly generated math items — randomized every sitting, with per-subtest timers, an answer sheet, and an AFQT score estimate.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#DCE1DC;
+  --card:#EFF2EE;
+  --card-2:#E4E9E4;
+  --ink:#16211D;
+  --ink-soft:#5A6862;
+  --ink-faint:#8B9691;
+  --form:#2C6A5B;
+  --form-tint:rgba(44,106,91,.16);
+  --graphite:#33383A;
+  --flag:#9E3524;
+  --rule:rgba(22,33,29,.18);
+  --sans:'Archivo',system-ui,sans-serif;
+  --serif:'Source Serif 4',Georgia,serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper);
+  background-image:repeating-linear-gradient(180deg,transparent 0 27px,rgba(44,106,91,.05) 27px 28px);
+  color:var(--ink);
+  font-family:var(--serif);
+  font-size:17px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.lbl,button,.code{font-family:var(--sans)}
+.lbl{
+  font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--form);
+}
+.mono{font-family:var(--mono)}
+:focus-visible{outline:2.5px solid var(--flag);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.hidden{display:none !important}
+
+/* ---------- masthead ---------- */
+.masthead{border-bottom:2px solid var(--ink);background:var(--card)}
+.masthead-in{max-width:1080px;margin:0 auto;padding:14px 20px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.mark{
+  font-family:var(--sans);font-weight:700;font-size:15px;letter-spacing:.2em;
+  border:2px solid var(--ink);padding:3px 8px;text-transform:uppercase;
+}
+.masthead .sub{font-family:var(--mono);font-size:12px;color:var(--ink-soft);letter-spacing:.04em}
+
+/* ---------- start screen ---------- */
+.hero{padding:56px 0 20px;border-bottom:1px solid var(--rule)}
+.hero h1{
+  font-size:clamp(34px,7vw,62px);line-height:.98;margin:14px 0 0;
+  font-weight:700;letter-spacing:-.02em;
+}
+.hero h1 em{font-style:normal;color:var(--form)}
+.hero p.lede{max-width:52ch;font-size:19px;margin:18px 0 0;color:var(--ink)}
+.stat-row{display:flex;gap:0;flex-wrap:wrap;margin:34px 0 0;border-top:1px solid var(--rule)}
+.stat{flex:1 1 130px;padding:14px 16px 14px 0;border-right:1px solid var(--rule)}
+.stat:last-child{border-right:0}
+.stat b{display:block;font-family:var(--mono);font-size:26px;font-weight:600;line-height:1}
+.stat span{display:block;font-family:var(--sans);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-top:5px}
+
+.section{padding:38px 0;border-bottom:1px solid var(--rule)}
+.section > .lbl{display:block;margin-bottom:16px}
+
+/* blueprint table */
+.blueprint{width:100%;border-collapse:collapse;font-size:14.5px}
+.blueprint th{
+  font-family:var(--sans);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+  text-align:left;color:var(--form);border-bottom:1.5px solid var(--form);padding:0 10px 7px 0;font-weight:700;
+}
+.blueprint td{padding:9px 10px 9px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+.blueprint td.c{font-family:var(--mono);font-size:13px;white-space:nowrap}
+.blueprint tr.dim{color:var(--ink-faint)}
+.tcode{
+  font-family:var(--mono);font-weight:600;font-size:12px;
+  border:1px solid var(--form);color:var(--form);padding:1px 5px;border-radius:2px;
+}
+
+/* mode cards */
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.mode{
+  text-align:left;background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--form);
+  padding:16px 16px 18px;cursor:pointer;font-family:var(--serif);font-size:16px;color:var(--ink);
+  border-radius:2px;transition:transform .12s ease,box-shadow .12s ease;
+}
+.mode:hover{transform:translateY(-2px);box-shadow:0 6px 0 -2px rgba(22,33,29,.13)}
+.mode h3{margin:6px 0 6px;font-size:19px;letter-spacing:-.01em}
+.mode p{margin:0;font-size:14.5px;color:var(--ink-soft);line-height:1.45}
+.mode .n{font-family:var(--mono);font-size:12px;color:var(--form);font-weight:600}
+
+.opt-row{display:flex;gap:22px;align-items:center;flex-wrap:wrap;margin-top:22px}
+.switch{display:inline-flex;align-items:center;gap:9px;cursor:pointer;font-size:15px}
+.switch input{width:17px;height:17px;accent-color:var(--form);cursor:pointer}
+.note{font-size:14px;color:var(--ink-soft);max-width:64ch}
+.note strong{color:var(--ink)}
+
+/* ---------- exam bar ---------- */
+.exambar{
+  position:sticky;top:0;z-index:40;background:var(--card);
+  border-bottom:2px solid var(--ink);
+}
+.exambar-in{max-width:1080px;margin:0 auto;padding:9px 20px;display:flex;align-items:center;gap:14px}
+.exambar .who{display:flex;align-items:baseline;gap:9px;min-width:0}
+.exambar .who h2{margin:0;font-size:16px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spacer{flex:1}
+.clock{
+  font-family:var(--mono);font-size:22px;font-weight:600;letter-spacing:.02em;
+  padding:2px 9px;border:1.5px solid var(--ink);border-radius:2px;line-height:1.25;
+}
+.clock.warn{border-color:var(--flag);color:var(--flag);background:rgba(158,53,36,.07)}
+.clock.off{border-style:dashed;color:var(--ink-faint);border-color:var(--ink-faint);font-size:13px;padding:6px 9px}
+.progbar{height:4px;background:var(--form-tint)}
+.progbar > i{display:block;height:100%;background:var(--form);width:0;transition:width .25s ease}
+
+/* ---------- exam layout ---------- */
+.exam-grid{display:grid;grid-template-columns:118px 1fr;gap:26px;padding:24px 0 60px;align-items:start}
+
+/* answer sheet rail — the signature element */
+.sheet{position:sticky;top:74px;border:1px solid var(--ink);background:var(--card);border-radius:2px;overflow:hidden}
+.sheet-h{
+  background:var(--ink);color:var(--card);padding:6px 8px;
+  font-family:var(--sans);font-size:9px;letter-spacing:.15em;text-transform:uppercase;font-weight:700;
+}
+.sheet-body{padding:7px 6px;max-height:calc(100vh - 150px);overflow:auto}
+.srow{display:flex;align-items:center;gap:3px;padding:2px 3px;border-radius:2px;cursor:pointer;border:none;background:none;width:100%}
+.srow:hover{background:var(--form-tint)}
+.srow.cur{background:var(--ink)}
+.srow.cur .snum{color:var(--card)}
+.snum{font-family:var(--mono);font-size:10px;width:15px;text-align:right;color:var(--ink-soft);flex:none}
+.bub{
+  width:15px;height:15px;border-radius:50%;border:1.3px solid var(--ink-faint);
+  font-family:var(--mono);font-size:8px;line-height:13px;text-align:center;color:var(--ink-faint);
+}
+.bub.on{background:var(--graphite);border-color:var(--graphite);color:transparent}
+.srow.flagged .snum{color:var(--flag);font-weight:600}
+.srow.flagged .snum::after{content:"›";margin-left:1px}
+.sheet-f{border-top:1px solid var(--rule);padding:7px 8px;font-family:var(--mono);font-size:10px;color:var(--ink-soft)}
+
+/* question card */
+.qcard{min-height:400px;background:var(--card);border:1px solid var(--rule);border-top:3px solid var(--form);border-radius:2px;padding:24px 26px 26px}
+.qhead{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.qnum{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--form)}
+.flagbtn{
+  margin-left:auto;background:none;border:1px solid var(--rule);border-radius:2px;cursor:pointer;
+  font-family:var(--sans);font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;
+  padding:4px 9px;color:var(--ink-soft);
+}
+.flagbtn[aria-pressed="true"]{background:var(--flag);border-color:var(--flag);color:#fff}
+.passage{
+  background:var(--card-2);border-left:3px solid var(--form);padding:14px 18px;margin:0 0 20px;
+  font-size:16.5px;line-height:1.62;
+}
+.passage .lbl{display:block;margin-bottom:6px}
+.stem{font-size:19px;line-height:1.5;margin:0 0 20px}
+.stem .kw{border-bottom:2px solid var(--form);padding-bottom:1px;font-weight:600}
+.choices{display:flex;flex-direction:column;gap:9px}
+.choice{
+  display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;
+  background:var(--card-2);border:1px solid var(--rule);border-radius:2px;padding:11px 14px;
+  font-family:var(--serif);font-size:17px;color:var(--ink);cursor:pointer;line-height:1.45;
+  transition:border-color .1s ease,background .1s ease;
+}
+.choice:hover{border-color:var(--form)}
+.choice .k{
+  flex:none;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--ink-faint);
+  font-family:var(--mono);font-size:11px;line-height:19px;text-align:center;color:var(--ink-soft);margin-top:1px;
+}
+.choice[aria-checked="true"]{border-color:var(--ink);background:var(--card);box-shadow:inset 0 0 0 1px var(--ink)}
+.choice[aria-checked="true"] .k{background:var(--graphite);border-color:var(--graphite);color:transparent}
+.choice.right{border-color:var(--form);background:rgba(44,106,91,.12)}
+.choice.right .k{background:var(--form);border-color:var(--form);color:#fff}
+.choice.wrong{border-color:var(--flag);background:rgba(158,53,36,.09)}
+.choice.wrong .k{background:var(--flag);border-color:var(--flag);color:#fff}
+
+.navrow{display:flex;gap:10px;margin-top:22px;align-items:center;flex-wrap:wrap}
+.btn{
+  font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+  padding:11px 20px;border-radius:2px;cursor:pointer;border:1.5px solid var(--ink);background:none;color:var(--ink);
+}
+.btn:hover{background:rgba(22,33,29,.07)}
+.btn.solid{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.solid:hover{background:#000}
+.btn.form{background:var(--form);border-color:var(--form);color:#fff}
+.btn.form:hover{background:#235448}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.ghost{border-color:var(--rule);color:var(--ink-soft)}
+.hint{font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin-left:auto}
+
+/* assembling objects svg */
+.ao-svg{width:100%;max-width:290px;height:auto;display:block}
+.ao-frame{border:1px solid var(--rule);background:var(--card-2);padding:10px;border-radius:2px;margin-bottom:18px}
+.ao-shape{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.ao-line{stroke:var(--ink);stroke-width:1.6}
+.ao-dot{fill:var(--flag)}
+.choices.ao-choices{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.choices.ao-choices .choice{flex-direction:column;align-items:stretch;gap:6px;padding:10px}
+.choices.ao-choices .choice .k{margin:0}
+
+/* ---------- results ---------- */
+.report{background:var(--card);border:2px solid var(--ink);border-radius:2px;margin:30px 0;overflow:hidden}
+.report-h{background:var(--ink);color:var(--paper);padding:12px 20px;display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.report-h .t{font-family:var(--sans);font-size:13px;letter-spacing:.18em;text-transform:uppercase;font-weight:700}
+.report-h .d{font-family:var(--mono);font-size:11px;opacity:.75}
+.afqt{display:flex;gap:26px;padding:24px 20px;border-bottom:1px solid var(--rule);flex-wrap:wrap;align-items:center}
+.afqt .big{font-family:var(--mono);font-size:70px;font-weight:600;line-height:.85;color:var(--form)}
+.afqt .big sup{font-size:20px;vertical-align:super;font-weight:500}
+.afqt .meta{flex:1 1 240px;min-width:0}
+.afqt .meta h3{margin:0 0 4px;font-size:20px}
+.afqt .meta p{margin:0;font-size:14.5px;color:var(--ink-soft)}
+.workings{font-family:var(--mono);font-size:12px;color:var(--ink-soft);padding:0 20px 20px;line-height:1.9}
+.workings b{color:var(--ink)}
+.scoretab{width:100%;border-collapse:collapse;font-size:15px}
+.scoretab th{font-family:var(--sans);font-size:10px;letter-spacing:.13em;text-transform:uppercase;text-align:left;color:var(--form);padding:10px 12px;border-bottom:1.5px solid var(--form);font-weight:700}
+.scoretab td{padding:9px 12px;border-bottom:1px solid var(--rule)}
+.scoretab td.c{font-family:var(--mono);font-size:13.5px;text-align:right;white-space:nowrap}
+.scoretab tr.afqt-part td:first-child{border-left:3px solid var(--form)}
+.afqt-mark{font-family:var(--sans);font-size:9px;letter-spacing:.12em;font-weight:700;color:var(--form);border:1px solid var(--form);padding:1px 4px;border-radius:2px;margin-left:6px;vertical-align:1px}
+.bar{height:8px;background:var(--form-tint);border-radius:1px;min-width:70px;position:relative}
+.bar > i{display:block;height:100%;background:var(--form);border-radius:1px}
+.bar.low > i{background:var(--flag)}
+
+.reviewq{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--form);border-radius:2px;padding:16px 18px;margin-bottom:12px}
+.reviewq.miss{border-left-color:var(--flag)}
+.reviewq .rh{display:flex;gap:10px;align-items:baseline;margin-bottom:8px}
+.reviewq .rh .mono{font-size:11px;color:var(--ink-soft)}
+.tag{font-family:var(--sans);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:700;padding:2px 7px;border-radius:2px}
+.tag.ok{background:var(--form);color:#fff}
+.tag.no{background:var(--flag);color:#fff}
+.tag.skip{background:var(--ink-faint);color:#fff}
+.why{font-size:15px;color:var(--ink-soft);margin:10px 0 0;padding-top:10px;border-top:1px dashed var(--rule)}
+.why b{color:var(--ink);font-family:var(--sans);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.filterrow{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 20px}
+.chip{
+  font-family:var(--sans);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;
+  padding:6px 12px;border:1px solid var(--rule);background:var(--card);border-radius:2px;cursor:pointer;color:var(--ink-soft);
+}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+footer{padding:34px 0 60px;font-size:13.5px;color:var(--ink-soft);line-height:1.6}
+footer .lbl{display:block;margin-bottom:8px}
+footer a{color:var(--form)}
+
+@media (max-width:760px){
+  body{font-size:16px}
+  .exam-grid{grid-template-columns:1fr;gap:14px;padding-top:14px}
+  .sheet{position:static}
+  .sheet-body{max-height:none;display:flex;gap:5px;overflow-x:auto;padding:8px}
+  .srow{width:auto;flex-direction:column;gap:2px;flex:none;padding:3px 4px}
+  .srow .bub{width:12px;height:12px;line-height:10px;font-size:7px}
+  .qcard{padding:18px 16px 20px;min-height:0}
+  .stem{font-size:17.5px}
+  .afqt .big{font-size:54px}
+  .hint{display:none}
+}
+@media (max-width:520px){
+  #ex-count{display:none}
+  .masthead-in{padding:10px 16px;gap:9px}
+  .masthead .sub{font-size:10px}
+  .exambar-in{gap:9px;padding:8px 16px}
+  .clock{font-size:19px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none !important;animation:none !important}
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-in">
+    <span class="mark">ASVAB</span>
+    <span class="sub">PRACTICE EXAM · 9 SUBTESTS · NEW DRAW EVERY SITTING</span>
+  </div>
+</header>
+
+<!-- ============ START ============ -->
+<main id="screen-start">
+  <div class="wrap">
+    <section class="hero">
+      <span class="lbl">Armed Services Vocational Aptitude Battery</span>
+      <h1>Sit the whole test.<br>Then find out <em>where you actually stand.</em></h1>
+      <p class="lede">Nine timed subtests, an answer sheet that fills in as you go, and a score report that shows how the AFQT number is built from your verbal and math results. Every sitting is a fresh random draw from an original bank — plus math and shape items generated on the spot — so no two exams are alike.</p>
+      <div class="stat-row">
+        <div class="stat"><b id="stat-pool">300+</b><span>Question pool</span></div>
+        <div class="stat"><b>9</b><span>Subtests</span></div>
+        <div class="stat"><b>62</b><span>Minutes</span></div>
+        <div class="stat"><b>4</b><span>Count toward AFQT</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <span class="lbl">Choose a test</span>
+      <div class="modes">
+        <button class="mode" data-mode="full">
+          <span class="n">90 items · 62 min</span>
+          <h3>Full ASVAB</h3>
+          <p>All nine subtests in the order the real test gives them, drawn fresh from the bank every time. The complete picture, including the job-qualification subtests.</p>
+        </button>
+        <button class="mode" data-mode="afqt">
+          <span class="n">40 items · 34 min</span>
+          <h3>AFQT only</h3>
+          <p>Arithmetic Reasoning, Word Knowledge, Paragraph Comprehension, Mathematics Knowledge — the four that decide whether you can enlist.</p>
+        </button>
+        <button class="mode" data-mode="single">
+          <span class="n">10 items · 3–12 min</span>
+          <h3>One subtest</h3>
+          <p>Drill a single area. Pick it after you press start.</p>
+        </button>
+      </div>
+      <div class="opt-row">
+        <label class="switch"><input type="checkbox" id="opt-timer" checked> Timed, like the real test</label>
+        <label class="switch"><input type="checkbox" id="opt-shuffle" checked> Shuffle question order</label>
+      </div>
+    </section>
+
+    <section class="section" id="pick-subtest" style="display:none">
+      <span class="lbl">Which subtest?</span>
+      <div class="modes" id="subtest-modes"></div>
+    </section>
+
+    <section class="section">
+      <span class="lbl">What's on the real test</span>
+      <table class="blueprint">
+        <thead><tr><th>Subtest</th><th>Paper version</th><th>CAT version</th><th>Content</th></tr></thead>
+        <tbody id="blueprint-body"></tbody>
+      </table>
+      <p class="note" style="margin-top:14px">Rows in grey aren't part of the AFQT — they set which <strong>jobs</strong> you qualify for, not whether you can enlist. This practice exam uses 10 questions per subtest with the time limits scaled down to match the paper version's pace. Each sitting draws those 10 from a much larger pool — and this browser remembers what you’ve seen, serving unseen questions first — so retakes stay fresh.</p>
+    </section>
+
+    <section class="section">
+      <span class="lbl">How the AFQT is built</span>
+      <p class="note">Word Knowledge and Paragraph Comprehension are added together and converted to a single <strong>Verbal Expression (VE)</strong> score. Then: <span class="mono" style="color:var(--ink)">raw AFQT = 2 × VE + Arithmetic Reasoning + Mathematics Knowledge</span>. That raw number is converted to a percentile from 1 to 99 — a 50 means you did as well as or better than half of the reference group. Categories run from I (93–99) down to V (1–9); most services want Category IIIA or higher, and applicants without a high school diploma need at least 31.</p>
+    </section>
+
+    <footer>
+      <span class="lbl">About these questions</span>
+      Every question here is original, written for this site — a bank of 310 written items, plus arithmetic, algebra and shape questions generated with fresh numbers on every run. They follow the published ASVAB format and content areas but are not taken from any copyrighted test-prep book or from the actual ASVAB, which is a controlled Department of Defense test. Score estimates are unofficial — only a real ASVAB administered at a MEPS or MET site produces a score the military will use.
+    </footer>
+  </div>
+</main>
+
+<!-- ============ EXAM ============ -->
+<div id="screen-exam" class="hidden">
+  <div class="exambar">
+    <div class="exambar-in">
+      <div class="who">
+        <span class="tcode" id="ex-code">GS</span>
+        <h2 id="ex-name">General Science</h2>
+      </div>
+      <div class="spacer"></div>
+      <span class="mono" id="ex-count" style="font-size:12px;color:var(--ink-soft)"></span>
+      <div class="clock" id="ex-clock">00:00</div>
+    </div>
+    <div class="progbar"><i id="ex-prog"></i></div>
+  </div>
+  <div class="wrap">
+    <div class="exam-grid">
+      <aside class="sheet">
+        <div class="sheet-h">Answer sheet</div>
+        <div class="sheet-body" id="sheet-body"></div>
+        <div class="sheet-f" id="sheet-f">0 / 10</div>
+      </aside>
+      <div>
+        <div class="qcard" id="qcard"></div>
+        <div class="navrow">
+          <button class="btn" id="btn-prev">← Back</button>
+          <button class="btn solid" id="btn-next">Next →</button>
+          <button class="btn form hidden" id="btn-finish">Finish subtest</button>
+          <button class="btn ghost" id="btn-quit">End exam</button>
+          <span class="hint">keys: A–D · ← → · F to flag</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ RESULTS ============ -->
+<div id="screen-results" class="hidden">
+  <div class="wrap" id="results-body"></div>
+</div>
+<script>
+/* =====================================================================
+   ASVAB PRACTICE EXAM — question bank
+   Every item is original, written for this site. Format and content
+   areas follow the published ASVAB blueprint (DoD); no questions are
+   reproduced from any test-prep publication or from the live ASVAB.
+   The bank below holds 310 written items; on top of that, arithmetic,
+   algebra/geometry and assembling-objects items are GENERATED with
+   fresh random numbers on every sitting, so no two exams repeat.
+   ===================================================================== */
+
+const BLUEPRINT = [
+  {
+    "code": "GS",
+    "name": "General Science",
+    "paper": "25 q · 11 min",
+    "cat": "15 q · 12 min",
+    "content": "Life, earth and physical science"
+  },
+  {
+    "code": "AR",
+    "name": "Arithmetic Reasoning",
+    "paper": "30 q · 36 min",
+    "cat": "15 q · 55 min",
+    "content": "Word problems requiring calculation",
+    "afqt": true
+  },
+  {
+    "code": "WK",
+    "name": "Word Knowledge",
+    "paper": "35 q · 11 min",
+    "cat": "15 q · 9 min",
+    "content": "Word meanings and synonyms",
+    "afqt": true
+  },
+  {
+    "code": "PC",
+    "name": "Paragraph Comprehension",
+    "paper": "15 q · 13 min",
+    "cat": "10 q · 27 min",
+    "content": "Reading short passages",
+    "afqt": true
+  },
+  {
+    "code": "MK",
+    "name": "Mathematics Knowledge",
+    "paper": "25 q · 24 min",
+    "cat": "15 q · 31 min",
+    "content": "Algebra and geometry",
+    "afqt": true
+  },
+  {
+    "code": "EI",
+    "name": "Electronics Information",
+    "paper": "20 q · 9 min",
+    "cat": "15 q · 10 min",
+    "content": "Circuits, current and components"
+  },
+  {
+    "code": "AS",
+    "name": "Auto & Shop Information",
+    "paper": "25 q · 11 min",
+    "cat": "20 q · 14 min",
+    "content": "Vehicles, tools and shop practice"
+  },
+  {
+    "code": "MC",
+    "name": "Mechanical Comprehension",
+    "paper": "25 q · 19 min",
+    "cat": "15 q · 22 min",
+    "content": "Levers, gears and physical principles"
+  },
+  {
+    "code": "AO",
+    "name": "Assembling Objects",
+    "paper": "25 q · 15 min",
+    "cat": "15 q · 18 min",
+    "content": "Spatial orientation"
+  }
+];
+
+const PASSAGES = {
+  p1:"A topographic map shows more than distance. Its contour lines join points that sit at the same elevation, so a hiker who learns to read them can tell a gentle slope from a cliff face without ever setting foot on the ground. Lines packed tightly together mean the land rises sharply; lines spread far apart mean the ground is close to flat. A closed loop usually marks a hilltop — unless small tick marks point inward along the loop, which instead marks a depression. None of that information appears in a photograph taken from directly overhead, which is one reason search teams still carry paper contour maps even when satellite images are available to them.",
+  p2:"Workers who rotate between day and night shifts often say they never feel rested, even on the weeks when they manage a full eight hours of sleep. The trouble is not the quantity of the sleep but its timing. The body runs on an internal clock that expects darkness at roughly the same hour each night, and that clock resets slowly — by about one hour per day. A worker who flips from days to nights every week is therefore asking the body to finish an adjustment that the next schedule change will interrupt. Employers who rotate shifts forward, from mornings to evenings to nights, and who leave several weeks between changes, report fewer errors on the job.",
+  p3:"Clear water is not the same thing as safe water. A stream running fast and cold over rock can look spotless and still carry organisms that will cost a traveler three days. Boiling is still the most dependable field treatment: holding water at a rolling boil for one minute kills nearly everything that makes people sick. Chemical tablets weigh almost nothing, but they act slowly in cold water and have little effect on certain parasites. Filters strain out sediment and most organisms, yet viruses are small enough to pass straight through the pores. Experienced travelers in questionable country therefore filter first and then treat the filtered water a second time.",
+  p4:"An apprenticeship trades time for training. The apprentice accepts a reduced wage for two to five years while working beside people who already know the trade, and walks away with a recognized credential and no tuition debt. Critics say the arrangement can lock a young worker into one trade before they have any real idea whether they want it. Supporters answer that a four-year degree makes exactly the same demand, and costs a great deal more to walk away from.",
+  p5:"Machines rarely fail without warning; they fail after warnings that nobody acted on. A belt that squeals on cold mornings, a filter that has darkened, a fitting that weeps a drop of oil a day — each is cheap to fix the week it appears. Deferred, the squealing belt snaps on the highway, the starved engine overheats, and the repair that would have cost twenty dollars now costs two thousand and a week of downtime. This is the logic of preventive maintenance: inspect on a schedule, replace parts at fixed intervals whether they look worn or not, and write down what was done. The written record matters as much as the wrench work, because the next mechanic cannot maintain what she does not know about.",
+  p6:"Heat exhaustion announces itself quietly. Long before a worker collapses, the body sends signals: a headache, unusual fatigue, clumsiness on tasks that were easy an hour before. Supervisors are trained to watch for those signs in others because people are poor judges of their own condition — by the time a person feels seriously thirsty, dehydration is already well underway. The standard defense is boring and effective: drink small amounts of water on a fixed schedule rather than waiting for thirst, take rest breaks in shade, and slow the pace on the first hot days of the season, before the body has adjusted to working in heat.",
+  p7:"A compass needle does not point at the North Pole. It points at magnetic north, a spot in the Canadian Arctic that drifts from year to year, and the angle between the two norths — called declination — depends on where you stand. In parts of the western United States the difference exceeds fifteen degrees. A navigator who ignores it and walks a fifteen-degree error across ten miles will miss the objective by more than two miles. Good maps print the local declination in the margin, and most field compasses have an adjustment screw so the correction can be set once and then forgotten.",
+  p8:"Students preparing for a test tend to choose the study method that feels most productive: reading the material one more time, in one long session, the night before. Decades of memory research say that feeling is misleading. Information reviewed in several short sessions spread across days is retained far longer than the same information crammed into one sitting, and testing yourself — closing the book and trying to answer questions — strengthens memory more than rereading ever does. The catch is that spaced practice and self-testing feel harder and less fluent than rereading, so students abandon the methods that work in favor of the one that merely feels like it works.",
+  p9:"The grooves in a tire are not decoration; they are drains. On wet pavement, the tread channels water out from under the contact patch so the rubber can grip the road surface. As tread wears shallow, the channels move less water, and at highway speed a worn tire can ride up on the film of water entirely — a skid called hydroplaning, in which steering and braking stop working because the tire is no longer touching the road. One rough field check uses a penny: insert it into the groove with Lincoln's head pointing down, and if the top of the head stays visible, the tread is too shallow for safe wet driving.",
+  p10:"Beginning next month, the library will stop charging daily fines on overdue books. Readers should not mistake this for permission to keep them. Borrowed items will still come due in three weeks, reminders will still arrive by email, and an account with an item more than thirty days late will still be blocked from borrowing until the item comes back. What changes is only the dime-a-day penalty, which years of our own records show did little to speed returns while doing a great deal to keep low-income families from using the library at all. We are trading a fee that punished the wrong people for a rule that simply pauses service until the shelves are made whole.",
+  p11:"Sailors and riggers prize the bowline because it solves the central problem of knots: a knot must hold under load, yet come apart when the work is done. The bowline forms a fixed loop that will not slip no matter how hard the line is pulled, but once the tension is released, it unties with a push of the thumb even after hauling a heavy load — where a simple overhand loop would have welded itself shut. Its one weakness is the mirror image of its strength: with no load on the line, a bowline can gradually shake itself loose, so it is the wrong choice for a line that will be jerked and slackened over and over.",
+  p12:"A paycheck that arrives twice a month has a way of disappearing a few dollars at a time. The oldest fix is still the most reliable: decide where the money goes before it arrives. Service members can set up an allotment that moves a fixed sum from each paycheck into savings automatically, before the balance ever reaches the spending account. People who rely on willpower instead — planning to save whatever is left at the end of the month — reliably discover that nothing is left. The allotment method works not because the saver is disciplined but because it removes the need for discipline; the decision is made once, and the system carries it out every payday after that."
+};
+const BANK_PC = [
+ {p:"p1",q:"According to the passage, contour lines packed tightly together indicate",
+  c:["a marked trail.","flat ground.","a depression.","steeply rising ground."],a:3,
+  why:"The passage says lines packed tightly together mean the land rises sharply, and lines spread far apart mean nearly flat ground."},
+ {p:"p1",q:"The passage suggests that an overhead photograph is less useful than a contour map because it",
+  c:["is harder to fold and carry.","is not available to search teams.","does not show elevation.","cannot show vegetation."],a:2,
+  why:"The last sentence states that the elevation information does not appear in a photograph taken from directly overhead, which is why paper contour maps are still carried."},
+ {p:"p1",q:"A closed loop with small tick marks pointing inward represents",
+  c:["a hilltop.","a depression.","a lake.","a road junction."],a:1,
+  why:"The passage notes that a closed loop usually marks a hilltop, unless inward tick marks appear — in which case it marks a depression."},
+ {p:"p2",q:"The main idea of the passage is that",
+  c:["shift workers need more than eight hours of sleep.","when a person sleeps matters, not just how long.","night work should be eliminated.","internal clocks cannot be changed at all."],a:1,
+  why:"The second sentence states the point directly: the trouble is not the quantity of sleep but its timing. Everything after that supports it."},
+ {p:"p2",q:"According to the passage, the body’s internal clock resets at a rate of about",
+  c:["one hour per day.","one hour per week.","eight hours per day.","three hours per day."],a:0,
+  why:"The passage gives the figure directly — roughly one hour per day, which is why a weekly flip never finishes adjusting."},
+ {p:"p2",q:"The passage indicates that employers can reduce on-the-job errors by",
+  c:["rotating shifts forward and less frequently.","rotating shifts backward more often.","shortening every shift.","letting workers choose their own hours."],a:0,
+  why:"The final sentence credits fewer errors to rotating forward — mornings to evenings to nights — with several weeks between changes."},
+ {p:"p3",q:"According to the passage, filters are limited because",
+  c:["they clog in cold water.","they remove useful minerals.","viruses can pass through them.","they work only on clear water."],a:2,
+  why:"The passage says filters strain out sediment and most organisms, but viruses are small enough to pass straight through the pores."},
+ {p:"p3",q:"The passage is mainly concerned with",
+  c:["comparing the weight of camping equipment.","arguing that chemical tablets should not be used.","describing illnesses caused by parasites.","showing that appearance is a poor guide to whether water is safe."],a:3,
+  why:"It opens and closes on that idea: clear water is not the same as safe water, and the treatment methods are described to make the point."},
+ {p:"p4",q:"As used in the passage, <span class=\"kw\">credential</span> most nearly means",
+  c:["a recognized qualification.","a recommendation letter.","a debt.","a probationary period."],a:0,
+  why:"The apprentice leaves with a credential and no tuition debt — it is set against the degree, so it names something that proves qualification."},
+ {p:"p4",q:"In this passage the author",
+  c:["argues that apprenticeships are always the better choice.","presents an objection to apprenticeships and a reply to it.","recommends a four-year degree instead.","describes how apprentice wages are calculated."],a:1,
+  why:"The last two sentences give the critics’ objection and then the supporters’ answer. The author reports both without settling the question."},
+ {p:"p5",q:"The main idea of the passage is that",
+  c:["machines fail without any warning.","small problems fixed early prevent large failures later.","repairs should be left to professional mechanics.","new machines need less maintenance than old ones."],a:1,
+  why:"The passage’s examples all follow one arc: a cheap fix ignored becomes an expensive failure. The first sentence sets it up — machines fail after warnings nobody acted on."},
+ {p:"p5",q:"As used in the passage, <span class=\"kw\">deferred</span> most nearly means",
+  c:["repaired.","postponed.","inspected.","forgotten."],a:1,
+  why:"The sentence contrasts fixing a problem the week it appears with deferring it — putting it off — until it becomes a breakdown."},
+ {p:"p5",q:"According to the passage, the written maintenance record matters because",
+  c:["it is required by law.","it proves the mechanic worked the full shift.","a later mechanic cannot maintain what she does not know about.","it lowers the cost of replacement parts."],a:2,
+  why:"The final sentence states this directly: the record work matters as much as the wrench work, for exactly that reason."},
+ {p:"p6",q:"According to the passage, supervisors are trained to watch workers for early signs of heat exhaustion because",
+  c:["workers hide their symptoms to avoid losing pay.","people judge their own condition poorly.","the signs appear only to a trained eye.","supervisors are legally responsible for injuries."],a:1,
+  why:"The passage says people are poor judges of their own condition — by the time they feel very thirsty, dehydration is already advanced."},
+ {p:"p6",q:"The passage recommends drinking water",
+  c:["only when thirst becomes strong.","in large amounts at the end of the day.","on a fixed schedule in small amounts.","only during rest breaks in shade."],a:2,
+  why:"Because thirst arrives late, the passage’s standard defense is small amounts on a fixed schedule rather than waiting for thirst."},
+ {p:"p6",q:"Which of these is listed in the passage as an early signal of heat exhaustion?",
+  c:["Collapse","Clumsiness at familiar tasks","Rapid weight loss","Refusing to take breaks"],a:1,
+  why:"The early signals listed are a headache, unusual fatigue and clumsiness on tasks that were easy an hour before. Collapse is what the signals precede."},
+ {p:"p7",q:"As described in the passage, declination is",
+  c:["the drifting of the North Pole.","the angle between true north and magnetic north.","a defect in inexpensive compasses.","the distance between two map points."],a:1,
+  why:"The passage defines it in the second sentence: the angle between the two norths, which depends on where you stand."},
+ {p:"p7",q:"The passage implies that a navigator who ignores declination on a long march will",
+  c:["walk in a complete circle.","arrive well to one side of the objective.","be unable to read the map’s margin.","move faster than one who corrects for it."],a:1,
+  why:"The example: a fifteen-degree error across ten miles misses the objective by more than two miles — off to the side, not in circles."},
+ {p:"p8",q:"The main idea of the passage is that",
+  c:["the most effective study methods do not feel like the most effective ones.","students should study the night before a test.","memory research is unreliable.","rereading is the best way to prepare for a test."],a:0,
+  why:"The passage sets up the contrast in the first two sentences and closes on it: spaced practice and self-testing work better but feel worse, so students abandon them."},
+ {p:"p8",q:"According to the passage, which method strengthens memory the most?",
+  c:["Reading the material one more time","One long session the night before","Closing the book and answering questions from memory","Highlighting important sentences"],a:2,
+  why:"The passage says testing yourself strengthens memory more than rereading ever does."},
+ {p:"p8",q:"According to the passage, students abandon spaced practice because it",
+  c:["takes more total hours than cramming.","feels harder and less fluent than rereading.","requires a study partner.","is not described in their textbooks."],a:1,
+  why:"The catch, per the passage, is that the effective methods feel harder and less fluent — so students choose the method that merely feels productive."},
+ {p:"p9",q:"According to the passage, the purpose of tire tread is to",
+  c:["cushion the ride on rough pavement.","channel water out from under the tire.","reduce noise at highway speed.","protect the wheel from curb damage."],a:1,
+  why:"The passage calls the grooves drains: they move water away so the rubber can grip wet pavement."},
+ {p:"p9",q:"In the penny test described, the tread is too shallow if",
+  c:["the top of Lincoln’s head remains visible.","the penny will not fit into the groove.","Lincoln’s head disappears completely.","the penny falls over."],a:0,
+  why:"With the head pointing down, tread deep enough should cover part of the head. Seeing the top of the head means the groove is shallow."},
+ {p:"p10",q:"The author’s main purpose in this passage is to",
+  c:["announce a policy change and correct a likely misreading of it.","apologize for years of unfair fines.","encourage readers to donate to the library.","explain how to renew a borrowed book."],a:0,
+  why:"The first two sentences do both jobs: fines are ending, and readers should not mistake this for permission to keep books. The rest explains what stays the same and why."},
+ {p:"p10",q:"Under the new policy, an account is blocked from borrowing when an item is",
+  c:["one day overdue.","seven days overdue.","more than thirty days late.","reported lost."],a:2,
+  why:"The passage keeps the block for items more than thirty days late — the deadline and reminders continue; only the daily fee ends."},
+ {p:"p11",q:"According to the passage, the bowline’s chief virtue is that it",
+  c:["can be tied with one hand.","tightens further as the load increases.","holds firmly under load yet unties easily afterward.","works well on a line that is repeatedly jerked and slackened."],a:2,
+  why:"The passage frames the central problem of knots — hold under load, come apart when done — and credits the bowline with solving it. The last sentence rules out the jerked-and-slackened line."},
+ {p:"p11",q:"The passage says a bowline is the wrong choice when",
+  c:["the load is very heavy.","the line will be loaded and slackened repeatedly.","the rope is wet.","the loop must not slip."],a:1,
+  why:"Its weakness is the mirror of its strength: unloaded, it can shake loose, so repeated jerk-and-slack cycles are the danger case."},
+ {p:"p12",q:"The main idea of the passage is that",
+  c:["saving works best when it happens automatically, before money can be spent.","service members are paid twice a month.","willpower is the key to building savings.","spending accounts should be closed."],a:0,
+  why:"The passage’s fix is deciding where money goes before it arrives — the allotment moves savings out automatically, removing the need for discipline."},
+ {p:"p12",q:"According to the passage, people who plan to save whatever is left at month’s end typically find that",
+  c:["they save more than planned.","nothing is left to save.","their paychecks arrive late.","the bank charges extra fees."],a:1,
+  why:"The passage says those who rely on willpower reliably discover that nothing is left."},
+ {p:"p12",q:"The author states that the allotment method works because it",
+  c:["earns higher interest.","removes the need for discipline.","is required by regulation.","hides money from the account holder."],a:1,
+  why:"The passage is explicit: it works not because the saver is disciplined but because the one-time decision removes the need for discipline."}
+];
+
+const BANK_GS = [
+ {q:"Which component of blood carries oxygen to the body’s tissues?",
+  c:["Platelets","Plasma","White blood cells","Red blood cells"],a:3,
+  why:"Red blood cells contain hemoglobin, which picks up oxygen in the lungs and releases it in the tissues. Platelets form clots, white cells fight infection, and plasma is the liquid the cells travel in."},
+ {q:"During photosynthesis, plants convert light energy into",
+  c:["chemical energy stored in sugar.","nitrogen gas.","heat only.","mechanical energy."],a:0,
+  why:"Photosynthesis uses light, water and carbon dioxide to build glucose. The energy from the light ends up stored in the chemical bonds of that sugar."},
+ {q:"At sea level, pure water boils at approximately",
+  c:["90°C.","100°C.","110°C.","120°C."],a:1,
+  why:"100°C (212°F) at standard sea-level pressure. At higher altitude the pressure is lower, so water boils below 100°C."},
+ {q:"Which planet orbits closest to the sun?",
+  c:["Venus","Earth","Mercury","Mars"],a:2,
+  why:"The order outward is Mercury, Venus, Earth, Mars. Venus is hotter than Mercury because of its thick atmosphere, but it is not closer."},
+ {q:"An animal that maintains a constant internal body temperature regardless of its surroundings is described as",
+  c:["cold-blooded.","invertebrate.","warm-blooded.","nocturnal."],a:2,
+  why:"Warm-blooded (endothermic) animals — mammals and birds — regulate their own temperature. Cold-blooded animals take on the temperature of their environment."},
+ {q:"The basic unit of heredity is the",
+  c:["gene.","ribosome.","chromosome.","enzyme."],a:0,
+  why:"A gene is a segment of DNA that codes for a trait. Chromosomes are the larger structures that carry many genes."},
+ {q:"Igneous rock forms when",
+  c:["existing rock is changed by heat and pressure.","layers of sediment are compressed.","molten rock cools and hardens.","shells collect on the sea floor."],a:2,
+  why:"Igneous comes from the Latin for fire. Compressed sediment gives sedimentary rock; heat and pressure on existing rock gives metamorphic rock."},
+ {q:"The chemical symbol K represents",
+  c:["krypton.","calcium.","carbon.","potassium."],a:3,
+  why:"K comes from kalium, the Latin name for potassium. Krypton is Kr, calcium is Ca, and carbon is C."},
+ {q:"Which cell structure contains the cell’s DNA?",
+  c:["The mitochondrion","The nucleus","The cell membrane","The cytoplasm"],a:1,
+  why:"The nucleus houses the chromosomes. Mitochondria produce energy, the membrane controls what enters and leaves, and cytoplasm is the fluid filling the cell."},
+ {q:"Sound travels fastest through",
+  c:["a vacuum.","air.","water.","steel."],a:3,
+  why:"Sound needs a medium, and it moves fastest where particles are packed most tightly — so solids beat liquids, which beat gases. In a vacuum sound does not travel at all."},
+ {q:"The largest organ of the human body is the",
+  c:["liver.","skin.","brain.","heart."],a:1,
+  why:"The skin is an organ — the body’s largest — serving as a barrier against infection, water loss and temperature swings. The liver is the largest internal organ."},
+ {q:"Which gas makes up most of Earth’s atmosphere?",
+  c:["Oxygen","Carbon dioxide","Nitrogen","Hydrogen"],a:2,
+  why:"The atmosphere is about 78% nitrogen and 21% oxygen. Carbon dioxide is less than one-tenth of one percent."},
+ {q:"A solution with a pH of 2 is best described as",
+  c:["strongly acidic.","weakly acidic.","neutral.","basic."],a:0,
+  why:"The pH scale runs 0–14: 7 is neutral, below 7 is acidic, above 7 is basic. A pH of 2 sits far down the acid end — stomach acid territory."},
+ {q:"Red blood cells are produced in the",
+  c:["heart.","spleen.","liver.","bone marrow."],a:3,
+  why:"Marrow inside the large bones manufactures blood cells. The spleen’s main jobs are filtering blood and removing worn-out cells, not producing new ones."},
+ {q:"During a thunderstorm you see lightning before you hear the thunder because",
+  c:["light travels much faster than sound.","thunder happens after the lightning.","sound cannot travel through rain.","your eyes react faster than your ears."],a:0,
+  why:"Light covers the distance almost instantly, while sound crawls along at about a mile every five seconds — which is also how you can estimate a storm’s distance."},
+ {q:"Which vitamin does the human body produce when skin is exposed to sunlight?",
+  c:["Vitamin A","Vitamin C","Vitamin D","Vitamin K"],a:2,
+  why:"Ultraviolet light drives vitamin D production in the skin. Vitamin D helps the body absorb calcium for bone strength."},
+ {q:"Newton’s third law of motion states that for every action there is",
+  c:["a gradual loss of energy.","an equal and opposite reaction.","a proportional acceleration.","a decrease in friction."],a:1,
+  why:"Push on a wall and the wall pushes back just as hard. It is why a rifle recoils and why a rocket moves forward as exhaust streams backward."},
+ {q:"At sea level, water freezes at",
+  c:["0°F.","32°F.","0°K.","100°C."],a:1,
+  why:"32°F equals 0°C — the same temperature in two different scales. 100°C is the boiling point, and 0 K is absolute zero, far colder than any freezer."},
+ {q:"The organelle known as the powerhouse of the cell is the",
+  c:["nucleus.","ribosome.","chloroplast.","mitochondrion."],a:3,
+  why:"Mitochondria break down sugar to release usable energy (ATP). Chloroplasts capture light energy, and they occur in plant cells only."},
+ {q:"The gas released by plants during photosynthesis is",
+  c:["carbon dioxide.","nitrogen.","oxygen.","methane."],a:2,
+  why:"Plants take in carbon dioxide and release oxygen — the reverse of what animals do when they breathe."},
+ {q:"An adult insect has how many legs?",
+  c:["Four","Six","Eight","Ten"],a:1,
+  why:"Six legs on three body segments defines an insect. Eight legs marks a spider or other arachnid, which is not an insect."},
+ {q:"The phases of the moon are caused by",
+  c:["Earth’s shadow falling on the moon.","clouds covering part of the moon.","the changing angle from which we see the moon’s sunlit half.","the moon moving closer to and farther from Earth."],a:2,
+  why:"Half the moon is always lit by the sun. As the moon orbits Earth we view that lit half from changing angles, seeing anywhere from a sliver to the whole disk. Earth’s shadow on the moon is an eclipse — a much rarer event."},
+ {q:"Ocean tides are caused mainly by",
+  c:["strong winds.","the gravitational pull of the moon.","underwater earthquakes.","changes in water temperature."],a:1,
+  why:"The moon’s gravity pulls the ocean into bulges that sweep around the planet as it rotates. The sun helps too, but at less than half the moon’s effect."},
+ {q:"A single molecule of water contains",
+  c:["one hydrogen atom and one oxygen atom.","two hydrogen atoms and one oxygen atom.","one hydrogen atom and two oxygen atoms.","two hydrogen atoms and two oxygen atoms."],a:1,
+  why:"H₂O: the subscript 2 belongs to hydrogen. Two hydrogens bonded to one oxygen. H₂O₂ — two of each — is hydrogen peroxide, a different substance entirely."},
+ {q:"An element’s atomic number equals the number of",
+  c:["neutrons in its nucleus.","protons in its nucleus.","electron shells it has.","atoms in a molecule."],a:1,
+  why:"Protons define the element: 6 protons is always carbon, 8 is always oxygen. Neutron count can vary between isotopes of the same element."},
+ {q:"Air is best classified as",
+  c:["a compound.","an element.","a mixture.","a pure substance."],a:2,
+  why:"Air’s ingredients — nitrogen, oxygen, argon, carbon dioxide — are blended together without being chemically bonded, so it is a mixture. In a compound like water, the elements are chemically combined in fixed proportions."},
+ {q:"How many chambers does the human heart have?",
+  c:["Two","Three","Four","Five"],a:2,
+  why:"Two atria on top receive blood; two ventricles below pump it out — four chambers running two loops, one to the lungs and one to the body."},
+ {q:"Arteries are blood vessels that",
+  c:["carry blood away from the heart.","carry blood toward the heart.","connect arteries to veins.","filter the blood."],a:0,
+  why:"Arteries carry blood away; veins return it. Remember A for Away. Capillaries are the tiny vessels connecting the two."},
+ {q:"The digestion of starch begins in the",
+  c:["stomach.","small intestine.","mouth.","esophagus."],a:2,
+  why:"Saliva contains amylase, an enzyme that starts breaking starch into sugars while you chew — it is why a cracker turns faintly sweet if you hold it in your mouth."},
+ {q:"The main function of the kidneys is to",
+  c:["produce insulin.","filter waste products from the blood.","store bile.","break down food."],a:1,
+  why:"The kidneys filter the blood and send wastes and excess water out as urine. Insulin comes from the pancreas; bile is stored in the gallbladder."},
+ {q:"Warm air rises because it is",
+  c:["less dense than the cooler air around it.","pushed up by the wind.","attracted to the sun.","heavier than cool air."],a:0,
+  why:"Heating makes air expand, so a given volume weighs less than the cooler air around it and floats upward — the engine behind sea breezes, thunderstorms and gliding hawks."},
+ {q:"A barometer is an instrument that measures",
+  c:["humidity.","wind speed.","air pressure.","rainfall."],a:2,
+  why:"Falling barometric pressure usually signals approaching storms. Humidity is measured with a hygrometer and wind speed with an anemometer."},
+ {q:"Most of Earth’s fresh water is found in",
+  c:["rivers and lakes.","the atmosphere.","underground wells.","ice caps and glaciers."],a:3,
+  why:"Roughly two-thirds of all fresh water is locked up as ice in Greenland, Antarctica and mountain glaciers. Rivers and lakes hold a surprisingly small share."},
+ {q:"The instrument used to detect and record earthquakes is a",
+  c:["barometer.","seismograph.","thermometer.","hydrometer."],a:1,
+  why:"A seismograph records the ground’s shaking; the reading is reported as a magnitude. Seismo- comes from the Greek for earthquake."},
+ {q:"The sun produces its energy by",
+  c:["burning gases like a fire.","nuclear fusion of hydrogen into helium.","electrical discharges.","radioactive decay."],a:1,
+  why:"In the sun’s core, hydrogen nuclei fuse into helium, converting a little mass into an enormous amount of energy. Ordinary burning needs oxygen and could not power a star."},
+ {q:"The pitch of a sound is determined by its",
+  c:["frequency.","volume.","speed.","echo."],a:0,
+  why:"High frequency — more vibrations per second — means high pitch. Loudness is a separate property, set by the wave’s amplitude."},
+ {q:"In a food chain, green plants are classified as",
+  c:["consumers.","decomposers.","producers.","predators."],a:2,
+  why:"Producers make their own food from sunlight. Consumers must eat other organisms, and decomposers break down dead material."},
+ {q:"A relationship in which two organisms both benefit is called",
+  c:["parasitism.","mutualism.","competition.","predation."],a:1,
+  why:"Mutual means shared — as with a bee getting nectar while pollinating the flower. In parasitism one organism benefits while the other is harmed."},
+ {q:"Condensation is the process by which",
+  c:["a liquid becomes a gas.","a solid becomes a liquid.","a gas becomes a liquid.","a liquid becomes a solid."],a:2,
+  why:"Water vapor condensing into droplets is what fogs a cold mirror and forms clouds. The reverse process — liquid to gas — is evaporation."},
+ {q:"An organism that carries two different alleles for a trait is said to be",
+  c:["homozygous.","heterozygous.","recessive.","cloned."],a:1,
+  why:"Hetero- means different: one allele from each parent, and they differ (like Bb). Homo- means the two copies are the same (BB or bb)."}
+];
+
+const BANK_WK = [
+ {q:"<span class=\"kw\">Abate</span> most nearly means",
+  c:["subside.","encourage.","purchase.","confuse."],a:0,
+  why:"To abate is to lessen or die down, as a storm abates."},
+ {q:"<span class=\"kw\">Tenacious</span> most nearly means",
+  c:["tasteless.","persistent.","temporary.","tender."],a:1,
+  why:"A tenacious person holds on and will not let go. The look-alike choices here share letters but not meaning."},
+ {q:"<span class=\"kw\">Candid</span> most nearly means",
+  c:["frank.","secretive.","sugary.","cautious."],a:0,
+  why:"Candid means openly honest. Secretive is close to its opposite."},
+ {q:"<span class=\"kw\">Meager</span> most nearly means",
+  c:["scanty.","generous.","angry.","measured."],a:0,
+  why:"Meager means thin or lacking in quantity — a meager meal."},
+ {q:"<span class=\"kw\">Fortify</span> most nearly means",
+  c:["weaken.","forecast.","forgive.","strengthen."],a:3,
+  why:"The root fort- means strong, as in fort and fortress."},
+ {q:"<span class=\"kw\">Lucid</span> most nearly means",
+  c:["lucky.","clear.","sleepy.","loud."],a:1,
+  why:"The root luc- means light, as in translucent. A lucid explanation is a clear one."},
+ {q:"<span class=\"kw\">Deter</span> most nearly means",
+  c:["decide.","delay.","discourage.","destroy."],a:2,
+  why:"To deter is to discourage someone from acting, usually through fear of the consequence."},
+ {q:"<span class=\"kw\">Novice</span> most nearly means",
+  c:["expert.","novelty.","beginner.","traveler."],a:2,
+  why:"The root nov- means new. A novice is new to the activity."},
+ {q:"The sergeant kept a <span class=\"kw\">rigid</span> daily schedule. Rigid most nearly means",
+  c:["generous.","rapid.","ruined.","inflexible."],a:3,
+  why:"Rigid means stiff and unbending, whether the thing is a metal rod or a routine. The sentence supplies the context."},
+ {q:"<span class=\"kw\">Frugal</span> most nearly means",
+  c:["fruitful.","forgetful.","fragile.","thrifty."],a:3,
+  why:"A frugal person spends carefully. Three of the choices are chosen simply because they start with fr-."},
+ {q:"<span class=\"kw\">Adverse</span> most nearly means",
+  c:["unfavorable.","advertised.","skilled.","distant."],a:0,
+  why:"Adverse conditions work against you, like an adversary does. Don’t confuse it with averse, which means unwilling."},
+ {q:"<span class=\"kw\">Jubilant</span> most nearly means",
+  c:["envious.","joyful.","exhausted.","uncertain."],a:1,
+  why:"Jubilant describes open, triumphant joy — a jubilant crowd after a win. It shares a root with jubilee, a celebration."},
+ {q:"<span class=\"kw\">Concise</span> most nearly means",
+  c:["brief.","lengthy.","exact.","confusing."],a:0,
+  why:"Concise means saying it in few words. Exact is the trap — a statement can be exact yet run on for pages."},
+ {q:"<span class=\"kw\">Prudent</span> most nearly means",
+  c:["proud.","wasteful.","careful.","curious."],a:2,
+  why:"A prudent decision shows caution and good judgment. Proud is there only because it looks similar."},
+ {q:"<span class=\"kw\">Hostile</span> most nearly means",
+  c:["welcoming.","unfriendly.","busy.","related to lodging."],a:1,
+  why:"Hostile means aggressive or antagonistic. The lodging choice plays on hostel, a different word."},
+ {q:"<span class=\"kw\">Obsolete</span> most nearly means",
+  c:["stubborn.","outdated.","absolute.","enormous."],a:1,
+  why:"Obsolete equipment has been replaced by something newer. Absolute is a sound-alike, not a synonym."},
+ {q:"<span class=\"kw\">Ample</span> most nearly means",
+  c:["scarce.","sour.","plentiful.","quick."],a:2,
+  why:"Ample supplies are more than enough. Scarce is its opposite."},
+ {q:"<span class=\"kw\">Feasible</span> most nearly means",
+  c:["enjoyable.","expensive.","visible.","possible."],a:3,
+  why:"A feasible plan can actually be done. Visible is a rhyme trap."},
+ {q:"<span class=\"kw\">Negligent</span> most nearly means",
+  c:["careless.","thoughtful.","insignificant.","formal."],a:0,
+  why:"Negligent means failing to take proper care. Insignificant is the trap — that would be negligible, a different word."},
+ {q:"<span class=\"kw\">Robust</span> most nearly means",
+  c:["rude.","automatic.","strong.","quiet."],a:2,
+  why:"Robust means sturdy and vigorous — a robust engine, a robust economy."},
+ {q:"<span class=\"kw\">Vacant</span> most nearly means",
+  c:["empty.","on vacation.","guarded.","spotless."],a:0,
+  why:"Vacant means unoccupied — a vacant seat or building. Vacation shares the Latin root vacare, to be empty, but is not the meaning here."},
+ {q:"The guard remained <span class=\"kw\">wary</span> of strangers approaching the gate. Wary most nearly means",
+  c:["tired.","cautious.","damp.","eager."],a:1,
+  why:"Wary means alert and on guard. Tired is the trap — that is weary, one letter different."},
+ {q:"<span class=\"kw\">Diligent</span> most nearly means",
+  c:["delicate.","slow.","hardworking.","wealthy."],a:2,
+  why:"A diligent worker gives careful, steady effort to the job."},
+ {q:"<span class=\"kw\">Provoke</span> most nearly means",
+  c:["prevent.","prove.","soothe.","anger."],a:3,
+  why:"To provoke is to stir someone up or bring on a reaction. Soothe is close to its opposite."},
+ {q:"<span class=\"kw\">Conceal</span> most nearly means",
+  c:["reveal.","hide.","admit.","freeze."],a:1,
+  why:"To conceal is to keep out of sight. Reveal is its direct opposite, and admit is what you do when you stop concealing."},
+ {q:"<span class=\"kw\">Endorse</span> most nearly means",
+  c:["oppose.","support.","enter.","repay."],a:1,
+  why:"To endorse a plan or candidate is to back it publicly. Signing the back of a check is endorsing it too — putting your name behind it."},
+ {q:"<span class=\"kw\">Rectify</span> most nearly means",
+  c:["destroy.","repeat.","correct.","bend."],a:2,
+  why:"The root rect- means straight or right, as in correct. To rectify an error is to set it right."},
+ {q:"<span class=\"kw\">Hazardous</span> most nearly means",
+  c:["foggy.","accidental.","dangerous.","safe."],a:2,
+  why:"A hazard is a danger, so hazardous materials are dangerous ones. Safe is the opposite."},
+ {q:"With the storm <span class=\"kw\">imminent</span>, the crew tied down everything on deck. Imminent most nearly means",
+  c:["famous.","important.","about to happen.","unlikely."],a:2,
+  why:"Imminent means looming right now — about to occur. Famous is the trap: that is eminent, a different word."},
+ {q:"<span class=\"kw\">Resilient</span> most nearly means",
+  c:["quick to recover.","easily broken.","well rested.","reluctant."],a:0,
+  why:"Resilient things spring back — a resilient material regains its shape, a resilient person bounces back from setbacks."},
+ {q:"<span class=\"kw\">Verify</span> most nearly means",
+  c:["vary.","confirm.","question.","announce."],a:1,
+  why:"The root ver- means true, as in verdict. To verify is to check that something is true."},
+ {q:"<span class=\"kw\">Futile</span> most nearly means",
+  c:["promising.","delicate.","useless.","angry."],a:2,
+  why:"A futile effort accomplishes nothing no matter how hard you try. Promising is nearly its opposite."},
+ {q:"<span class=\"kw\">Amiable</span> most nearly means",
+  c:["uncertain.","friendly.","capable.","wandering."],a:1,
+  why:"The root ami- means friend, as in amigo. An amiable person is pleasant and easy to get along with."},
+ {q:"<span class=\"kw\">Brittle</span> most nearly means",
+  c:["shiny.","flexible.","brief.","easily broken."],a:3,
+  why:"Brittle materials snap rather than bend — old plastic, thin ice, dry twigs. Flexible is the opposite."},
+ {q:"<span class=\"kw\">Coax</span> most nearly means",
+  c:["demand.","gently persuade.","carry.","mock."],a:1,
+  why:"To coax is to win someone over with patience and soft words — the opposite of demanding."},
+ {q:"The volcano has been <span class=\"kw\">dormant</span> for two centuries. Dormant most nearly means",
+  c:["dominant.","inactive.","outdoors.","dangerous."],a:1,
+  why:"Dormant comes from the Latin for sleeping, as in dormitory. A dormant volcano is quiet but could wake. Dominant is a sound-alike trap."},
+ {q:"The engine idled at an <span class=\"kw\">erratic</span> rhythm the mechanic couldn’t ignore. Erratic most nearly means",
+  c:["mistaken.","steady.","irregular.","loud."],a:2,
+  why:"Erratic means unpredictable, following no steady pattern. Steady is its opposite, and mistaken plays on the shared root with error."},
+ {q:"<span class=\"kw\">Gaunt</span> most nearly means",
+  c:["tall.","cheerful.","thin and bony.","heavy."],a:2,
+  why:"Gaunt describes someone worn thin, often from hunger or illness."},
+ {q:"The dog has a <span class=\"kw\">keen</span> sense of smell. Keen most nearly means",
+  c:["sharp.","dull.","unusual.","painful."],a:0,
+  why:"Keen means sharp — a keen blade, keen eyesight, a keen mind. Dull is its opposite."},
+ {q:"<span class=\"kw\">Mend</span> most nearly means",
+  c:["tear.","repair.","borrow.","measure."],a:1,
+  why:"To mend is to fix — mending a fence, a sock, or a friendship. Tear is what creates the need for mending."},
+ {q:"<span class=\"kw\">Mimic</span> most nearly means",
+  c:["annoy.","whisper.","imitate.","memorize."],a:2,
+  why:"To mimic is to copy someone’s speech or movements, the way a parrot mimics words."},
+ {q:"<span class=\"kw\">Ponder</span> most nearly means",
+  c:["wander.","consider carefully.","ignore.","complain."],a:1,
+  why:"To ponder a question is to weigh it in your mind. Wander is a rhyme trap."},
+ {q:"Extra patrols were sent to <span class=\"kw\">quell</span> the disturbance. Quell most nearly means",
+  c:["suppress.","question.","begin.","measure."],a:0,
+  why:"To quell is to put down or quiet something — a riot, a rumor, a fear."},
+ {q:"<span class=\"kw\">Rift</span> most nearly means",
+  c:["a gift.","a split.","a wave.","a journey."],a:1,
+  why:"A rift is a crack or break — in rock, or in a friendship after a falling-out."},
+ {q:"The crew <span class=\"kw\">scoured</span> the field for the missing part. Scoured most nearly means",
+  c:["raked.","flooded.","searched thoroughly.","marked."],a:2,
+  why:"To scour an area is to comb through every inch of it. The same word also means to scrub hard — both senses involve covering the whole surface."},
+ {q:"<span class=\"kw\">Taut</span> most nearly means",
+  c:["educated.","loose.","stretched tight.","twisted."],a:2,
+  why:"A taut rope has no slack. Educated is a homophone trap — that word is taught."},
+ {q:"<span class=\"kw\">Vivid</span> most nearly means",
+  c:["dim.","lifelike.","hasty.","hollow."],a:1,
+  why:"The root viv- means life, as in survive. A vivid memory or color is bright and full of life; dim is the opposite."},
+ {q:"<span class=\"kw\">Wilt</span> most nearly means",
+  c:["bloom.","spin.","droop.","harden."],a:2,
+  why:"Plants wilt — sag and go limp — when they lack water. Bloom is what they do when healthy."},
+ {q:"<span class=\"kw\">Zeal</span> most nearly means",
+  c:["jealousy.","enthusiasm.","fear.","patience."],a:1,
+  why:"Zeal is eager, energetic devotion to a cause or task. Jealousy is a look-alike, not a synonym."},
+ {q:"<span class=\"kw\">Plausible</span> most nearly means",
+  c:["flattering.","impossible.","believable.","noisy."],a:2,
+  why:"A plausible story could reasonably be true. Impossible is close to its opposite."}
+];
+
+const BANK_AR = [
+ {q:"A truck travels 240 miles and uses 8 gallons of fuel. How many miles does it get per gallon?",
+  c:["30","32","34","36"],a:0,
+  why:"240 ÷ 8 = 30 miles per gallon."},
+ {q:"A jacket normally priced at $45 is marked down 20 percent. What is the sale price?",
+  c:["$32.00","$36.00","$40.00","$45.00"],a:1,
+  why:"20% of $45 is $9, so the price drops to $36. A faster route: paying 80% of $45 gives 0.80 × 45 = $36."},
+ {q:"A technician earns $16.50 per hour and works 38 hours in a week. What are the week’s gross earnings?",
+  c:["$561.00","$594.00","$610.50","$627.00"],a:3,
+  why:"16.50 × 38 = 16.50 × 40 minus 16.50 × 2 = 660 − 33 = $627.00."},
+ {q:"A recipe that serves 4 people calls for 3 cups of flour. How much flour is needed to serve 10 people?",
+  c:["6 cups","7 cups","7½ cups","8 cups"],a:2,
+  why:"Set up the proportion 3/4 = x/10, so x = 30 ÷ 4 = 7.5 cups."},
+ {q:"A bus departs at 9:45 a.m. on a trip that takes 3 hours and 40 minutes. When does it arrive?",
+  c:["12:25 p.m.","1:25 p.m.","1:35 p.m.","1:45 p.m."],a:1,ord:1,
+  why:"9:45 plus 3 hours is 12:45 p.m.; plus another 40 minutes gives 1:25 p.m."},
+ {q:"One painter can paint a room in 6 hours; a second painter can paint the same room in 3 hours. Working together, how long will it take them?",
+  c:["2 hours","2½ hours","4½ hours","9 hours"],a:0,
+  why:"In one hour they finish 1/6 + 1/3 = 1/2 of the room, so the whole room takes 2 hours. The answer must be shorter than the faster painter working alone."},
+ {q:"How much simple interest does $2,400 earn in 3 years at an annual rate of 5 percent?",
+  c:["$120","$240","$360","$400"],a:2,
+  why:"Interest = principal × rate × time = 2,400 × 0.05 × 3 = $360."},
+ {q:"A 60-gallon tank already holds 12 gallons. If it fills at 4 gallons per minute, how long until it is full?",
+  c:["10 minutes","12 minutes","15 minutes","18 minutes"],a:1,
+  why:"It needs 60 − 12 = 48 more gallons, and 48 ÷ 4 = 12 minutes."},
+ {q:"A unit has a ratio of 1 officer to every 8 enlisted members. If the unit has 288 members in total, how many are officers?",
+  c:["32","36","40","48"],a:0,
+  why:"The ratio makes 9 parts in all, so one part is 288 ÷ 9 = 32 officers (and 256 enlisted)."},
+ {q:"A prize of $1,080 was to be divided equally among 12 people, but 3 of them declined their share. How much does each remaining person receive?",
+  c:["$90","$100","$108","$120"],a:3,
+  why:"Nine people are left, and 1,080 ÷ 9 = $120. The $90 answer is the trap — that is the original 12-way split."},
+ {q:"A car covers 456 miles in 8 hours. What is its average speed?",
+  c:["54 mph","57 mph","59 mph","62 mph"],a:1,
+  why:"Average speed = distance ÷ time = 456 ÷ 8 = 57 mph."},
+ {q:"A store buys shirts for $24 each and marks them up 25 percent. What is the selling price?",
+  c:["$27.00","$28.50","$30.00","$32.00"],a:2,
+  why:"25% of $24 is $6, so the shirt sells for $30. Marking up multiplies by 1.25: 24 × 1.25 = 30."},
+ {q:"Apples cost $5.25 for a 3-pound bag. At the same rate, how much would 7 pounds cost?",
+  c:["$10.50","$11.75","$12.25","$13.00"],a:2,
+  why:"$5.25 ÷ 3 = $1.75 per pound, and 1.75 × 7 = $12.25."},
+ {q:"A rectangular yard measures 40 feet by 25 feet. Fencing costs $3.50 per foot. How much will it cost to fence the entire yard?",
+  c:["$402.50","$437.50","$455.00","$490.00"],a:2,
+  why:"The perimeter is 2 × (40 + 25) = 130 feet, and 130 × $3.50 = $455. The common error is fencing only three sides or using 40 × 25, which is area, not distance around."},
+ {q:"A softball team won 18 of its 24 games. What percent of its games did it win?",
+  c:["66%","70%","75%","80%"],a:2,
+  why:"18 ÷ 24 = 0.75 = 75%."},
+ {q:"A phone plan costs $32 per month plus $0.08 for each minute over the limit. A user goes 150 minutes over. What is the bill?",
+  c:["$40.00","$44.00","$47.00","$52.00"],a:1,
+  why:"The overage costs 150 × $0.08 = $12, so the bill is 32 + 12 = $44."},
+ {q:"A recruit deposits $85 into savings every week. How much has been saved after 12 weeks?",
+  c:["$935","$1,020","$1,105","$1,190"],a:1,
+  why:"85 × 12 = $1,020. A quick route: 85 × 12 = 85 × 10 + 85 × 2 = 850 + 170."},
+ {q:"A convoy drives for 2½ hours at an average speed of 48 miles per hour. How far does it travel?",
+  c:["96 miles","110 miles","120 miles","144 miles"],a:2,
+  why:"Distance = speed × time = 48 × 2.5 = 120 miles."},
+ {q:"A class of 30 students is 40 percent girls. How many boys are in the class?",
+  c:["12","15","18","20"],a:2,
+  why:"40% of 30 is 12 girls, leaving 30 − 12 = 18 boys. Answering 12 falls for the question asking about boys, not girls."},
+ {q:"A recipe serving 12 people uses 9 cups of broth. How many cups are needed to serve 8 people?",
+  c:["5 cups","6 cups","6½ cups","7 cups"],a:1,
+  why:"9 ÷ 12 = 0.75 cup per person, and 0.75 × 8 = 6 cups."},
+ {q:"An item costs $68 before tax. With a 5 percent sales tax, what is the total price?",
+  c:["$71.40","$72.00","$73.10","$74.80"],a:0,
+  why:"Tax is 68 × 0.05 = $3.40, so the total is $71.40 — or in one step, 68 × 1.05."},
+ {q:"Two trains start 315 miles apart and travel toward each other, one at 60 mph and the other at 45 mph. How long until they meet?",
+  c:["2½ hours","3 hours","3½ hours","4 hours"],a:1,
+  why:"They close the gap at 60 + 45 = 105 mph combined, and 315 ÷ 105 = 3 hours."},
+ {q:"A tool set priced at $80 is discounted 25 percent, and the buyer also uses a $10 coupon. What is the final price?",
+  c:["$45.00","$50.00","$52.50","$60.00"],a:1,
+  why:"The discount brings it to 80 × 0.75 = $60; the coupon then takes it to $50. Applying the coupon first gives a different (wrong) result — percentages act on the price at the time."},
+ {q:"A student scores 82, 74 and 90 on three tests. What is the average score?",
+  c:["80","82","84","86"],a:1,
+  why:"The total is 82 + 74 + 90 = 246, and 246 ÷ 3 = 82."},
+ {q:"A clerk types 45 words per minute. How many words can be typed in 8 minutes?",
+  c:["320","345","360","400"],a:2,
+  why:"45 × 8 = 360 words."},
+ {q:"Gasoline costs $3.60 per gallon. How many gallons can be bought with $27?",
+  c:["6.5","7","7.5","8"],a:2,
+  why:"27 ÷ 3.60 = 7.5 gallons."},
+ {q:"A 72-inch rope is cut into pieces 4½ inches long. How many pieces result?",
+  c:["12","14","16","18"],a:2,
+  why:"72 ÷ 4.5 = 16 pieces."},
+ {q:"A town of 2,500 people grows by 12 percent in a decade. What is the new population?",
+  c:["2,650","2,800","2,875","3,000"],a:1,
+  why:"The increase is 2,500 × 0.12 = 300, so the population reaches 2,800."},
+ {q:"A mechanic earns $18 per hour, with time-and-a-half for hours beyond 40. What is the pay for a 46-hour week?",
+  c:["$828","$846","$882","$918"],a:2,
+  why:"Regular: 40 × 18 = $720. Overtime: 6 hours at 18 × 1.5 = $27 gives $162. Total $882. The $828 trap pays all 46 hours at the straight rate."},
+ {q:"On a map, 1 inch represents 35 miles. How far apart are two towns measured 4.2 inches apart on the map?",
+  c:["126 miles","136 miles","147 miles","157 miles"],a:2,
+  why:"4.2 × 35 = 147 miles."}
+];
+
+const BANK_MK = [
+ {q:"Solve for x: 3x − 7 = 20",
+  c:["x = 7","x = 8","x = 9","x = 11"],a:2,
+  why:"Add 7 to both sides to get 3x = 27, then divide by 3 to get x = 9."},
+ {q:"What is the area of a circle with a radius of 5 inches?",
+  c:["10π sq in","25π sq in","50π sq in","100π sq in"],a:1,
+  why:"Area = πr² = π(5)² = 25π. The 10π choice is the circumference formula, 2πr."},
+ {q:"Multiply: (x + 3)(x − 5)",
+  c:["x² − 15","x² − 2x − 15","x² + 2x − 15","x² − 8x − 15"],a:1,
+  why:"FOIL: x² − 5x + 3x − 15, and −5x + 3x = −2x, giving x² − 2x − 15."},
+ {q:"What is the value of √144 + √25?",
+  c:["13","17","19","169"],a:1,
+  why:"12 + 5 = 17. Note that the square roots must be taken separately — √144 + √25 is not √169."},
+ {q:"If ⅔x = 12, what is x?",
+  c:["8","16","18","24"],a:2,
+  why:"Multiply both sides by the reciprocal 3/2: x = 12 × 3/2 = 18."},
+ {q:"A rectangular box measures 4 in by 3 in by 6 in. What is its volume?",
+  c:["13 cu in","36 cu in","54 cu in","72 cu in"],a:3,
+  why:"Volume = length × width × height = 4 × 3 × 6 = 72 cubic inches."},
+ {q:"What is 3⁴?",
+  c:["12","27","64","81"],a:3,
+  why:"3 × 3 × 3 × 3 = 81. The 12 choice is 3 × 4, the mistake of multiplying base by exponent."},
+ {q:"Two angles of a triangle measure 42° and 63°. What is the third angle?",
+  c:["65°","75°","85°","95°"],a:1,
+  why:"The three angles total 180°, so 180 − (42 + 63) = 180 − 105 = 75°."},
+ {q:"Simplify: 5(2x − 3) + 4x",
+  c:["14x − 15","14x − 3","10x − 15","6x − 15"],a:0,
+  why:"Distribute first: 10x − 15 + 4x, then combine like terms to get 14x − 15."},
+ {q:"A square has an area of 49 square feet. What is its perimeter?",
+  c:["14 ft","21 ft","28 ft","49 ft"],a:2,
+  why:"Each side is √49 = 7 ft, and a square has four of them, so the perimeter is 28 ft."},
+ {q:"Solve for x: 5x + 9 = 44",
+  c:["x = 5","x = 6","x = 7","x = 9"],a:2,
+  why:"Subtract 9 from both sides: 5x = 35. Divide by 5: x = 7."},
+ {q:"What is the slope of the line passing through the points (2, 3) and (6, 11)?",
+  c:["2","3","4","8"],a:0,
+  why:"Slope = rise over run = (11 − 3) ÷ (6 − 2) = 8 ÷ 4 = 2."},
+ {q:"What is 40 percent of 85?",
+  c:["30","34","38","42"],a:1,
+  why:"0.40 × 85 = 34. A shortcut: 10% is 8.5, so 40% is four times that."},
+ {q:"If x² = 81, the solutions for x are",
+  c:["9 only.","−9 only.","9 and −9.","81 and −81."],a:2,
+  why:"Both 9² and (−9)² equal 81, so a squared equation has two solutions. Forgetting the negative root is the classic slip."},
+ {q:"Simplify: x⁵ · x³",
+  c:["x²","x⁸","x¹⁵","2x⁸"],a:1,
+  why:"When multiplying powers with the same base, add the exponents: 5 + 3 = 8. Multiplying them (giving x¹⁵) is the trap."},
+ {q:"What is the circumference of a circle with a radius of 7 inches?",
+  c:["7π in","14π in","28π in","49π in"],a:1,
+  why:"Circumference = 2πr = 2 × 7 × π = 14π. The 49π choice is the area, πr²."},
+ {q:"What is the median of the numbers 3, 7, 9, 12, and 15?",
+  c:["7","9","9.2","12"],a:1,
+  why:"The median is the middle value when the numbers are in order — here the third of five, which is 9. (9.2 is the mean, a different measure.)"},
+ {q:"What is the value of (−4)² + (−2)³?",
+  c:["−24","0","8","24"],a:2,
+  why:"(−4)² = 16, since a negative squared turns positive. (−2)³ = −8, since an odd power keeps the sign. 16 + (−8) = 8."},
+ {q:"Which of the following is the correct factoring of x² + 7x + 12?",
+  c:["(x + 2)(x + 6)","(x + 3)(x + 4)","(x + 1)(x + 12)","(x − 3)(x − 4)"],a:1,
+  why:"Look for two numbers that multiply to 12 and add to 7: that is 3 and 4. Check by FOIL: x² + 4x + 3x + 12."},
+ {q:"A right triangle has legs of 6 inches and 8 inches. How long is the hypotenuse?",
+  c:["9 in","10 in","12 in","14 in"],a:1,
+  why:"By the Pythagorean theorem, 6² + 8² = 36 + 64 = 100, and √100 = 10. This is the 3-4-5 triangle doubled."},
+ {q:"What is ⅔ + ¼?",
+  c:["3/7","5/6","11/12","17/12"],a:2,
+  why:"Use a common denominator of 12: 8/12 + 3/12 = 11/12. Adding tops and bottoms straight across (3/7) is the trap."},
+ {q:"Solve for x: 4(x − 2) = 20",
+  c:["x = 3","x = 4.5","x = 5.5","x = 7"],a:3,
+  why:"Divide both sides by 4 first: x − 2 = 5, so x = 7. (Or distribute: 4x − 8 = 20, 4x = 28.)"},
+ {q:"What is the volume of a cylinder with a radius of 3 inches and a height of 5 inches?",
+  c:["15π cu in","30π cu in","45π cu in","75π cu in"],a:2,
+  why:"V = πr²h = π × 9 × 5 = 45π cubic inches."},
+ {q:"A bag holds 4 red marbles and 6 blue marbles. If one marble is drawn at random, what is the probability it is red?",
+  c:["1/4","2/5","2/3","3/5"],a:1,
+  why:"4 red out of 10 total = 4/10, which reduces to 2/5."},
+ {q:"If 15 percent of a number is 45, what is the number?",
+  c:["200","300","450","675"],a:1,
+  why:"0.15x = 45, so x = 45 ÷ 0.15 = 300."},
+ {q:"Two angles are complementary. If one measures 35°, the other measures",
+  c:["45°","55°","65°","145°"],a:1,
+  why:"Complementary angles sum to 90°, so the other is 90 − 35 = 55°. Supplementary angles (the 145° trap) sum to 180°."},
+ {q:"Evaluate 3x² − 2x when x = 4.",
+  c:["16","40","88","136"],a:1,
+  why:"3 × 4² − 2 × 4 = 3 × 16 − 8 = 48 − 8 = 40. The exponent applies to x only, not to 3x."},
+ {q:"Simplify: (6x³y²) ÷ (2xy)",
+  c:["3xy","3x²y","4x²y","3x³y²"],a:1,
+  why:"Divide the numbers (6 ÷ 2 = 3) and subtract exponents of like bases: x³⁻¹ = x², y²⁻¹ = y. Result: 3x²y."},
+ {q:"What is the sum of the interior angles of a pentagon?",
+  c:["360°","480°","540°","720°"],a:2,
+  why:"Interior angles sum to (n − 2) × 180°. For five sides: 3 × 180 = 540°."},
+ {q:"Solve the inequality: 2x − 5 < 9",
+  c:["x < 2","x < 7","x > 7","x < 14"],a:1,
+  why:"Add 5 to both sides (2x < 14), then divide by 2: x < 7. Dividing by a positive number keeps the inequality direction."}
+];
+
+const BANK_EI = [
+ {q:"Electrical resistance is measured in",
+  c:["volts.","amperes.","ohms.","watts."],a:2,
+  why:"Ohms measure resistance, volts measure pressure, amperes measure current flow, and watts measure power."},
+ {q:"According to Ohm’s law, voltage is equal to",
+  c:["current divided by resistance.","current plus resistance.","current multiplied by resistance.","resistance divided by current."],a:2,
+  why:"E = I × R. Rearranged, current equals voltage divided by resistance."},
+ {q:"Which component is used to store an electrical charge?",
+  c:["Resistor","Switch","Diode","Capacitor"],a:3,
+  why:"A capacitor stores charge on two plates separated by an insulator. A resistor opposes current instead."},
+ {q:"Which of these is the best conductor of electricity?",
+  c:["Rubber","Dry wood","Glass","Copper"],a:3,
+  why:"Copper has loosely held outer electrons, which is why it is used for wiring. The other three are insulators."},
+ {q:"The purpose of a fuse in a circuit is to",
+  c:["increase the voltage.","break the circuit when current gets too high.","convert AC to DC.","store current for later use."],a:1,
+  why:"A fuse contains a thin element that melts and opens the circuit under excess current, protecting the wiring and devices."},
+ {q:"In a simple series circuit, the current is",
+  c:["always zero.","greatest nearest the power source.","divided among the branches.","the same at every point in the circuit."],a:3,
+  why:"A series circuit gives current only one path, so the same current passes through every component. It is voltage that divides across them."},
+ {q:"In electronics, AC stands for",
+  c:["alternating current.","ampere current.","active circuit.","applied charge."],a:0,
+  why:"Alternating current reverses direction periodically — 60 times per second in standard U.S. household supply."},
+ {q:"Frequency is measured in",
+  c:["ohms.","hertz.","farads.","henries."],a:1,
+  why:"One hertz is one cycle per second. Farads measure capacitance and henries measure inductance."},
+ {q:"A diode is a component that",
+  c:["allows current to flow in one direction only.","stores energy in a magnetic field.","steps voltage up or down.","measures resistance."],a:0,
+  why:"That one-way behavior is what makes diodes useful for rectifying AC into DC."},
+ {q:"A transformer is used to",
+  c:["change the voltage of an AC supply.","convert AC into DC.","increase circuit resistance.","store an electrical charge."],a:0,
+  why:"Two coils around a shared core step voltage up or down. Because it works by a changing magnetic field, a transformer only works on AC."},
+ {q:"Electrical power is measured in",
+  c:["volts.","watts.","ohms.","coulombs."],a:1,
+  why:"Watts measure the rate at which electrical energy is used or delivered. Power = voltage × current."},
+ {q:"Electric current is measured in",
+  c:["amperes.","volts.","watts.","joules."],a:0,
+  why:"The ampere (amp) measures how much charge flows per second. Voltage is the pressure pushing it; watts are the resulting power."},
+ {q:"A battery converts",
+  c:["mechanical energy into electrical energy.","chemical energy into electrical energy.","light energy into electrical energy.","heat energy into electrical energy."],a:1,
+  why:"Chemical reactions inside the cell push electrons through the circuit. A generator converts mechanical energy; a solar cell converts light."},
+ {q:"Which of the following materials is an electrical insulator?",
+  c:["Copper","Aluminum","Rubber","Silver"],a:2,
+  why:"Rubber’s electrons are tightly bound, so it blocks current — which is why it insulates tool handles and wire jackets. The other three are metals and conduct well."},
+ {q:"A device draws 2 amperes from a 120-volt outlet. How much power does it use?",
+  c:["60 watts","122 watts","240 watts","480 watts"],a:2,
+  why:"Power = voltage × current = 120 × 2 = 240 watts. Dividing instead of multiplying gives the 60-watt trap."},
+ {q:"Current flows in a circuit only when the circuit is",
+  c:["open.","closed.","grounded.","fused."],a:1,
+  why:"A closed circuit is a complete loop from the source through the load and back. Opening a switch breaks the loop and stops the current."},
+ {q:"In modern U.S. residential wiring, the ground wire is identified by which color?",
+  c:["Black","Red","White","Green or bare copper"],a:3,
+  why:"Green or bare copper marks the safety ground. Black and red are hot wires; white is the neutral."},
+ {q:"Standard household AC power in the United States operates at a frequency of",
+  c:["50 Hz","60 Hz","110 Hz","120 Hz"],a:1,
+  why:"U.S. supply alternates at 60 cycles per second. The familiar 110–120 figure is the voltage, not the frequency."},
+ {q:"Three resistors of 10, 20 and 30 ohms are connected in series. What is the total resistance?",
+  c:["5.5 ohms","20 ohms","60 ohms","6,000 ohms"],a:2,
+  why:"Series resistances simply add: 10 + 20 + 30 = 60 ohms. Parallel connection would give less than the smallest resistor."},
+ {q:"Two identical 8-ohm resistors are connected in parallel. The combined resistance is",
+  c:["16 ohms","8 ohms","4 ohms","2 ohms"],a:2,
+  why:"Two equal resistors in parallel give half the value of one: 8 ÷ 2 = 4 ohms. Parallel paths make it easier for current to flow, so total resistance drops."},
+ {q:"A 12-volt battery is connected across a 4-ohm resistor. How much current flows?",
+  c:["3 amperes","8 amperes","16 amperes","48 amperes"],a:0,
+  why:"Ohm’s law: I = E ÷ R = 12 ÷ 4 = 3 amperes. Multiplying gives the 48 trap."},
+ {q:"One advantage of a circuit breaker over a fuse is that a breaker",
+  c:["reacts to voltage instead of current.","can be reset instead of replaced.","allows more current through.","never trips accidentally."],a:1,
+  why:"Both open the circuit on excess current, but a blown fuse is spent and must be replaced, while a breaker flips back on."},
+ {q:"A rectifier is a circuit that",
+  c:["converts AC into DC.","converts DC into AC.","amplifies weak signals.","reduces resistance."],a:0,
+  why:"Rectifiers — built from diodes — turn alternating current into direct current, the first step inside nearly every power adapter."},
+ {q:"A step-up transformer",
+  c:["increases voltage.","increases frequency.","converts AC to DC.","stores charge."],a:0,
+  why:"More turns on the secondary coil than the primary means higher output voltage (with correspondingly less current). Frequency passes through unchanged."},
+ {q:"The electric charge carried by an electron is",
+  c:["positive.","negative.","neutral.","alternating."],a:1,
+  why:"Electrons are negative; protons are positive; neutrons are neutral. Current in a wire is the drift of these negative electrons."},
+ {q:"Two objects carrying the same type of charge will",
+  c:["attract each other.","repel each other.","cancel each other.","lose their charge."],a:1,
+  why:"Like charges repel; opposite charges attract — the basic rule of electrostatics."},
+ {q:"On a schematic diagram, a zigzag line represents a",
+  c:["battery.","switch.","resistor.","capacitor."],a:2,
+  why:"The zigzag (or a plain rectangle in international style) is the resistor symbol. A battery is drawn as long and short parallel lines."},
+ {q:"Capacitance is measured in",
+  c:["ohms.","henries.","watts.","farads."],a:3,
+  why:"The farad measures how much charge a capacitor stores per volt. Real capacitors are usually rated in microfarads or picofarads."},
+ {q:"An inductor stores energy in",
+  c:["a magnetic field.","an electric spark.","a chemical reaction.","heat."],a:0,
+  why:"Current through the coil builds a magnetic field around it — the energy sits in that field and opposes changes in current."},
+ {q:"Which material is most commonly used to make semiconductor components such as transistors?",
+  c:["Copper","Silicon","Iron","Carbon fiber"],a:1,
+  why:"Silicon conducts more than an insulator but less than a metal, and adding impurities tunes it precisely — the basis of diodes, transistors and chips."},
+ {q:"The abbreviation LED stands for",
+  c:["low-energy device.","light-emitting diode.","linear electronic display.","long-endurance battery."],a:1,
+  why:"An LED is a diode that gives off light when current flows through it in the forward direction."},
+ {q:"To measure the voltage across a component, a voltmeter should be connected",
+  c:["in series with the component.","in parallel with the component.","between the component and ground only.","in place of the component."],a:1,
+  why:"Voltage is a difference between two points, so the meter bridges the component. Its high internal resistance keeps it from disturbing the circuit."},
+ {q:"To measure the current through a circuit, an ammeter should be connected",
+  c:["in parallel with the load.","across the battery terminals.","in series with the circuit.","between two ground points."],a:2,
+  why:"Current must flow through the ammeter to be counted, so the circuit is broken and the meter inserted into the path. In parallel, its low resistance would cause a damaging surge."},
+ {q:"In the American Wire Gauge (AWG) system, a higher gauge number means the wire is",
+  c:["thicker.","thinner.","longer.","better insulated."],a:1,
+  why:"The scale runs backward: 12-gauge wire is thicker and carries more current than 20-gauge. Thin wire has more resistance and heats up under heavy load."},
+ {q:"A short circuit is dangerous because it",
+  c:["stops all current flow.","lets current bypass the load through a very low-resistance path.","raises the circuit’s resistance.","converts the current to DC."],a:1,
+  why:"With almost no resistance in the accidental path, current spikes far above normal — melting insulation or starting fires. Fuses and breakers exist to interrupt exactly this."},
+ {q:"Two 1.5-volt cells connected in series (end to end) produce",
+  c:["1.5 volts.","2.25 volts.","3 volts.","0 volts."],a:2,
+  why:"Series voltages add: 1.5 + 1.5 = 3 volts — which is how a two-cell flashlight reaches 3 V. In parallel the voltage stays 1.5 but the capacity doubles."},
+ {q:"Walking across carpet and getting a shock from a doorknob is an example of",
+  c:["static electricity.","alternating current.","induction heating.","a short circuit."],a:0,
+  why:"Friction transfers electrons to your body, and the built-up static charge jumps to the grounded knob in one brief spark."},
+ {q:"The strength of an electromagnet can be increased by",
+  c:["using fewer turns of wire.","adding more turns of wire around the core.","switching to an insulating core.","reducing the current."],a:1,
+  why:"More turns and more current both strengthen the magnetic field, as does an iron core. The other choices weaken it."},
+ {q:"A solar cell converts",
+  c:["heat into stored chemical energy.","light energy into electrical energy.","electrical energy into light.","motion into electrical energy."],a:1,
+  why:"Photons striking the semiconductor free electrons, producing DC current. Converting electricity into light is what an LED does — the reverse job."},
+ {q:"A GFCI outlet, required near sinks and in bathrooms, protects people by",
+  c:["shutting off when it senses current leaking outside the normal path.","supplying a lower, safer voltage.","filtering noise out of the power line.","preventing bulbs from burning out."],a:0,
+  why:"The ground-fault circuit interrupter compares current going out on the hot wire with current returning on the neutral. A mismatch means current is escaping — possibly through a person — and it cuts power in a fraction of a second."}
+];
+
+const BANK_AS = [
+ {q:"Which tool would a technician use to measure voltage, current and resistance in a vehicle?",
+  c:["Torque wrench","Feeler gauge","Multimeter","Micrometer"],a:2,
+  why:"A multimeter reads all three. A feeler gauge checks gaps, and a micrometer measures thickness or diameter precisely."},
+ {q:"The alternator in a car",
+  c:["recharges the battery and powers systems while the engine runs.","starts the engine.","cools the engine.","filters engine oil."],a:0,
+  why:"The starter motor cranks the engine; the alternator then takes over supplying electricity and keeping the battery charged."},
+ {q:"The catalytic converter is part of the exhaust system. Its job is to",
+  c:["reduce harmful emissions.","increase horsepower.","cool the fuel before combustion.","muffle engine noise."],a:0,
+  why:"It converts carbon monoxide, unburned fuel and oxides of nitrogen into less harmful gases. Noise is the muffler’s job."},
+ {q:"A Phillips screwdriver has a tip shaped like",
+  c:["a flat blade.","a cross.","a hexagon.","a six-pointed star."],a:1,
+  why:"The cross-shaped tip is the Phillips. The six-pointed star is a Torx, and a hexagonal recess takes an Allen key."},
+ {q:"Which saw is best suited to cutting a metal pipe by hand?",
+  c:["Crosscut saw","Hacksaw","Coping saw","Rip saw"],a:1,
+  why:"A hacksaw uses a fine-toothed blade under tension in a rigid frame, made for metal. Crosscut and rip saws are wood saws."},
+ {q:"The radiator in a cooling system",
+  c:["lubricates the pistons.","pressurizes the fuel.","transfers heat from the coolant to the air.","stores brake fluid."],a:2,
+  why:"Coolant carries heat away from the engine block, and the radiator sheds that heat to air passing through its fins."},
+ {q:"The camshaft in an engine",
+  c:["drives the wheels.","opens and closes the valves.","charges the battery.","regulates coolant flow."],a:1,
+  why:"Lobes on the rotating camshaft push the valves open at the right point in each cycle. The crankshaft is what turns the engine’s motion into rotation for the drivetrain."},
+ {q:"A plane is a hand tool used to",
+  c:["drill holes.","measure angles.","tighten bolts.","shave and smooth wood."],a:3,
+  why:"A blade set in the plane’s body takes a thin shaving off the surface, flattening and smoothing the wood."},
+ {q:"A torque wrench is used to",
+  c:["loosen rusted bolts with extra leverage.","hold a workpiece steady.","cut threads into a bolt.","tighten a fastener to a specified tightness."],a:3,
+  why:"It measures the twisting force applied, so bolts such as cylinder-head or wheel bolts can be tightened to the manufacturer’s figure — neither loose nor overstretched."},
+ {q:"Which fastener normally requires a nut to hold it in place?",
+  c:["Bolt","Wood screw","Nail","Rivet"],a:0,
+  why:"A bolt passes through the parts and is secured by a nut on the far side. A screw threads into the material itself."},
+ {q:"In a four-stroke gasoline engine, the correct order of strokes is",
+  c:["intake, compression, power, exhaust.","intake, power, compression, exhaust.","compression, intake, exhaust, power.","power, intake, compression, exhaust."],a:0,
+  why:"Suck, squeeze, bang, blow: the mixture is drawn in, compressed, ignited to push the piston down, and the burned gases are pushed out."},
+ {q:"In a gasoline engine, the air-fuel mixture is ignited by",
+  c:["the fuel pump.","a glow of hot exhaust.","the spark plug.","the alternator."],a:2,
+  why:"The spark plug fires a timed electric arc that lights the compressed mixture at the top of the compression stroke."},
+ {q:"A diesel engine differs from a gasoline engine in that it ignites its fuel by",
+  c:["a hotter spark plug.","the heat of compression.","a continuous pilot flame.","an electric heating coil in each cylinder."],a:1,
+  why:"Diesels compress air so hard it becomes hot enough to ignite the injected fuel on its own — no spark plugs. (Glow plugs only help cold starts.)"},
+ {q:"The main purpose of engine oil is to",
+  c:["cool the radiator.","reduce friction between moving parts.","clean the fuel.","seal the tires."],a:1,
+  why:"Oil forms a thin film between metal surfaces so they slide instead of grinding. It also carries away some heat and holds contaminants until the filter traps them."},
+ {q:"To check the level of engine oil, you would use the",
+  c:["dipstick.","pressure gauge.","dropper.","sight glass on the radiator."],a:0,
+  why:"Pull the dipstick, wipe it, reinsert it and read where the oil line falls between the full and add marks — with the car parked level."},
+ {q:"The thermostat in an engine’s cooling system",
+  c:["measures oil temperature for the dashboard gauge.","controls coolant flow to keep the engine at operating temperature.","turns the radiator fan on and off.","adjusts the air-fuel mixture."],a:1,
+  why:"It stays closed while the engine warms, then opens to let coolant circulate through the radiator — holding the engine near its designed temperature."},
+ {q:"A standard automotive battery supplies",
+  c:["6 volts.","12 volts.","24 volts.","120 volts."],a:1,
+  why:"Passenger cars use 12-volt systems (six 2-volt cells in series). Many large trucks and military vehicles use 24 volts."},
+ {q:"When jump-starting a car, the first cable connection should be",
+  c:["positive terminal to positive terminal.","positive terminal to negative terminal.","negative terminal to the fuel line.","either terminal to the windshield frame."],a:0,
+  why:"Connect the dead battery’s positive to the good battery’s positive first, then ground the final negative clamp on the engine block away from the battery. Crossing positive to negative can damage both electrical systems."},
+ {q:"In a disc brake system, stopping force is created when",
+  c:["a drum expands against the wheel.","pads squeeze a spinning rotor.","the driveshaft locks.","air pressure inflates the caliper."],a:1,
+  why:"The caliper clamps friction pads against the rotor that turns with the wheel, converting motion into heat."},
+ {q:"A high-pitched squeal when the brakes are applied most often indicates",
+  c:["worn brake pads.","low tire pressure.","a failing alternator.","old engine oil."],a:0,
+  why:"Most pads carry a small metal wear indicator that deliberately squeals against the rotor when the friction material runs low — a built-in warning to replace them."},
+ {q:"The transmission’s job is to",
+  c:["deliver engine power to the wheels at usable speeds.","charge the battery.","filter the intake air.","pressurize the brake lines."],a:0,
+  why:"By changing gear ratios it matches the engine’s speed to the road speed, multiplying torque for starting and easing engine rpm at cruise."},
+ {q:"In a manual-transmission vehicle, the clutch",
+  c:["locks the rear axle.","connects and disconnects the engine from the transmission.","adjusts the idle speed.","engages the parking brake."],a:1,
+  why:"Pressing the pedal separates the friction disc from the flywheel so gears can be changed; releasing it re-couples engine to gearbox."},
+ {q:"The muffler’s purpose is to",
+  c:["trap fuel vapors.","reduce exhaust noise.","boost exhaust pressure for power.","cool the catalytic converter."],a:1,
+  why:"Chambers and baffles inside cancel out sound pulses in the exhaust stream. Emissions cleanup happens upstream in the catalytic converter."},
+ {q:"The engine air filter’s job is to",
+  c:["remove dust from air entering the engine.","cool the intake air.","add oxygen to the fuel.","silence the intake."],a:0,
+  why:"Grit that gets past a clogged or missing filter scores cylinder walls and wears the engine fast. A dirty filter also chokes airflow and hurts mileage."},
+ {q:"Tire inflation pressure is measured in",
+  c:["PSI.","RPM.","BTU.","CCA."],a:0,
+  why:"Pounds per square inch. RPM is rotation speed, BTU is heat energy, and CCA (cold-cranking amps) rates batteries."},
+ {q:"Driving on badly worn tire tread mainly increases the risk of",
+  c:["hydroplaning on wet roads.","overcharging the battery.","engine overheating.","transmission slip."],a:0,
+  why:"Tread grooves drain water from under the tire. Without them the tire can ride up on the water film, losing steering and braking grip."},
+ {q:"Shock absorbers (dampers) on a vehicle",
+  c:["stop the body from bouncing after bumps.","hold the vehicle’s weight.","connect the wheels to the steering box.","cushion the brake pedal."],a:0,
+  why:"The springs carry the weight; the shocks damp the spring’s bounce so the tires stay pressed to the road."},
+ {q:"Tie rods are part of which vehicle system?",
+  c:["Steering","Exhaust","Cooling","Ignition"],a:0,
+  why:"Tie rods link the steering rack to the wheel knuckles — worn ones cause loose, wandering steering and uneven tire wear."},
+ {q:"A carpenter’s level shows whether a surface is",
+  c:["horizontal or vertical.","smooth.","the correct length.","square at the corners."],a:0,
+  why:"The air bubble centered between the lines marks level (horizontal) or plumb (vertical). Squareness is checked with a framing square."},
+ {q:"A cold chisel is designed to be",
+  c:["struck with a hammer to cut metal.","heated before each use.","used only on softwood.","twisted like a screwdriver."],a:0,
+  why:"Cold chisels shear unheated (cold) metal — rivets, rusted bolts, sheet stock — taking hammer blows on the hardened head."},
+ {q:"A file is a hand tool used to",
+  c:["smooth and shape metal.","measure hole depth.","spread adhesive.","test for voltage."],a:0,
+  why:"Rows of hardened teeth shave off small amounts of material — cleaning up burrs and fitting parts. Push strokes cut; dragging backward dulls the teeth."},
+ {q:"Locking pliers (such as Vise-Grips) are especially useful because they",
+  c:["clamp onto work and hold without hand pressure.","measure bolt torque.","strip wire insulation cleanly.","reach into deep sockets."],a:0,
+  why:"An over-center mechanism locks the jaws at a set width, freeing your hands — handy for rounded-off bolts or holding parts for welding."},
+ {q:"Compared with an open-end wrench, a box-end wrench",
+  c:["surrounds the fastener completely and is less likely to slip.","works on a wider range of sizes.","reaches fasteners in tighter spots.","measures the applied torque."],a:0,
+  why:"The closed ring grips all six corners of the bolt head, so it can take more force without rounding the corners. The open end trades grip for access."},
+ {q:"A socket wrench with a ratchet handle speeds work because it",
+  c:["turns the fastener without removing and repositioning the tool.","doubles the user’s leverage automatically.","cannot overtighten a bolt.","fits both metric and SAE sizes at once."],a:0,
+  why:"The ratchet drives in one direction and freewheels back, so the socket stays on the fastener through repeated strokes."},
+ {q:"Before driving a wood screw near the end of a board, a carpenter drills a pilot hole slightly smaller than the screw to",
+  c:["keep the wood from splitting.","make the screw removable later.","hide the screw head.","strengthen the screw."],a:0,
+  why:"The pilot hole gives the screw’s shank room so the wedge action doesn’t force the grain apart, while the threads still bite."},
+ {q:"A C-clamp is used to",
+  c:["hold workpieces firmly together or to a bench.","cut curves in sheet metal.","measure inside diameters.","pull nails."],a:0,
+  why:"The screw drives the pad against the work, holding parts for gluing, drilling or welding — a third hand that doesn’t tire."},
+ {q:"A miter box is used with a saw to",
+  c:["guide accurate angle cuts, such as 45 degrees.","rip long boards lengthwise.","sharpen the saw’s teeth.","hold nails for driving."],a:0,
+  why:"Slots in the box steer the blade at fixed angles so trim and frame corners meet cleanly. Ripping lengthwise is a job for a rip saw or table saw."},
+ {q:"In sandpaper grit numbers, a higher number means",
+  c:["a finer, smoother abrasive.","a coarser, faster-cutting abrasive.","a stronger paper backing.","waterproof paper."],a:0,
+  why:"Grit counts particles per inch of screen, so 220-grit particles are far smaller than 60-grit. Work coarse to fine for a smooth finish."},
+ {q:"Galvanized steel resists rust because it is coated with",
+  c:["zinc.","paint.","oil.","chrome."],a:0,
+  why:"The zinc layer corrodes sacrificially, protecting the steel beneath — even at small scratches. It is standard for outdoor fasteners, buckets and fencing."},
+ {q:"A stud finder is used to",
+  c:["locate framing members behind a finished wall.","check that studs are vertical.","measure wall thickness.","find electrical shorts."],a:0,
+  why:"It senses the density change (or nail metal) behind drywall so shelves and mounts can be screwed into solid framing instead of hollow wallboard."}
+];
+
+const BANK_MC = [
+ {q:"A seesaw is an example of which class of lever?",
+  c:["First class","Second class","Third class","Fourth class"],a:0,
+  why:"In a first-class lever the fulcrum sits between the effort and the load — seesaw, crowbar, scissors. There is no fourth class."},
+ {q:"In a block-and-tackle arrangement where four rope sections support the load, the mechanical advantage is about",
+  c:["1.","2.","4.","8."],a:2,
+  why:"Mechanical advantage equals the number of rope sections supporting the load, so you pull with about one-quarter the force — but over four times the distance."},
+ {q:"Gear A has 20 teeth and meshes directly with gear B, which has 40 teeth. Gear B turns",
+  c:["twice as fast as gear A.","half as fast as gear A.","at the same speed as gear A.","in the same direction as gear A."],a:1,
+  why:"The larger gear needs two of its turns’ worth of teeth for each pair, so doubling the teeth halves the speed. Torque goes up as speed goes down."},
+ {q:"Two gears meshed directly together rotate",
+  c:["in opposite directions.","in the same direction.","at the same speed regardless of size.","only when the same size."],a:0,
+  why:"The teeth push against each other, so the second gear is driven backward relative to the first. Adding a third idler gear reverses it again."},
+ {q:"A large pulley drives a small pulley by belt. Compared with the large pulley, the small one turns",
+  c:["more slowly.","at the same rate.","faster.","in the opposite direction."],a:2,
+  why:"The belt moves at one speed, so the smaller wheel must complete more revolutions to keep up with it."},
+ {q:"An inclined plane allows a load to be raised with",
+  c:["the same force as lifting it straight up.","less force applied over a shorter distance.","more force applied over a longer distance.","less force applied over a longer distance."],a:3,
+  why:"A ramp trades distance for force. The total work done stays roughly the same, minus friction."},
+ {q:"Pressure equals force divided by area. Applying the same force over a smaller area produces",
+  c:["less pressure.","no pressure.","the same pressure.","greater pressure."],a:3,
+  why:"Shrinking the denominator raises the result. It is why a sharp blade cuts and a snowshoe keeps you on the surface."},
+ {q:"An object placed in water will float if its density is",
+  c:["greater than the density of water.","equal to the density of air.","less than the density of water.","unrelated to the density of water."],a:2,
+  why:"A floating object displaces water weighing as much as the object. If it is less dense than water, it can do that before it is fully submerged."},
+ {q:"To lift a heavy crate with a crowbar using the least effort, the fulcrum should be placed",
+  c:["anywhere; position does not matter.","as close as possible to your hands.","exactly halfway along the bar.","as close as possible to the crate."],a:3,
+  why:"Effort force falls as the effort arm gets longer relative to the load arm, so pushing the fulcrum toward the load is what buys you leverage."},
+ {q:"A wedge, such as an axe head, is essentially",
+  c:["a lever.","a pulley.","an inclined plane.","a wheel and axle."],a:2,
+  why:"A wedge is an inclined plane that moves — driving it forward converts your downward force into a sideways splitting force."},
+ {q:"The human forearm, where the effort of the muscle lies between the elbow and the load in the hand, is an example of a",
+  c:["first-class lever.","second-class lever.","third-class lever.","compound pulley."],a:2,
+  why:"Third-class levers put the effort between fulcrum and load — forearm, fishing rod, tweezers. They trade force for speed and range of motion."},
+ {q:"A wheelbarrow, with its load between the wheel and the handles, is an example of a",
+  c:["first-class lever.","second-class lever.","third-class lever.","wheel and axle."],a:1,
+  why:"Second-class levers put the load between the fulcrum (the wheel) and the effort (your lift at the handles) — like a bottle opener or nutcracker. They always multiply force."},
+ {q:"A pry bar is arranged so the effort arm is 6 feet and the load arm is 2 feet. Its mechanical advantage is",
+  c:["2.","3.","4.","12."],a:1,
+  why:"MA = effort arm ÷ load arm = 6 ÷ 2 = 3, so 100 pounds of push can move about 300 pounds of load."},
+ {q:"A single fixed pulley mounted to a ceiling gives a mechanical advantage of",
+  c:["1 — it only changes the direction of the pull.","2 — it halves the needed force.","4 — it quarters the needed force.","0 — it cannot lift anything."],a:0,
+  why:"One rope section supports the load, so the force needed equals the load. The gain is convenience: pulling down is easier than lifting up."},
+ {q:"A screw is best described as",
+  c:["an inclined plane wrapped around a cylinder.","a lever with many fulcrums.","a wheel and axle.","a series of wedges stacked vertically."],a:0,
+  why:"The thread is a long, gentle ramp coiled around the shaft — each turn advances the screw a small distance with modest effort."},
+ {q:"Compared with coarse threads, the finer threads on a screw or bolt mean",
+  c:["more turns are needed but less effort per turn.","fewer turns are needed and less effort per turn.","more effort is needed per turn.","the screw advances farther with each turn."],a:0,
+  why:"Finer threads make a longer, shallower ramp: each turn advances the screw less, so it takes more turns but multiplies force more."},
+ {q:"A driver gear with 30 teeth turns at 100 rpm and meshes with a gear that has 10 teeth. The small gear turns at",
+  c:["33 rpm.","100 rpm.","300 rpm.","1,000 rpm."],a:2,
+  why:"Speed scales inversely with teeth: 100 × (30 ÷ 10) = 300 rpm. The small gear spins faster but delivers less torque."},
+ {q:"Two pulleys connected by a straight (uncrossed) belt rotate",
+  c:["in the same direction.","in opposite directions.","at identical speeds regardless of size.","only intermittently."],a:0,
+  why:"A straight belt carries the motion around without reversing it. Crossing the belt into a figure eight is what reverses the second pulley."},
+ {q:"Using a longer wrench handle on a stubborn bolt helps because it",
+  c:["increases the torque for the same push.","reduces the torque needed.","hardens the bolt.","increases friction on the threads."],a:0,
+  why:"Torque = force × distance from the pivot. Doubling the handle length doubles the twisting force from the same push."},
+ {q:"Ball bearings are placed between a wheel and its axle in order to",
+  c:["reduce friction by replacing sliding with rolling.","add weight for stability.","increase friction for better grip.","keep the axle from bending."],a:0,
+  why:"Rolling contact resists motion far less than sliding contact, so the wheel spins freely and parts wear slowly."},
+ {q:"In a hydraulic jack, a 50-pound force on a 2-square-inch piston creates enough pressure to exert what force on a 20-square-inch piston?",
+  c:["50 pounds","250 pounds","500 pounds","1,000 pounds"],a:2,
+  why:"Pressure = 50 ÷ 2 = 25 psi, and the same pressure acts on the big piston: 25 × 20 = 500 pounds. The trade-off is that the big piston moves only one-tenth as far."},
+ {q:"A vehicle is hardest to tip over when its center of gravity is",
+  c:["low and its wheelbase is wide.","high and its wheelbase is wide.","low and its wheelbase is narrow.","high and its wheelbase is narrow."],a:0,
+  why:"Tipping requires rotating the center of gravity up and over the wheels. Keeping it low and the base wide makes that rotation as long as possible."},
+ {q:"Ignoring air resistance, an object dropped near Earth’s surface will",
+  c:["fall at a constant speed.","speed up by about 32 feet per second each second.","slow down as it falls.","fall at a rate depending on its weight."],a:1,
+  why:"Gravity accelerates falling objects at about 32 ft/s² (9.8 m/s²), and — absent air resistance — heavy and light objects fall identically."},
+ {q:"A soldier pushes against a concrete wall for a full minute and the wall does not move. In the physics sense, the work done on the wall is",
+  c:["zero.","large, because the force was large.","small but not zero.","equal to the soldier’s weight."],a:0,
+  why:"Work = force × distance moved. No movement, no work — however tiring the pushing feels."},
+ {q:"Two workers lift identical crates to the same shelf, but one does it in half the time. That worker has exerted",
+  c:["more power.","more work.","less power.","less work."],a:0,
+  why:"The work (force × distance) is identical; power is work divided by time. Same job, less time, more power."},
+ {q:"If a vehicle’s speed doubles, its kinetic energy",
+  c:["doubles.","triples.","quadruples.","stays the same."],a:2,
+  why:"Kinetic energy grows with the square of speed (KE = ½mv²), which is why stopping distance grows so sharply with speed."},
+ {q:"Raising a toolbox from the floor to a shelf twice as high gives it",
+  c:["twice the potential energy.","half the potential energy.","four times the potential energy.","the same potential energy."],a:0,
+  why:"Gravitational potential energy is weight × height, so doubling the height doubles the stored energy."},
+ {q:"A spring stretches 2 inches under a 10-pound pull. Under a 30-pound pull (within its limits), it will stretch about",
+  c:["3 inches.","4 inches.","6 inches.","9 inches."],a:2,
+  why:"Hooke’s law: stretch is proportional to force. Three times the force, three times the stretch: 6 inches."},
+ {q:"Two people carry a heavy load hung from a pole resting on their shoulders. The load hangs closer to the person in front. That person carries",
+  c:["more than half the weight.","less than half the weight.","exactly half the weight.","none of the weight."],a:0,
+  why:"The pole is a lever: the closer the load hangs to a supporter, the larger that supporter’s share. To lighten your end, slide the load toward the other person."},
+ {q:"Most valves and threaded fasteners are closed or tightened by turning",
+  c:["clockwise.","counterclockwise.","either direction equally.","a quarter turn only."],a:0,
+  why:"Righty-tighty, lefty-loosey: standard right-hand threads tighten clockwise. (A few exceptions, like some gas fittings, run left-handed.)"},
+ {q:"In an engine, the cam and its follower convert rotary motion into",
+  c:["back-and-forth (reciprocating) motion.","electrical energy.","continuous faster rotation.","heat only."],a:0,
+  why:"The egg-shaped cam lobe pushes the follower out and lets it return once per revolution — rotation in, reciprocation out. A crankshaft does the reverse."},
+ {q:"A loaded dump truck and a small car travel at the same speed. Compared with the car, the truck has",
+  c:["more momentum.","less momentum.","the same momentum.","no momentum unless it accelerates."],a:0,
+  why:"Momentum = mass × velocity. Same speed, far more mass, far more momentum — and a far longer stopping distance."},
+ {q:"A 60-pound child sits 4 feet from a seesaw’s pivot. To balance, a 40-pound child must sit",
+  c:["4 feet from the pivot.","5 feet from the pivot.","6 feet from the pivot.","2 feet from the pivot."],a:2,
+  why:"Balance needs equal moments: 60 × 4 = 240, and 240 ÷ 40 = 6 feet. Lighter riders sit farther out."},
+ {q:"Oil spilled on water spreads across the surface instead of sinking because oil",
+  c:["is less dense than water.","is heavier than water.","dissolves in water.","evaporates instantly."],a:0,
+  why:"The less dense liquid floats on the denser one. Density, not thickness or stickiness, decides what floats."},
+ {q:"A metal spoon left in hot coffee soon has a hot handle. The heat reached the handle by",
+  c:["conduction.","convection.","radiation.","insulation."],a:0,
+  why:"Conduction passes heat through a material by direct contact, molecule to molecule — and metals conduct especially well."},
+ {q:"A room’s radiator warms the whole room mainly by",
+  c:["setting up circulating currents of warm air.","conduction through the floor.","light waves.","sound vibration."],a:0,
+  why:"Air warmed at the radiator rises, cool air flows in to replace it, and a circulating loop — convection — distributes the heat."},
+ {q:"A bimetallic strip in a thermostat bends when heated because",
+  c:["the two metals expand at different rates.","one metal melts slightly.","electricity flows through it.","air pressure pushes on it."],a:0,
+  why:"Two different metals are bonded face to face; the one that expands more forces the strip to curl, opening or closing a switch at a set temperature."},
+ {q:"Drinking through a straw works because sucking",
+  c:["lowers the air pressure inside the straw, and outside air pushes the liquid up.","makes the liquid lighter.","creates a vacuum that pulls with its own force.","warms the liquid so it rises."],a:0,
+  why:"Removing air from the straw drops the pressure inside; the unchanged atmospheric pressure on the drink’s surface pushes liquid up the straw. Nothing actually ‘pulls.’"},
+ {q:"A steering wheel is an example of which simple machine?",
+  c:["Wheel and axle","Pulley","Wedge","Inclined plane"],a:0,
+  why:"A large wheel turning a small shaft multiplies force — your light rim push becomes a strong twist at the steering shaft."},
+ {q:"A ship riding in salt water floats slightly higher than it does in fresh water because salt water",
+  c:["is denser, so less of it must be displaced to support the ship.","is warmer than fresh water.","pushes down on the hull.","contains more oxygen."],a:0,
+  why:"Buoyant force equals the weight of displaced water. Denser water supplies that weight with a smaller displaced volume, so the hull rides higher."}
+];
+
+/* ---- shapes for Assembling Objects, drawn in a 40x40 box ---- */
+const AO_SHAPES = {
+  square:{el:"<rect x=\"6\" y=\"6\" width=\"28\" height=\"28\"/>",
+   anchors:{"tl":[6,6],"tr":[34,6],"br":[34,34],"bl":[6,34],"top":[20,6],"left":[6,20]}},
+  circle:{el:"<circle cx=\"20\" cy=\"20\" r=\"15\"/>",
+   anchors:{"top":[20,5],"right":[35,20],"bottom":[20,35],"left":[5,20]}},
+  triangle:{el:"<polygon points=\"20,4 36,34 4,34\"/>",
+   anchors:{"apex":[20,4],"bl":[4,34],"br":[36,34],"midr":[28,19]}},
+  bar:{el:"<rect x=\"13\" y=\"3\" width=\"14\" height=\"34\"/>",
+   anchors:{"tl":[13,3],"tr":[27,3],"bl":[13,37],"br":[27,37],"midr":[27,20]}},
+  trapezoid:{el:"<polygon points=\"6,34 34,34 27,8 13,8\"/>",
+   anchors:{"bl":[6,34],"br":[34,34],"tl":[13,8],"tr":[27,8]}},
+  ellipse:{el:"<ellipse cx=\"20\" cy=\"20\" rx=\"17\" ry=\"9\"/>",
+   anchors:{"left":[3,20],"right":[37,20],"top":[20,11],"bottom":[20,29]}},
+  cross:{el:"<polygon points=\"14,4 26,4 26,14 36,14 36,26 26,26 26,36 14,36 14,26 4,26 4,14 14,14\"/>",
+   anchors:{"tl":[14,4],"tr":[26,4],"rt":[36,14],"rb":[36,26],"bl":[14,36],"lt":[4,14]}},
+  arrow:{el:"<polygon points=\"4,14 22,14 22,4 36,20 22,36 22,26 4,26\"/>",
+   anchors:{"tip":[36,20],"tl":[4,14],"bl":[4,26],"notch":[22,4]}}
+};
+
+const AO_WHY = "Only one figure joins the two shapes exactly at the marked points. Check the shape of each piece first, then check that the line meets each dot where the problem shows it.";
+
+const BANK_AO = [
+ {base:[["square","tr"],["triangle","bl"]],
+  options:[[["square","br"],["triangle","bl"]],[["circle","top"],["triangle","bl"]],[["square","tr"],["triangle","bl"]],[["square","tr"],["triangle","apex"]]],a:2},
+ {base:[["trapezoid","tl"],["bar","br"]],
+  options:[[["trapezoid","tl"],["bar","br"]],[["trapezoid","tr"],["bar","br"]],[["trapezoid","tl"],["bar","tr"]],[["ellipse","left"],["bar","br"]]],a:0},
+ {base:[["cross","rt"],["circle","left"]],
+  options:[[["cross","tl"],["circle","left"]],[["cross","bl"],["circle","left"]],[["cross","rt"],["square","left"]],[["cross","rt"],["circle","left"]]],a:3},
+ {base:[["arrow","tip"],["square","bl"]],
+  options:[[["arrow","tl"],["square","bl"]],[["arrow","tip"],["square","bl"]],[["arrow","tip"],["square","tr"]],[["triangle","apex"],["square","bl"]]],a:1},
+ {base:[["ellipse","top"],["triangle","br"]],
+  options:[[["ellipse","bottom"],["triangle","br"]],[["ellipse","top"],["triangle","apex"]],[["ellipse","top"],["triangle","br"]],[["bar","tr"],["triangle","br"]]],a:2},
+ {base:[["bar","tl"],["trapezoid","br"]],
+  options:[[["bar","bl"],["trapezoid","br"]],[["bar","tl"],["trapezoid","bl"]],[["bar","tl"],["square","br"]],[["bar","tl"],["trapezoid","br"]]],a:3},
+ {base:[["triangle","midr"],["square","tl"]],
+  options:[[["triangle","midr"],["square","tl"]],[["triangle","apex"],["square","tl"]],[["triangle","midr"],["square","bl"]],[["triangle","midr"],["cross","tl"]]],a:0},
+ {base:[["cross","tl"],["arrow","bl"]],
+  options:[[["cross","tr"],["arrow","bl"]],[["cross","tl"],["arrow","tl"]],[["cross","tl"],["arrow","bl"]],[["cross","tl"],["trapezoid","bl"]]],a:2},
+ {base:[["square","top"],["ellipse","right"]],
+  options:[[["square","tl"],["ellipse","right"]],[["square","top"],["ellipse","right"]],[["square","top"],["ellipse","left"]],[["circle","top"],["ellipse","right"]]],a:1},
+ {base:[["trapezoid","bl"],["cross","rb"]],
+  options:[[["trapezoid","br"],["cross","rb"]],[["trapezoid","bl"],["cross","lt"]],[["trapezoid","bl"],["bar","br"]],[["trapezoid","bl"],["cross","rb"]]],a:3}
+];
+
+/* =====================================================================
+   PROCEDURAL GENERATORS — build fresh AR / MK / AO items with random
+   numbers on every exam, with answers computed (never hand-keyed).
+   ===================================================================== */
+const ri = (a,b) => a + Math.floor(Math.random()*(b-a+1));
+const rpick = arr => arr[ri(0,arr.length-1)];
+const shuf = a => { const x=a.slice(); for(let i=x.length-1;i>0;i--){const j=ri(0,i);[x[i],x[j]]=[x[j],x[i]];} return x; };
+const r2 = v => Math.round(v*100)/100;
+const $fmt = v => '$' + r2(v).toFixed(2);
+const gcd = (a,b) => b ? gcd(b, a%b) : a;
+
+/* choices from a correct number + candidate wrong numbers; sorted ascending */
+function mkNum(correct, wrongs, fmt){
+  fmt = fmt || (v => String(v));
+  const set = [r2(correct)];
+  for (const w of wrongs){
+    const v = r2(w);
+    if (set.length < 4 && isFinite(v) && v > 0 && !set.some(x => Math.abs(x-v) < .005)) set.push(v);
+  }
+  let bump = Math.max(1, Math.round(Math.abs(correct)*.1));
+  while (set.length < 4){
+    const v = r2(correct + bump * (set.length % 2 ? 1 : -1));
+    if (v > 0 && !set.some(x => Math.abs(x-v) < .005)) set.push(v);
+    bump += Math.max(1, Math.round(Math.abs(correct)*.08));
+  }
+  const sorted = set.slice().sort((x,y) => x-y);
+  return { c: sorted.map(fmt), a: sorted.findIndex(v => Math.abs(v - r2(correct)) < .005) };
+}
+/* choices from distinct strings; shuffled */
+function mkStr(correct, wrongs){
+  const set = [correct];
+  for (const w of wrongs) if (set.length < 4 && !set.includes(w)) set.push(w);
+  const order = shuf(set.map((_,i)=>i));
+  return { c: order.map(i => set[i]), a: order.indexOf(0), n: set.length };
+}
+const fracTxt = v => { const w=Math.floor(v), f={0:'',0.25:'¼',0.5:'½',0.75:'¾'}[r2(v-w)]; return (w||!f? w:'') + (f||''); };
+const minsToClock = m => { m=((m%1440)+1440)%1440; const h24=Math.floor(m/60), mm=String(m%60).padStart(2,'0'); const ap=h24<12?'a.m.':'p.m.'; let h=h24%12; if(!h)h=12; return h+':'+mm+' '+ap; };
+
+const GEN_AR = [
+ function fuel(){
+  const mpg = ri(9,22)*2, gal = ri(6,14), miles = mpg*gal;
+  const k = mkNum(mpg, [mpg-2, mpg+2, mpg+4]);
+  return {q:`A vehicle travels ${miles} miles and uses ${gal} gallons of fuel. How many miles per gallon does it get?`,
+    c:k.c, a:k.a, ord:1, why:`${miles} ÷ ${gal} = ${mpg} miles per gallon.`};
+ },
+ function discount(){
+  const base = ri(6,19)*5, d = rpick([10,15,20,25,30,40]), sale = r2(base*(1-d/100));
+  const k = mkNum(sale, [base - d, r2(base*d/100), sale + 5], $fmt);
+  return {q:`A jacket normally priced at $${base} is marked down ${d} percent. What is the sale price?`,
+    c:k.c, a:k.a, ord:1, why:`${d}% of $${base} is $${r2(base*d/100).toFixed(2)}, so the price drops to $${sale.toFixed(2)}. Faster: pay ${100-d}% — ${((100-d)/100).toFixed(2)} × ${base}.`};
+ },
+ function overtime(){
+  const r = ri(14,25), h = ri(43,48), ot = h-40, pay = r2(40*r + 1.5*r*ot);
+  const k = mkNum(pay, [h*r, 40*r + 2*r*ot, pay - 30], $fmt);
+  return {q:`A worker earns $${r} per hour, with time-and-a-half for hours beyond 40. What is the pay for a ${h}-hour week?`,
+    c:k.c, a:k.a, ord:1, why:`Regular: 40 × $${r} = $${40*r}. Overtime: ${ot} hours at $${r} × 1.5 = $${r2(1.5*r).toFixed(2)} gives $${r2(1.5*r*ot).toFixed(2)}. Total $${pay.toFixed(2)}. Paying all ${h} hours at the straight rate is the trap.`};
+ },
+ function recipe(){
+  const a = rpick([4,6,8,12]), u = rpick([0.5,0.75,1,1.25]), f = r2(a*u);
+  let b = ri(5,16); while (b===a) b = ri(5,16);
+  const need = r2(u*b);
+  const k = mkNum(need, [r2(u*(b+2)), r2(u*(b-2)), f], v=>fracTxt(v)+' cups');
+  return {q:`A recipe that serves ${a} people calls for ${fracTxt(f)} cups of flour. How much flour is needed to serve ${b} people?`,
+    c:k.c, a:k.a, ord:1, why:`${fracTxt(f)} ÷ ${a} = ${fracTxt(u)} cup per person, and ${fracTxt(u)} × ${b} = ${fracTxt(need)} cups.`};
+ },
+ function clock(){
+  const start = ri(6,10)*60 + ri(1,11)*5, dur = ri(2,5)*60 + ri(2,10)*5, end = start + dur;
+  const set = [end, end-10, end+15, end+30].map(v=>v);
+  const uniq = [...new Set(set)].sort((x,y)=>x-y);
+  while (uniq.length < 4) uniq.push(uniq[uniq.length-1]+10);
+  return {q:`A bus departs at ${minsToClock(start)} on a trip that takes ${Math.floor(dur/60)} hours and ${dur%60} minutes. When does it arrive?`,
+    c:uniq.map(minsToClock), a:uniq.indexOf(end), ord:1,
+    why:`${minsToClock(start)} plus ${Math.floor(dur/60)} hours is ${minsToClock(start+Math.floor(dur/60)*60)}; adding the remaining ${dur%60} minutes gives ${minsToClock(end)}.`};
+ },
+ function together(){
+  const t = rpick([[6,3,2],[4,12,3],[6,12,4],[10,15,6],[8,24,6],[5,20,4],[9,18,6],[12,24,8],[3,6,2],[20,30,12],[14,35,10],[21,28,12],[10,40,8],[12,36,9]]);
+  const [a,b,ans] = t, who = rpick([['painter','paint a room','painters'],['pump','drain a tank','pumps'],['crew','mow a field','crews']]);
+  const k = mkNum(ans, [Math.round((a+b)/2), Math.min(a,b), ans+2], v=>v+' hours');
+  return {q:`One ${who[0]} can ${who[1]} in ${a} hours; another can do the same job in ${b} hours. Working together, how long will the job take?`,
+    c:k.c, a:k.a, ord:1, why:`In one hour they finish 1/${a} + 1/${b} = 1/${ans} of the job, so the whole job takes ${ans} hours. The answer must be shorter than the faster worker alone.`};
+ },
+ function interest(){
+  const P = ri(4,20)*200, r = rpick([3,4,5,6,8]), t = rpick([2,3,4]), I = P*r*t/100;
+  const k = mkNum(I, [P*r/100, I + P*r/100, I - P*r/100], v=>'$'+v);
+  return {q:`How much simple interest does $${P.toLocaleString()} earn in ${t} years at an annual rate of ${r} percent?`,
+    c:k.c, a:k.a, ord:1, why:`Interest = principal × rate × time = ${P.toLocaleString()} × 0.0${r} × ${t} = $${I}. The $${P*r/100} choice is one year's interest only.`};
+ },
+ function tank(){
+  const cap = ri(4,9)*10, rate = rpick([3,4,5,6]);
+  let cur = ri(4, Math.floor(cap/2)); cur += (cap-cur) % rate;
+  const t = (cap-cur)/rate;
+  const k = mkNum(t, [Math.round(cap/rate), t-2, t+2], v=>v+' minutes');
+  return {q:`A ${cap}-gallon tank already holds ${cur} gallons. If it fills at ${rate} gallons per minute, how long until it is full?`,
+    c:k.c, a:k.a, ord:1, why:`It needs ${cap} − ${cur} = ${cap-cur} more gallons, and ${cap-cur} ÷ ${rate} = ${t} minutes. Dividing the full ${cap} gallons by the rate ignores what is already in the tank.`};
+ },
+ function ratio(){
+  const kk = rpick([3,4,5,7,8,9]), m = ri(12,40), total = m*(kk+1);
+  const k = mkNum(m, [Math.round(total/kk), m*kk, m+4]);
+  return {q:`A unit has a ratio of 1 officer to every ${kk} enlisted members. If the unit has ${total} members in total, how many are officers?`,
+    c:k.c, a:k.a, ord:1, why:`The ratio makes ${kk+1} parts in all, so one part is ${total} ÷ ${kk+1} = ${m} officers (and ${m*kk} enlisted).`};
+ },
+ function needScore(){
+  let s1,s2,s3,t,need;
+  do { s1=ri(68,96); s2=ri(68,96); s3=ri(68,96); t=ri(80,90); need = 4*t-(s1+s2+s3); } while (need < 58 || need > 100);
+  const k = mkNum(need, [t, need-5, need+5]);
+  return {q:`A student scores ${s1}, ${s2} and ${s3} on three tests. What must the fourth score be to bring the average for all four tests to exactly ${t}?`,
+    c:k.c, a:k.a, ord:1, why:`Four tests averaging ${t} must total 4 × ${t} = ${4*t}. The first three total ${s1+s2+s3}, so the fourth must be ${4*t} − ${s1+s2+s3} = ${need}.`};
+ },
+ function distance(){
+  const t = rpick([2,3,4,2.5,3.5]);
+  const r = Number.isInteger(t) ? ri(9,14)*5 : rpick([50,60,70]), d = r2(r*t);
+  const tTxt = Number.isInteger(t) ? t : Math.floor(t)+'½';
+  const k = mkNum(d, [r2(r*(t+.5)), r2(r*(t-.5)), d+r], v=>Math.round(v)+' miles');
+  return {q:`A convoy drives for ${tTxt} hours at an average speed of ${r} miles per hour. How far does it travel?`,
+    c:k.c, a:k.a, ord:1, why:`Distance = speed × time = ${r} × ${tTxt} = ${Math.round(d)} miles.`};
+ },
+ function unitPrice(){
+  const n = rpick([2,3,4]), p = rpick([1.25,1.5,1.75,2.25,2.5,3.25]), X = r2(n*p);
+  const m = ri(n+2, 12), cost = r2(m*p);
+  const k = mkNum(cost, [cost+p, cost-p, r2(m*n)], $fmt);
+  return {q:`Apples cost $${X.toFixed(2)} for a ${n}-pound bag. At the same rate, how much would ${m} pounds cost?`,
+    c:k.c, a:k.a, ord:1, why:`$${X.toFixed(2)} ÷ ${n} = $${p.toFixed(2)} per pound, and ${p.toFixed(2)} × ${m} = $${cost.toFixed(2)}.`};
+ },
+ function growth(){
+  const base = ri(3,12)*400, pct = rpick([5,10,15,20,25]), inc = base*pct/100, now = base+inc;
+  const k = mkNum(now, [inc, base-inc, now+inc], v=>Math.round(v).toLocaleString());
+  return {q:`A town of ${base.toLocaleString()} people grows by ${pct} percent over a decade. What is the new population?`,
+    c:k.c, a:k.a, ord:1, why:`The increase is ${base.toLocaleString()} × 0.${pct<10?'0':''}${pct} = ${inc.toLocaleString()}, so the population reaches ${now.toLocaleString()}.`};
+ },
+ function change(){
+  const items = [r2(ri(4,9)+rpick([.25,.5,.75])), r2(ri(3,8)+rpick([.25,.5,.75]))];
+  const total = r2(items[0]+items[1]), payRaw = total > 20 ? 50 : 20, ch = r2(payRaw-total);
+  const k = mkNum(ch, [total, ch+1, ch-1], $fmt);
+  return {q:`A shopper buys two items priced $${items[0].toFixed(2)} and $${items[1].toFixed(2)}, paying with a $${payRaw} bill. How much change is due?`,
+    c:k.c, a:k.a, ord:1, why:`The items total $${total.toFixed(2)}, and ${payRaw} − ${total.toFixed(2)} = $${ch.toFixed(2)}.`};
+ },
+ function pieces(){
+  const piece = rpick([3,4,6,8,12]), n = ri(9,18), len = piece*n;
+  const k = mkNum(n, [n-1, n+1, n+2]);
+  return {q:`A ${len}-inch rope is cut into pieces ${piece} inches long. How many pieces result?`,
+    c:k.c, a:k.a, ord:1, why:`${len} ÷ ${piece} = ${n} pieces.`};
+ }
+];
+
+const sgn = (v, first) => (v<0 ? (first?'−':' − ') : (first?'':' + ')) + Math.abs(v);
+const poly2 = (m,c) => 'x²' + (m ? sgn(m,false)+'x' : '') + (c ? sgn(c,false) : '');
+
+const GEN_MK = [
+ function linear(){
+  const a = ri(3,8), x = ri(3,12), b = ri(2,19), c = a*x+b;
+  const alt = Math.round((c+b)/a);
+  const k = mkNum(x, [x-1, x+1, alt!==x?alt:x+2], v=>'x = '+v);
+  return {q:`Solve for x: ${a}x + ${b} = ${c}`,
+    c:k.c, a:k.a, ord:1, why:`Subtract ${b} from both sides: ${a}x = ${c-b}. Divide by ${a}: x = ${x}.`};
+ },
+ function foil(){
+  let p = ri(1,6), q = -ri(1,7);
+  if (Math.random()<.5){ q = ri(1,7); }
+  while (p+q === 0) q += (q<0?-1:1);
+  const mid = p+q, con = p*q;
+  const k = mkStr(poly2(mid,con), [poly2(-mid,con), poly2(mid,-con), poly2(-mid,-con)]);
+  const qs = q<0 ? `(x − ${-q})` : `(x + ${q})`;
+  return {q:`Multiply: (x + ${p})${qs}`,
+    c:k.c, a:k.a, ord:1, why:`FOIL: x² ${q<0?'−':'+'} ${Math.abs(q)}x + ${p}x ${con<0?'−':'+'} ${Math.abs(con)}, and the middle terms combine to ${mid}x — giving ${poly2(mid,con)}.`};
+ },
+ function circle(){
+  const r = ri(3,9), area = Math.random()<.5;
+  const ans = area ? r*r : 2*r, other = area ? 2*r : r*r;
+  const k = mkNum(ans, [other, r, ans*2], v=>v+'π'+(area?' sq in':' in'));
+  return {q:`What is the ${area?'area':'circumference'} of a circle with a radius of ${r} inches?`,
+    c:k.c, a:k.a, ord:1, why: area ? `Area = πr² = π(${r})² = ${r*r}π. The ${2*r}π choice is the circumference, 2πr.`
+                                 : `Circumference = 2πr = 2 × ${r} × π = ${2*r}π. The ${r*r}π choice is the area, πr².`};
+ },
+ function volume(){
+  const l = ri(2,9), w = ri(2,9), h = ri(2,9), V = l*w*h;
+  const k = mkNum(V, [l*w, l+w+h, V+l], v=>v+' cu in');
+  return {q:`A rectangular box measures ${l} in by ${w} in by ${h} in. What is its volume?`,
+    c:k.c, a:k.a, ord:1, why:`Volume = length × width × height = ${l} × ${w} × ${h} = ${V} cubic inches.`};
+ },
+ function power(){
+  let b, e; do { b = rpick([2,3,4,5]); e = rpick([2,3,4]); } while (Math.pow(b,e) > 700);
+  const v = Math.pow(b,e);
+  const k = mkNum(v, [b*e, Math.pow(b,e-1), v+b]);
+  return {q:`What is ${b}${['','','²','³','⁴'][e]}?`,
+    c:k.c, a:k.a, ord:1, why:`${Array(e).fill(b).join(' × ')} = ${v}. The ${b*e} choice is ${b} × ${e}, the mistake of multiplying base by exponent.`};
+ },
+ function angles(){
+  const A = ri(25,80), B = ri(25, Math.min(85, 135-A+20)), C = 180-A-B;
+  const k = mkNum(C, [C-10, C+10, 180-C], v=>v+'°');
+  return {q:`Two angles of a triangle measure ${A}° and ${B}°. What is the third angle?`,
+    c:k.c, a:k.a, ord:1, why:`The three angles total 180°, so 180 − (${A} + ${B}) = 180 − ${A+B} = ${C}°.`};
+ },
+ function roots(){
+  const sq = [16,25,36,49,64,81,100,121,144];
+  const s1 = rpick(sq); let s2 = rpick(sq); while (s2===s1) s2 = rpick(sq);
+  const ans = Math.sqrt(s1)+Math.sqrt(s2);
+  const w3 = Number.isInteger(Math.sqrt(s1+s2)) ? Math.sqrt(s1+s2) : ans+3;
+  const k = mkNum(ans, [ans-1, ans+2, w3]);
+  return {q:`What is the value of √${s1} + √${s2}?`,
+    c:k.c, a:k.a, ord:1, why:`√${s1} = ${Math.sqrt(s1)} and √${s2} = ${Math.sqrt(s2)}, so the sum is ${ans}. The roots must be taken separately — √${s1} + √${s2} is not √${s1+s2}.`};
+ },
+ function fracEq(){
+  const den = rpick([2,3,4,5]); let num = ri(1,den-1); while (gcd(num,den)!==1) num = ri(1,den-1);
+  const x = den*ri(2,9), c = num*x/den;
+  const k = mkNum(x, [Math.round(c*num/den), c*den, x+den], v=>'x = '+v);
+  return {q:`If ${num}⁄${den} x = ${c}, what is x?`,
+    c:k.c, a:k.a, ord:1, why:`Multiply both sides by the reciprocal ${den}/${num}: x = ${c} × ${den}/${num} = ${x}.`};
+ },
+ function pctOf(){
+  const p = rpick([15,20,25,30,40,60,75]), n = ri(2,15)*20, v = n*p/100;
+  const k = mkNum(v, [v+5, v-5, n*(100-p)/100]);
+  return {q:`What is ${p} percent of ${n}?`,
+    c:k.c, a:k.a, ord:1, why:`0.${p} × ${n} = ${v}. A shortcut: 10% of ${n} is ${n/10}, and ${p}% is ${p/10} times that.`};
+ },
+ function stats(){
+  const arr = []; while (arr.length<5){ const v=ri(2,20); if(!arr.includes(v)) arr.push(v); }
+  arr.sort((x,y)=>x-y);
+  const isMed = Math.random()<.5;
+  const ans = isMed ? arr[2] : arr[4]-arr[0];
+  const wr = isMed ? [arr[1], arr[3], Math.round(arr.reduce((s,v)=>s+v,0)/5)] : [arr[4], arr[2], ans-2];
+  const k = mkNum(ans, wr);
+  return {q:`What is the ${isMed?'median':'range'} of the numbers ${arr.join(', ')}?`,
+    c:k.c, a:k.a, ord:1, why: isMed ? `The median is the middle value when the numbers are in order — here ${arr[2]}.`
+                                    : `Range = largest − smallest = ${arr[4]} − ${arr[0]} = ${ans}.`};
+ },
+ function distribute(){
+  const a = ri(2,6), b = ri(2,5), c = ri(2,9), d = ri(2,9);
+  const X = a*b+d, C = a*c;
+  const f = (x,cc) => `${x}x − ${cc}`;
+  const k = mkStr(f(X,C), [f(X,c), f(a*b,C), `${X}x + ${C}`]);
+  return {q:`Simplify: ${a}(${b}x − ${c}) + ${d}x`,
+    c:k.c, a:k.a, ord:1, why:`Distribute first: ${a*b}x − ${C} + ${d}x, then combine like terms to get ${X}x − ${C}.`};
+ },
+ function pythag(){
+  const t = rpick([[3,4,5],[6,8,10],[5,12,13],[9,12,15],[8,15,17],[7,24,25],[12,16,20],[20,21,29],[10,24,26],[9,40,41]]);
+  const [A,B,H] = t, hyp = Math.random()<.6;
+  if (hyp){
+    const k = mkNum(H, [A+B, H-1, H+2], v=>v+' in');
+    return {q:`A right triangle has legs of ${A} inches and ${B} inches. How long is the hypotenuse?`,
+      c:k.c, a:k.a, ord:1, why:`By the Pythagorean theorem, ${A}² + ${B}² = ${A*A} + ${B*B} = ${A*A+B*B}, and √${A*A+B*B} = ${H}. Simply adding the legs (${A+B}) is the trap.`};
+  }
+  const k = mkNum(B, [H-A, B-2, B+2], v=>v+' in');
+  return {q:`A right triangle has a hypotenuse of ${H} inches and one leg of ${A} inches. How long is the other leg?`,
+    c:k.c, a:k.a, ord:1, why:`${H}² − ${A}² = ${H*H} − ${A*A} = ${B*B}, and √${B*B} = ${B}.`};
+ },
+ function square(){
+  const s = ri(3,12), toPerim = Math.random()<.5;
+  if (toPerim){
+    const k = mkNum(4*s, [2*s, s*s, 4*s+4], v=>v+' ft');
+    return {q:`A square has an area of ${s*s} square feet. What is its perimeter?`,
+      c:k.c, a:k.a, ord:1, why:`Each side is √${s*s} = ${s} ft, and a square has four of them, so the perimeter is ${4*s} ft.`};
+  }
+  const k = mkNum(s*s, [4*s, 2*s, s*s+s], v=>v+' sq ft');
+  return {q:`A square has a perimeter of ${4*s} feet. What is its area?`,
+    c:k.c, a:k.a, ord:1, why:`Each side is ${4*s} ÷ 4 = ${s} ft, so the area is ${s} × ${s} = ${s*s} sq ft.`};
+ },
+ function marbles(){
+  let r,b,g,tot,k1;
+  for (let i=0;i<25;i++){
+    r=ri(2,6); b=ri(2,6); g=ri(2,6); tot=r+b+g;
+    const counts={red:r, blue:b, green:g};
+    const names=Object.keys(counts), name=rpick(names), kk=counts[name];
+    const red=(n,d)=>{const g0=gcd(n,d);return (n/g0)+'/'+(d/g0);};
+    const correct=red(kk,tot);
+    const others=names.filter(n=>n!==name).map(n=>red(counts[n],tot));
+    const wrong3=red(kk,tot-kk);
+    const st=mkStr(correct,[...others,wrong3]);
+    if (st.n===4){
+      return {q:`A bag holds ${r} red, ${b} blue and ${g} green marbles. If one marble is drawn at random, what is the probability it is ${name}?`,
+        c:st.c, a:st.a, ord:1, why:`${kk} ${name} out of ${tot} total = ${kk}/${tot}${red(kk,tot)!==kk+'/'+tot?', which reduces to '+red(kk,tot):''}.`};
+    }
+  }
+  return GEN_MK[0]();
+ },
+ function inequality(){
+  const a = rpick([2,3,4,5]), b = ri(1,15), x0 = ri(2,9), c = a*x0+b;
+  const alt = (a*x0 === x0+2) ? x0+3 : a*x0;
+  const k = mkStr('x < '+x0, ['x > '+x0, 'x < '+(x0+2), 'x < '+alt]);
+  return {q:`Solve the inequality: ${a}x + ${b} < ${c}`,
+    c:k.c, a:k.a, ord:1, why:`Subtract ${b} from both sides (${a}x < ${c-b}), then divide by ${a}: x < ${x0}. Dividing by a positive number keeps the inequality direction.`};
+ }
+];
+
+function genAO(){
+  const keys = Object.keys(AO_SHAPES);
+  const s1 = rpick(keys); let s2 = rpick(keys); while (s2===s1) s2 = rpick(keys);
+  const a1 = rpick(Object.keys(AO_SHAPES[s1].anchors));
+  const a2 = rpick(Object.keys(AO_SHAPES[s2].anchors));
+  const correct = [[s1,a1],[s2,a2]];
+  const cands = [];
+  for (const alt of Object.keys(AO_SHAPES[s1].anchors)) if (alt!==a1) cands.push([[s1,alt],[s2,a2]]);
+  for (const alt of Object.keys(AO_SHAPES[s2].anchors)) if (alt!==a2) cands.push([[s1,a1],[s2,alt]]);
+  for (const ns of shuf(keys.filter(k=>k!==s1&&k!==s2)).slice(0,2)){
+    cands.push([[ns, rpick(Object.keys(AO_SHAPES[ns].anchors))],[s2,a2]]);
+  }
+  const ROT = ['triangle','trapezoid','arrow'];   // rotation changes these outlines visibly
+  if (ROT.indexOf(s1) !== -1) cands.push([[s1,a1,rpick([90,180,270])],[s2,a2]]);
+  if (ROT.indexOf(s2) !== -1) cands.push([[s1,a1],[s2,a2,rpick([90,180,270])]]);
+  const seen = new Set([JSON.stringify(correct)]);
+  const wrongs = [];
+  for (const v of shuf(cands)){
+    const k = JSON.stringify(v);
+    if (!seen.has(k) && wrongs.length < 3){ seen.add(k); wrongs.push(v); }
+  }
+  const opts = shuf([correct, ...wrongs]);
+  return { base: correct, options: opts, a: opts.indexOf(correct), ord: 1 };
+}
+
+const GEN = {
+  AR: () => rpick(GEN_AR)(),
+  MK: () => rpick(GEN_MK)(),
+  AO: genAO
+};
+/* how many of each exam's 10 items come from the generators */
+const GEN_MIX = { AR: 4, MK: 4, AO: 5 };
+
+const BANK = { GS: BANK_GS, AR: BANK_AR, WK: BANK_WK, PC: BANK_PC, MK: BANK_MK,
+               EI: BANK_EI, AS: BANK_AS, MC: BANK_MC, AO: BANK_AO };
+const POOL_TOTAL = Object.keys(BANK).reduce((n, k) => n + BANK[k].length, 0);
+
+/* seconds per subtest, scaled from the paper version pace for 10 items */
+const TIMES = {"GS":270,"AR":720,"WK":190,"PC":520,"MK":580,"EI":270,"AS":265,"MC":460,"AO":360};
+</script>
+<script>
+/* ================= build subtest objects ================= */
+const SUBTESTS = BLUEPRINT.map(b => ({
+  code: b.code, name: b.name, afqt: !!b.afqt,
+  seconds: TIMES[b.code], questions: BANK[b.code]
+}));
+const byCode = c => SUBTESTS.find(s => s.code === c);
+
+const $  = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const LETTERS = ['A','B','C','D'];
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+
+/* ================= assembling-objects renderer ================= */
+function aoWorld(it){
+  const a = AO_SHAPES[it.shape].anchors[it.anchor];
+  const r = (it.rot || 0) * Math.PI / 180;
+  const dx = a[0] - 20, dy = a[1] - 20;
+  return [ it.x + 20 + dx*Math.cos(r) - dy*Math.sin(r),
+           it.y + 20 + dx*Math.sin(r) + dy*Math.cos(r) ];
+}
+function aoSVG(pairs, connect){
+  const items = pairs.map((p,i) => ({shape:p[0], anchor:p[1], x: i ? 118 : 22, y: 15, rot: p[2] || 0}));
+  let g = '', dots = '', line = '';
+  items.forEach(it => {
+    g += `<g transform="translate(${it.x},${it.y}) rotate(${it.rot},20,20)" class="ao-shape">${AO_SHAPES[it.shape].el}</g>`;
+  });
+  const pts = items.map(aoWorld);
+  if (connect && pts.length === 2){
+    line = `<line x1="${pts[0][0].toFixed(1)}" y1="${pts[0][1].toFixed(1)}" x2="${pts[1][0].toFixed(1)}" y2="${pts[1][1].toFixed(1)}" class="ao-line"/>`;
+  }
+  pts.forEach(p => { dots += `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.7" class="ao-dot"/>`; });
+  return `<svg viewBox="0 0 180 70" class="ao-svg" role="img" aria-label="geometric shapes">${line}${g}${dots}</svg>`;
+}
+
+/* ================= start screen ================= */
+(function initStart(){
+  $('#stat-pool').textContent = POOL_TOTAL + '+';
+  $('#blueprint-body').innerHTML = BLUEPRINT.map(b => `
+    <tr class="${b.afqt ? '' : 'dim'}">
+      <td><span class="tcode">${b.code}</span> &nbsp;${b.name}</td>
+      <td class="c">${b.paper}</td>
+      <td class="c">${b.cat}</td>
+      <td>${b.content}</td>
+    </tr>`).join('');
+
+  $('#subtest-modes').innerHTML = SUBTESTS.map(s => `
+    <button class="mode" data-only="${s.code}">
+      <span class="n">10 items \u00b7 ${Math.round(s.seconds/60)} min</span>
+      <h3>${s.name}</h3>
+      <p>${BLUEPRINT.find(b=>b.code===s.code).content}${s.afqt ? ' \u00b7 counts toward the AFQT' : ''}</p>
+    </button>`).join('');
+
+  $$('.mode[data-mode]').forEach(btn => btn.addEventListener('click', () => {
+    const m = btn.dataset.mode;
+    if (m === 'single'){
+      $('#pick-subtest').style.display = 'block';
+      $('#pick-subtest').scrollIntoView({behavior:'smooth', block:'start'});
+      return;
+    }
+    startExam(m === 'afqt' ? SUBTESTS.filter(s => s.afqt) : SUBTESTS.slice());
+  }));
+
+  $$('.mode[data-only]').forEach(btn => btn.addEventListener('click', () =>
+    startExam([byCode(btn.dataset.only)])
+  ));
+})();
+
+/* ================= exam state ================= */
+let EX = null, tick = null;
+
+function shuffled(a){
+  const x = a.slice();
+  for (let i = x.length - 1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); [x[i],x[j]] = [x[j],x[i]]; }
+  return x;
+}
+
+/* ---- per-exam question builder: random draw + generated items ---- */
+let MEM_SEEN = {};
+function getSeen(code){
+  try { return JSON.parse(localStorage.getItem('asvab_seen_' + code)) || []; }
+  catch(e){ return MEM_SEEN[code] || []; }
+}
+function setSeen(code, arr){
+  MEM_SEEN[code] = arr;
+  try { localStorage.setItem('asvab_seen_' + code, JSON.stringify(arr)); } catch(e){}
+}
+/* draw n items, preferring ones this browser hasn't seen yet */
+function samplePool(code, pool, n){
+  const seen = getSeen(code);
+  const idx = pool.map((_, i) => i);
+  const unseen = shuffled(idx.filter(i => seen.indexOf(i) === -1));
+  const old = shuffled(idx.filter(i => seen.indexOf(i) !== -1));
+  const take = unseen.concat(old).slice(0, n);
+  let newSeen = seen.concat(take.filter(i => seen.indexOf(i) === -1));
+  if (newSeen.length >= pool.length) newSeen = take.slice();   // pool exhausted — reset
+  setSeen(code, newSeen);
+  return take.map(i => pool[i]);
+}
+function parseNumish(s){
+  const t = String(s).replace(/<[^>]*>/g, '').replace(/,/g, '').trim();
+  if (!/^[$]?\d/.test(t) || /[:\/]/.test(t)) return null;
+  const m = t.match(/-?\d+(\.\d+)?/);
+  return m ? parseFloat(m[0]) : null;
+}
+/* per-exam copy gets its answer positions rearranged:
+   numeric sets sort ascending (like the real test), text sets shuffle */
+function finalizeChoices(q, code){
+  if (q.ord) return;                    // generated items arrive pre-arranged
+  if (code === 'AO'){
+    const order = shuffled([0,1,2,3]);
+    const opts = order.map(i => q.options[i]);
+    q.a = order.indexOf(q.a); q.options = opts;
+    return;
+  }
+  const pairs = q.c.map((t, i) => ({t: t, i: i}));
+  const nums = q.c.map(parseNumish);
+  let arranged;
+  if (nums.every(v => v !== null) && new Set(nums).size === 4){
+    arranged = pairs.slice().sort((x, y) => parseNumish(x.t) - parseNumish(y.t));
+  } else {
+    arranged = shuffled(pairs);
+  }
+  q.a = arranged.findIndex(p => p.i === q.a);
+  q.c = arranged.map(p => p.t);
+}
+function buildQuestions(s, shuffleOrder){
+  const code = s.code, pool = BANK[code];
+  const genN = GEN[code] ? (GEN_MIX[code] || 0) : 0;
+  let qs = samplePool(code, pool, 10 - genN).map(q => JSON.parse(JSON.stringify(q)));
+  for (let i = 0; i < genN; i++) qs.push(GEN[code]());
+  qs.forEach(q => finalizeChoices(q, code));
+  if (shuffleOrder !== false) qs = shuffled(qs);
+  if (code === 'PC'){                   // keep same-passage questions adjacent
+    const groups = {}, order = [];
+    qs.forEach(q => { if (!groups[q.p]){ groups[q.p] = []; order.push(q.p); } groups[q.p].push(q); });
+    qs = order.reduce((acc, p) => acc.concat(groups[p]), []);
+  }
+  return qs;
+}
+
+function startExam(list){
+  const timed   = $('#opt-timer').checked;
+  const shuffle = $('#opt-shuffle').checked;
+  EX = {
+    timed,
+    parts: list.map(s => {
+      const qs = buildQuestions(s, shuffle);
+      return {
+        code: s.code, name: s.name, afqt: s.afqt, seconds: s.seconds,
+        left: s.seconds, expired: false,
+        qs: qs,
+        ans: new Array(qs.length).fill(null),
+        flag: new Array(qs.length).fill(false)
+      };
+    }),
+    pi: 0, qi: 0, started: new Date()
+  };
+  $('#screen-start').classList.add('hidden');
+  $('#screen-results').classList.add('hidden');
+  $('#screen-exam').classList.remove('hidden');
+  window.scrollTo(0,0);
+  renderAll();
+  startClock();
+}
+
+const part = () => EX.parts[EX.pi];
+
+/* ================= clock ================= */
+function startClock(){
+  clearInterval(tick);
+  if (!EX.timed){
+    $('#ex-clock').className = 'clock off';
+    $('#ex-clock').textContent = 'UNTIMED';
+    return;
+  }
+  paintClock();
+  tick = setInterval(() => {
+    const p = part();
+    p.left--;
+    if (p.left <= 0){ p.left = 0; p.expired = true; paintClock(); nextPart(true); return; }
+    paintClock();
+  }, 1000);
+}
+function paintClock(){
+  const p = part(), el = $('#ex-clock');
+  const m = String(Math.floor(p.left/60)).padStart(2,'0');
+  const s = String(p.left % 60).padStart(2,'0');
+  el.textContent = `${m}:${s}`;
+  el.className = 'clock' + (p.left <= 60 ? ' warn' : '');
+}
+
+/* ================= rendering ================= */
+function renderAll(){ renderBar(); renderSheet(); renderQ(); }
+
+function renderBar(){
+  const p = part();
+  $('#ex-code').textContent = p.code;
+  $('#ex-name').textContent = p.name;
+  $('#ex-count').textContent = `Subtest ${EX.pi+1} of ${EX.parts.length}`;
+  const done = p.ans.filter(a => a !== null).length;
+  $('#ex-prog').style.width = (done / p.qs.length * 100) + '%';
+}
+
+function renderSheet(){
+  const p = part();
+  $('#sheet-body').innerHTML = p.qs.map((_, i) => `
+    <button class="srow ${i===EX.qi?'cur':''} ${p.flag[i]?'flagged':''}" data-i="${i}" aria-label="Question ${i+1}">
+      <span class="snum">${i+1}</span>
+      ${LETTERS.map((L,k)=>`<span class="bub ${p.ans[i]===k?'on':''}">${L}</span>`).join('')}
+    </button>`).join('');
+  $$('#sheet-body .srow').forEach(b => b.addEventListener('click', () => { stopAdvance(); EX.qi = +b.dataset.i; renderAll(); }));
+  $('#sheet-f').textContent = `${p.ans.filter(a=>a!==null).length} / ${p.qs.length}`;
+}
+
+function renderQ(){
+  const p = part(), q = p.qs[EX.qi], isAO = p.code === 'AO';
+  let html = `<div class="qhead">
+      <span class="qnum">${p.code} \u2014 QUESTION ${EX.qi+1} OF ${p.qs.length}</span>
+      <button class="flagbtn" id="btn-flag" aria-pressed="${p.flag[EX.qi]}">${p.flag[EX.qi] ? 'Flagged' : 'Flag for review'}</button>
+    </div>`;
+
+  if (q.p) html += `<div class="passage"><span class="lbl">Read the passage</span>${PASSAGES[q.p]}</div>`;
+
+  if (isAO){
+    html += `<p class="stem">Which figure below shows the two shapes joined at the two marked points?</p>
+      <div class="ao-frame">${aoSVG(q.base, false)}</div>
+      <div class="choices ao-choices" role="radiogroup">` +
+      q.options.map((o,k)=>`
+        <button class="choice" role="radio" aria-checked="${p.ans[EX.qi]===k}" data-k="${k}">
+          <span class="k">${LETTERS[k]}</span>${aoSVG(o, true)}
+        </button>`).join('') + `</div>`;
+  } else {
+    html += `<p class="stem">${q.q}</p><div class="choices" role="radiogroup">` +
+      q.c.map((t,k)=>`
+        <button class="choice" role="radio" aria-checked="${p.ans[EX.qi]===k}" data-k="${k}">
+          <span class="k">${LETTERS[k]}</span><span>${t}</span>
+        </button>`).join('') + `</div>`;
+  }
+  $('#qcard').innerHTML = html;
+
+  $$('#qcard .choice').forEach(b => b.addEventListener('click', () => pick(+b.dataset.k)));
+  $('#btn-flag').addEventListener('click', () => { p.flag[EX.qi] = !p.flag[EX.qi]; renderQ(); renderSheet(); });
+
+  $('#btn-prev').disabled = EX.qi === 0;
+  const last = EX.qi === p.qs.length - 1;
+  $('#btn-next').classList.toggle('hidden', last);
+  $('#btn-finish').classList.toggle('hidden', !last);
+  $('#btn-finish').textContent = EX.pi === EX.parts.length - 1 ? 'Finish and score' : 'Next subtest \u2192';
+}
+
+let advancing = null;
+function stopAdvance(){ clearTimeout(advancing); advancing = null; }
+function pick(k){
+  const p = part();
+  p.ans[EX.qi] = k;
+  renderSheet(); renderBar();
+  $$('#qcard .choice').forEach(b => b.setAttribute('aria-checked', +b.dataset.k === k));
+  if (EX.qi < p.qs.length - 1){
+    stopAdvance();
+    advancing = setTimeout(() => { advancing = null; EX.qi++; renderAll(); }, 220);
+  }
+}
+
+/* ================= navigation ================= */
+$('#btn-prev').addEventListener('click', () => { stopAdvance(); if (EX.qi > 0){ EX.qi--; renderAll(); } });
+$('#btn-next').addEventListener('click', () => { stopAdvance(); if (EX.qi < part().qs.length-1){ EX.qi++; renderAll(); } });
+$('#btn-finish').addEventListener('click', () => nextPart(false));
+$('#btn-quit').addEventListener('click', () => {
+  if (confirm('End the exam now and score what you have answered?')) finish();
+});
+
+function nextPart(auto){
+  stopAdvance();
+  if (EX.pi >= EX.parts.length - 1){ finish(); return; }
+  EX.pi++; EX.qi = 0;
+  renderAll(); startClock(); window.scrollTo(0,0);
+  if (auto) setTimeout(() => alert('Time is up on that subtest. Moving on to ' + part().name + '.'), 60);
+}
+
+document.addEventListener('keydown', e => {
+  if ($('#screen-exam').classList.contains('hidden')) return;
+  if (/^[a-dA-D]$/.test(e.key)) { pick('abcd'.indexOf(e.key.toLowerCase())); e.preventDefault(); }
+  else if (e.key === 'ArrowLeft')  $('#btn-prev').click();
+  else if (e.key === 'ArrowRight') { const n = $('#btn-next'); n.classList.contains('hidden') ? null : n.click(); }
+  else if (e.key.toLowerCase() === 'f') $('#btn-flag')?.click();
+});
+
+/* ================= scoring ================= */
+const AFQT_CURVE = [[0,1],[.25,8],[.35,16],[.45,27],[.5,34],[.55,42],[.6,50],[.65,57],[.7,64],[.75,71],[.8,78],[.85,85],[.9,91],[.95,96],[1,99]];
+function toPercentile(f){
+  for (let i = 1; i < AFQT_CURVE.length; i++){
+    const [x0,y0] = AFQT_CURVE[i-1], [x1,y1] = AFQT_CURVE[i];
+    if (f <= x1) return Math.round(y0 + (f - x0) / (x1 - x0) * (y1 - y0));
+  }
+  return 99;
+}
+function category(pct){
+  if (pct >= 93) return ['I','Outstanding'];
+  if (pct >= 65) return ['II','Excellent'];
+  if (pct >= 50) return ['III A','Above average'];
+  if (pct >= 31) return ['III B','Average'];
+  if (pct >= 10) return ['IV','Below average'];
+  return ['V','Not eligible to enlist'];
+}
+const isRight = (p,i) => p.ans[i] !== null && p.ans[i] === (p.code === 'AO' ? p.qs[i].a : p.qs[i].a);
+
+function finish(){
+  stopAdvance();
+  clearInterval(tick);
+  $('#screen-exam').classList.add('hidden');
+  $('#screen-results').classList.remove('hidden');
+  window.scrollTo(0,0);
+  renderResults();
+}
+
+function renderResults(){
+  const rows = EX.parts.map(p => {
+    const right = p.qs.reduce((n,_,i) => n + (isRight(p,i) ? 1 : 0), 0);
+    return {p, right, total: p.qs.length, pctv: right / p.qs.length};
+  });
+  const get = c => rows.find(r => r.p.code === c);
+
+  const wk = get('WK'), pc = get('PC'), ar = get('AR'), mk = get('MK');
+  const hasAFQT = wk && pc && ar && mk;
+  let afqtBlock = '';
+
+  if (hasAFQT){
+    const ve = (wk.right + pc.right) / (wk.total + pc.total);
+    const f  = (2*ve + ar.pctv + mk.pctv) / 4;
+    const pct = toPercentile(f);
+    const [cat, train] = category(pct);
+    const verdict = pct >= 50 ? 'Above the line most services want for a wide choice of jobs.'
+                  : pct >= 31 ? 'Over the usual minimum to enlist, but below the 50 that opens up most job choices.'
+                  : 'Below the 31 that services generally require. This is the number to move first.';
+    afqtBlock = `
+      <div class="afqt">
+        <div class="big">${pct}<sup>th</sup></div>
+        <div class="meta">
+          <h3>Category ${cat} \u00b7 ${train}</h3>
+          <p>${verdict}</p>
+        </div>
+      </div>
+      <div class="workings">
+        <b>How this was built</b><br>
+        Verbal Expression &nbsp;WK ${wk.right}/${wk.total} + PC ${pc.right}/${pc.total} &nbsp;\u2192&nbsp; ${(ve*100).toFixed(0)}%<br>
+        Raw composite &nbsp;2 \u00d7 VE + AR ${ar.right}/${ar.total} + MK ${mk.right}/${mk.total} &nbsp;\u2192&nbsp; ${(f*100).toFixed(0)}%<br>
+        Converted to percentile &nbsp;\u2192&nbsp; <b>${pct}</b> &nbsp;(unofficial estimate)
+      </div>`;
+  } else {
+    const tot = rows.reduce((n,r)=>n+r.right,0), all = rows.reduce((n,r)=>n+r.total,0);
+    afqtBlock = `<div class="afqt">
+        <div class="big">${tot}<sup>/${all}</sup></div>
+        <div class="meta"><h3>${Math.round(tot/all*100)}% correct</h3>
+        <p>An AFQT estimate needs all four of AR, WK, PC and MK. Take the full test or the AFQT-only test to see one.</p></div>
+      </div>`;
+  }
+
+  const d = EX.started;
+  $('#results-body').innerHTML = `
+    <div class="report">
+      <div class="report-h">
+        <span class="t">Score report</span>
+        <span class="d">${d.toLocaleDateString()} \u00b7 ${d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} \u00b7 ${EX.timed ? 'TIMED' : 'UNTIMED'}</span>
+      </div>
+      ${afqtBlock}
+      <table class="scoretab">
+        <thead><tr><th>Subtest</th><th>Score</th><th style="width:150px">Correct</th><th>Time left</th></tr></thead>
+        <tbody>${rows.map(r => `
+          <tr class="${r.p.afqt ? 'afqt-part' : ''}">
+            <td><span class="tcode">${r.p.code}</span> &nbsp;${r.p.name}${r.p.afqt ? '<span class="afqt-mark">AFQT</span>' : ''}</td>
+            <td class="c">${r.right} / ${r.total}</td>
+            <td><div class="bar ${r.pctv < .6 ? 'low' : ''}"><i style="width:${r.pctv*100}%"></i></div></td>
+            <td class="c">${EX.timed ? (r.p.expired ? 'expired' : Math.floor(r.p.left/60)+':'+String(r.p.left%60).padStart(2,'0')) : '\u2014'}</td>
+          </tr>`).join('')}</tbody>
+      </table>
+    </div>
+
+    <div class="filterrow">
+      <button class="chip" data-f="all" aria-pressed="true">All questions</button>
+      <button class="chip" data-f="miss" aria-pressed="false">Missed</button>
+      <button class="chip" data-f="skip" aria-pressed="false">Skipped</button>
+      <button class="chip" data-f="flag" aria-pressed="false">Flagged</button>
+    </div>
+    <div id="review"></div>
+
+    <div class="navrow" style="margin:28px 0 10px">
+      <button class="btn solid" id="btn-again">Take another test</button>
+      <button class="btn" id="btn-print">Print this report</button>
+    </div>
+    <footer>These results are an unofficial practice estimate produced from 10 questions per subtest. The real ASVAB uses many more items and a scoring model the Department of Defense does not publish, so treat this as a study signal, not a prediction.</footer>`;
+
+  $('#btn-again').addEventListener('click', () => {
+    $('#screen-results').classList.add('hidden');
+    $('#screen-start').classList.remove('hidden');
+    window.scrollTo(0,0);
+  });
+  $('#btn-print').addEventListener('click', () => window.print());
+  $$('.chip').forEach(c => c.addEventListener('click', () => {
+    $$('.chip').forEach(x => x.setAttribute('aria-pressed','false'));
+    c.setAttribute('aria-pressed','true');
+    renderReview(c.dataset.f);
+  }));
+  renderReview('all');
+}
+
+function renderReview(filter){
+  let html = '';
+  EX.parts.forEach(p => {
+    p.qs.forEach((q,i) => {
+      const ok = isRight(p,i), skipped = p.ans[i] === null;
+      if (filter === 'miss' && (ok || skipped)) return;
+      if (filter === 'skip' && !skipped) return;
+      if (filter === 'flag' && !p.flag[i]) return;
+      const tag = skipped ? '<span class="tag skip">Skipped</span>'
+                : ok ? '<span class="tag ok">Correct</span>'
+                     : '<span class="tag no">Missed</span>';
+      const isAO = p.code === 'AO';
+      let body = isAO
+        ? `<div class="ao-frame">${aoSVG(q.base,false)}</div>
+           <div class="choices ao-choices">${q.options.map((o,k)=>`
+             <div class="choice ${k===q.a?'right':(p.ans[i]===k?'wrong':'')}">
+               <span class="k">${LETTERS[k]}</span>${aoSVG(o,true)}
+             </div>`).join('')}</div>`
+        : `${q.p ? `<div class="passage"><span class="lbl">Passage</span>${PASSAGES[q.p]}</div>` : ''}
+           <p class="stem" style="font-size:17px">${q.q}</p>
+           <div class="choices">${q.c.map((t,k)=>`
+             <div class="choice ${k===q.a?'right':(p.ans[i]===k?'wrong':'')}">
+               <span class="k">${LETTERS[k]}</span><span>${t}</span>
+             </div>`).join('')}</div>`;
+      html += `<div class="reviewq ${ok?'':'miss'}">
+          <div class="rh"><span class="tcode">${p.code}</span><span class="mono">Q${i+1}</span>${tag}</div>
+          ${body}
+          <p class="why"><b>Why ${LETTERS[q.a]}</b><br>${isAO ? AO_WHY : q.why}</p>
+        </div>`;
+    });
+  });
+  $('#review').innerHTML = html || '<p class="note">Nothing in this category. Good.</p>';
+}
+</script>
+</body>
+</html>
