@@ -1,0 +1,13 @@
+{
+  "name": "asvab-practice-tools",
+  "private": true,
+  "description": "Dev-only test tooling for the single-file site (index.html). Nothing here is deployed.",
+  "scripts": {
+    "validate": "node tools/validate.js",
+    "smoke": "node tools/smoke.mjs",
+    "test": "node tools/validate.js && node tools/smoke.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
+  }
+}

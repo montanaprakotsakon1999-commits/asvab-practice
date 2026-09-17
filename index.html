@@ -2890,7 +2890,12 @@ function buildQuestions(s, shuffleOrder){
   const code = s.code, pool = BANK[code];
   const genN = GEN[code] ? (GEN_MIX[code] || 0) : 0;
   let qs = samplePool(code, pool, 10 - genN).map(q => JSON.parse(JSON.stringify(q)));
-  for (let i = 0; i < genN; i++) qs.push(GEN[code]());
+  const stemKey = q => q.q || JSON.stringify(q.base);
+  for (let i = 0; i < genN; i++){        // re-roll a generated item that repeats one already in this sitting
+    let g, tries = 0;
+    do { g = GEN[code](); } while (qs.some(x => stemKey(x) === stemKey(g)) && ++tries < 25);
+    qs.push(g);
+  }
   qs.forEach(q => finalizeChoices(q, code));
   if (shuffleOrder !== false) qs = shuffled(qs);
   if (code === 'PC'){                   // keep same-passage questions adjacent

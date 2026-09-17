@@ -29,8 +29,13 @@ It's one file. Download `index.html` and open it in any browser.
 ## Structure
 
 - `index.html` — the whole site: styles, question bank, generators, and exam engine
-  - Question bank: `BANK_GS` … `BANK_AO` (static items) in the first `<script>` block
+  - Question bank: `BANK_GS` … `BANK_AO` (static items) in the `<script>` block headed "question bank"
   - Procedural generators: `GEN_AR`, `GEN_MK`, `genAO` — every generated answer is computed, never hand-keyed
   - Exam engine: sampling, choice shuffling, timers, scoring, review
+
+- `tools/` — dev-only test pass, never loaded by the site. Run `npm install && npx playwright install chromium` once, then `npm test` before every push:
+  - `tools/validate.js` — checks every static question's shape, re-derives the answer of every generated question from its text (and rejects ambiguous choice sets), and builds hundreds of sittings
+  - `tools/smoke.mjs` — drives the real page in headless Chromium: themes, two full exams by keyboard, MOS drills, home button, console errors
+- `CLAUDE.md` — project notes for AI-assisted sessions
 
 To add questions, append to the relevant `BANK_*` array — each item is `{q, c: [4 choices], a: correctIndex, why: explanation}` (PC items add `p: passageKey`).
