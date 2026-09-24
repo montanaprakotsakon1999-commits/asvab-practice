@@ -62,7 +62,7 @@ try {
   const page = await open(1280, 900);
   step('📖 MOCK pill sits next to EXAM (after 📚 STUDY); mode persists; start screen explains mock');
   const pills = await page.$$eval('[data-mode-sw]', b => b.map(x => x.dataset.modeSw));
-  check(JSON.stringify(pills) === JSON.stringify(['study', 'exam', 'mock', 'game']), `mode pills are ${pills}`);
+  check(JSON.stringify(pills) === JSON.stringify(['study', 'exam', 'mock', 'game', 'gameth']), `mode pills are ${pills}`);
   await page.click('[data-mode-sw="mock"]');
   check(await page.evaluate(() => document.body.classList.contains('mock') && MOCK === true), 'body.mock / MOCK flag not set');
   check(await page.isVisible('#mock-banner'), 'mock banner not visible');
