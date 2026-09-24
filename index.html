@@ -7,7 +7,7 @@
 <meta name="description" content="A free ASVAB practice exam drawing from 500+ original questions plus endlessly generated math items — randomized every sitting, with study sheets, per-subtest timers, an answer sheet, and an AFQT score estimate.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Nunito:wght@600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
 <style>
 :root{
   /* dark — the default */
@@ -215,7 +215,6 @@ h1,h2,h3,.lbl,button,.code{font-family:var(--sans)}
 .passage .lbl{display:block;margin-bottom:6px}
 .stem{font-size:19px;line-height:1.5;margin:0 0 20px}
 .stem .kw{border-bottom:2px solid var(--form);padding-bottom:1px;font-weight:600}
-.g-q .kw{font-weight:700;border-bottom:2px solid currentColor}
 .choices{display:flex;flex-direction:column;gap:9px}
 .choice{
   display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;
@@ -428,7 +427,7 @@ body::-webkit-scrollbar-thumb:hover{background:var(--ink-faint)}
   <div class="masthead-in">
     <button class="mark" id="home-btn" type="button" aria-label="Return to the start screen" title="Back to start">ASVAB</button>
     <span class="sub">PRACTICE EXAM · 9 SUBTESTS · NEW DRAW EVERY SITTING</span>
-    <div class="mode-sw" role="tablist" aria-label="Mode"><button type="button" data-mode-sw="exam" class="on">📝 EXAM</button><button type="button" data-mode-sw="mock">📖 MOCK</button><button type="button" data-mode-sw="game">🎮 GAME</button></div>
+    <div class="mode-sw" role="tablist" aria-label="Mode"><button type="button" data-mode-sw="study">📚 STUDY</button><button type="button" data-mode-sw="exam" class="on">📝 EXAM</button><button type="button" data-mode-sw="mock">📖 MOCK</button><button type="button" data-mode-sw="game">🎮 GAME</button></div>
     <button class="theme-btn" id="theme-btn" type="button" aria-label="Switch color theme">LIGHT MODE</button>
   </div>
 </header>
@@ -522,6 +521,9 @@ body::-webkit-scrollbar-thumb:hover{background:var(--ink-faint)}
     </footer>
   </div>
 </main>
+
+<!-- ============ STUDY (v5.6) ============ -->
+<div id="screen-study" class="hidden"><div class="wrap" id="study-root"></div></div>
 
 <!-- ============ EXAM ============ -->
 <div id="screen-exam" class="hidden">
@@ -4759,8 +4761,14 @@ function goHome(){
   }
   $('#screen-exam').classList.add('hidden');
   $('#screen-results').classList.add('hidden');
-  $('#screen-start').classList.remove('hidden');
+  showHomeScreen();
   window.scrollTo(0, 0);
+}
+/* v5.6: in 📚 STUDY mode "home" is the study screen, otherwise the start screen */
+function showHomeScreen(){
+  const study = document.body.classList.contains('study');
+  $('#screen-start').classList.toggle('hidden', study);
+  $('#screen-study').classList.toggle('hidden', !study);
 }
 $('#home-btn').addEventListener('click', goHome);
 
@@ -4864,9 +4872,11 @@ function startExam(list){
         rev: new Array(qs.length).fill(false)        // Mock mode: answer shown for this item
       };
     }),
-    pi: 0, qi: 0, started: new Date()
+    pi: 0, qi: 0, started: new Date(),
+    modeAt: document.body.dataset.mode || (MOCK ? 'mock' : 'exam')   // v5.6: mode the sitting was launched from
   };
   $('#screen-start').classList.add('hidden');
+  $('#screen-study').classList.add('hidden');
   $('#screen-results').classList.add('hidden');
   $('#screen-exam').classList.remove('hidden');
   window.scrollTo(0,0);
@@ -5196,7 +5206,7 @@ function renderResults(){
 
   $('#btn-again').addEventListener('click', () => {
     $('#screen-results').classList.add('hidden');
-    $('#screen-start').classList.remove('hidden');
+    showHomeScreen();
     window.scrollTo(0,0);
   });
   $('#btn-print').addEventListener('click', () => window.print());
@@ -5249,7 +5259,7 @@ function renderReview(filter){
 }
 </script>
 
-<!-- ============ GAME MODE (v5.3) ============ -->
+<!-- ============ GAME MODE (v6 · ASVAB Path) ============ -->
 <style>
 .mode-sw{display:inline-flex;border:1px solid var(--rule);border-radius:999px;padding:3px;gap:3px;margin-left:auto;background:var(--card-2)}
 .mode-sw button{font-family:var(--sans);font-weight:700;font-size:12px;letter-spacing:.06em;border:0;border-radius:999px;padding:6px 12px;cursor:pointer;background:transparent;color:var(--ink-soft)}
@@ -5257,94 +5267,358 @@ function renderReview(filter){
 .mode-sw button[data-mode-sw="game"].on{background:linear-gradient(90deg,#ff5a8a,#ffbe0b,#3ae0a0,#4d8dff);color:#1a1033}
 .masthead-in .theme-btn{margin-left:0}
 @media (max-width:620px){.mode-sw{margin-left:0;order:3}}
-
-#screen-game{--g1:#ff5a8a;--g2:#4d8dff;--g3:#ffbe0b;--g4:#1fd49a;--gbg:#1d1240;--gcard:rgba(255,255,255,.09);--gink:#fff;
-  min-height:calc(100vh - 60px);color:var(--gink);font-family:var(--sans);
-  background:radial-gradient(circle at 15% 10%,rgba(255,90,138,.35),transparent 40%),radial-gradient(circle at 85% 20%,rgba(77,141,255,.35),transparent 45%),radial-gradient(circle at 50% 100%,rgba(31,212,154,.28),transparent 50%),var(--gbg);
-  padding:22px 16px 60px;overflow-x:hidden;position:relative}
-#screen-game .gw{max-width:880px;margin:0 auto}
-.g-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
-.g-title{font-size:30px;font-weight:700;margin:0;letter-spacing:-.01em}
-.g-title span{background:linear-gradient(90deg,#ff5a8a,#ffbe0b,#1fd49a,#4d8dff);-webkit-background-clip:text;background-clip:text;color:transparent}
-.g-pill{background:var(--gcard);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:6px 12px;font-weight:700;font-size:14px;white-space:nowrap}
-.g-btn{font-family:var(--sans);font-weight:700;border:0;border-radius:14px;padding:12px 18px;font-size:16px;cursor:pointer;color:#1a1033;background:#fff;box-shadow:0 5px 0 rgba(0,0,0,.35);transition:transform .08s}
-.g-btn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.35)}
-.g-btn.ghost{background:var(--gcard);color:#fff;border:1px solid rgba(255,255,255,.25)}
-.g-lvl{height:12px;background:rgba(255,255,255,.14);border-radius:99px;overflow:hidden;margin:6px 0 22px}
-.g-lvl i{display:block;height:100%;background:linear-gradient(90deg,#ffbe0b,#ff5a8a);border-radius:99px;transition:width .6s}
-.g-sub{opacity:.85;margin:0 0 6px;font-size:15px}
-.g-worlds{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
-.g-world{border:0;border-radius:20px;padding:18px 16px;text-align:left;cursor:pointer;color:#fff;font-family:var(--sans);box-shadow:0 7px 0 rgba(0,0,0,.3);transition:transform .12s;position:relative;min-height:128px}
-.g-world:hover{transform:translateY(-3px) rotate(-.6deg)}
-.g-world .em{font-size:38px;line-height:1;display:block;margin-bottom:8px}
-.g-world b{font-size:19px;display:block}
-.g-world small{opacity:.92;font-size:13px}
-.g-world .best{position:absolute;top:12px;right:12px;font-size:13px;background:rgba(0,0,0,.25);border-radius:99px;padding:3px 8px}
-.g-play{background:var(--gcard);border:1px solid rgba(255,255,255,.15);border-radius:24px;padding:20px;backdrop-filter:blur(4px)}
-.g-hud{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
-.g-hearts{font-size:22px;letter-spacing:2px}
-.g-combo{font-weight:700;color:#ffbe0b;min-width:60px}
-.g-timer{height:10px;border-radius:99px;background:rgba(255,255,255,.15);overflow:hidden;margin-bottom:16px}
-.g-timer i{display:block;height:100%;background:linear-gradient(90deg,#1fd49a,#ffbe0b,#ff5a8a);transition:width .2s linear}
-.g-q{font-family:var(--serif);font-size:22px;line-height:1.35;margin:4px 0 18px;min-height:60px}
-.g-q b{color:#ffe27a}
-.g-choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media (max-width:560px){.g-worlds{grid-template-columns:1fr 1fr;gap:10px}.g-world{min-height:108px;padding:14px 12px}.g-world .em{font-size:30px}.g-world b{font-size:16px}.g-world .best{top:8px;right:8px;font-size:11px}.g-choices{grid-template-columns:1fr}.g-q{font-size:19px}.g-title{font-size:24px}}
-.g-ch{border:0;border-radius:16px;padding:16px 14px 16px 52px;font-family:var(--sans);font-weight:700;font-size:17px;color:#fff;text-align:left;cursor:pointer;position:relative;box-shadow:0 6px 0 rgba(0,0,0,.3);min-height:64px;transition:transform .08s,opacity .2s}
-.g-ch:active{transform:translateY(3px)}
-.g-ch::before{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:22px}
-.g-ch:nth-child(1){background:#ff4f7a}.g-ch:nth-child(1)::before{content:"▲"}
-.g-ch:nth-child(2){background:#3f7df5}.g-ch:nth-child(2)::before{content:"◆"}
-.g-ch:nth-child(3){background:#f5b400;color:#241a00}.g-ch:nth-child(3)::before{content:"●"}
-.g-ch:nth-child(4){background:#17b985}.g-ch:nth-child(4)::before{content:"■"}
-.g-ch.dim{opacity:.3}
-.g-ch.right{outline:4px solid #fff;animation:gpop .35s}
-.g-ch.wrong{animation:gshake .4s}
-@keyframes gpop{50%{transform:scale(1.05)}}
-@keyframes gshake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
-.g-fb{margin-top:16px;border-radius:16px;padding:14px 16px;background:rgba(0,0,0,.25);font-size:15px;line-height:1.5}
-.g-fb h4{margin:0 0 4px;font-size:18px}
-.g-float{position:fixed;font-weight:800;font-size:30px;color:#ffe27a;pointer-events:none;animation:gfloat 1s forwards;text-shadow:0 3px 0 rgba(0,0,0,.35);z-index:60}
-@keyframes gfloat{to{transform:translateY(-70px);opacity:0}}
-.g-conf{position:fixed;width:10px;height:14px;top:-20px;z-index:59;pointer-events:none;animation:gfall linear forwards;border-radius:2px}
+/* ================= GAME MODE v6 — ASVAB Path (lesson path, hearts, streak) ================= */
+#screen-game{
+  --g-bg:#0F1714;--g-card:#17221E;--g-card2:#1D2A25;--g-line:rgba(231,240,234,.14);--g-line2:rgba(231,240,234,.24);
+  --g-ink:#EEF5F1;--g-soft:#A2B6AC;--g-faint:#6E8078;--g-lock:#2B3632;--g-lockd:#1E2724;
+  --g-ok:#3CC47C;--g-okd:#2A9A5E;--g-okbg:#16301F;--g-okink:#8FE7B5;
+  --g-bad:#F25C54;--g-badd:#C23F38;--g-badbg:#35191A;--g-badink:#FFA9A3;
+  --g-gold:#FFC53D;--g-flame:#FF8A1F;
+  --gf:'Nunito',var(--sans);
+  min-height:calc(100vh - 60px);background:var(--g-bg);color:var(--g-ink);font-family:var(--gf);
+  padding:18px 16px 40px;overflow-x:clip;position:relative}
+:root[data-theme="light"] #screen-game{
+  --g-bg:#F4F7F5;--g-card:#FFFFFF;--g-card2:#EEF3F0;--g-line:rgba(22,33,29,.13);--g-line2:rgba(22,33,29,.22);
+  --g-ink:#18221E;--g-soft:#56655E;--g-faint:#8A958F;--g-lock:#DCE3DF;--g-lockd:#BFC9C4;
+  --g-ok:#23A55E;--g-okd:#187E47;--g-okbg:#DDF5E6;--g-okink:#146B3C;
+  --g-bad:#D8433B;--g-badd:#A92E27;--g-badbg:#FDE4E2;--g-badink:#8E231D;--g-gold:#E8A600;--g-flame:#EE7412}
+#screen-game .gw{max-width:760px;margin:0 auto}
+#screen-game button{font-family:var(--gf)}
+.gb{border:0;border-radius:14px;padding:13px 20px;font-weight:900;font-size:15px;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;
+  background:var(--c,var(--g-ok));color:var(--ci,#fff);box-shadow:0 4px 0 var(--cd,var(--g-okd));transition:transform .06s,box-shadow .06s,filter .15s}
+.gb:hover{filter:brightness(1.06)}
+.gb:active{transform:translateY(3px);box-shadow:0 1px 0 var(--cd,var(--g-okd))}
+.gb:disabled{background:var(--g-lock);color:var(--g-faint);box-shadow:0 4px 0 var(--g-lockd);cursor:not-allowed;filter:none;transform:none}
+.gb.ghost{background:transparent;color:var(--g-soft);border:2px solid var(--g-line2);box-shadow:0 3px 0 var(--g-line2)}
+.gb.wide{width:100%}
+/* ---- hub ---- */
+.gp-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.gp-stat{display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:15px;padding:7px 12px;border:2px solid var(--g-line);border-radius:12px;background:var(--g-card);white-space:nowrap}
+.gp-stat b{font-weight:900}
+.gp-stat.flame b{color:var(--g-flame)}
+.gp-stat.flame.off{filter:grayscale(1);opacity:.7}
+.gp-stat.gold b{color:var(--g-gold)}
+.gp-stat svg{flex:none}
+.gp-mute{margin-left:auto;background:var(--g-card);border:2px solid var(--g-line);border-radius:12px;padding:6px 10px;font-size:16px;cursor:pointer;color:var(--g-ink)}
+.gp-title{font-weight:900;font-size:28px;margin:4px 0 2px;letter-spacing:-.01em}
+.gp-intro{margin:0 0 16px;color:var(--g-soft);font-size:15px;line-height:1.5}
+.gp-lbl{display:block;font-weight:900;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g-soft);margin:14px 0 8px}
+.gp-subs{display:grid;gap:10px}
+.gp-subs.gp-afqt{grid-template-columns:repeat(4,1fr)}
+.gp-subs.gp-more{grid-template-columns:repeat(5,1fr)}
+.gp-sub{text-align:left;cursor:pointer;border:2px solid var(--g-line);border-bottom-width:4px;border-radius:16px;background:var(--g-card);color:var(--g-ink);padding:12px 12px 10px;transition:transform .1s,border-color .15s}
+.gp-sub:hover{transform:translateY(-2px)}
+.gp-sub .c{display:block;font-weight:900;font-size:26px;line-height:1;color:var(--c)}
+.gp-sub .eq{display:block;font-weight:800;font-size:14px;margin:6px 0 8px;line-height:1.25}
+.gp-sub .eq i{font-style:normal;color:var(--g-faint)}
+.gp-sub .pr{display:block;height:8px;border-radius:99px;background:var(--g-lock);overflow:hidden}
+.gp-sub .pr i{display:block;height:100%;background:var(--c);border-radius:99px}
+.gp-sub small{display:block;margin-top:5px;font-weight:800;font-size:11.5px;color:var(--g-faint)}
+.gp-sub.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 14%,var(--g-card))}
+.gp-subs.gp-more .gp-sub .c{font-size:20px}
+.gp-subs.gp-more .gp-sub .eq{font-size:12.5px}
+.gp-quick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0 6px}
+.gp-qbtn{display:flex;gap:12px;align-items:center;text-align:left;cursor:pointer;border:2px solid var(--g-line);border-bottom-width:4px;border-radius:16px;background:var(--g-card);color:var(--g-ink);padding:12px 14px}
+.gp-qbtn .em{font-size:28px;line-height:1}
+.gp-qbtn b{display:block;font-weight:900;font-size:15.5px}
+.gp-qbtn small{display:block;color:var(--g-soft);font-weight:700;font-size:12.5px;line-height:1.35}
+.gp-qbtn:disabled{opacity:.5;cursor:default}
+.gp-goal{display:flex;align-items:center;gap:8px;font-weight:800;font-size:13px;color:var(--g-soft);margin:8px 0 0}
+.gp-goal select{font-family:var(--gf);font-weight:800;font-size:13px;background:var(--g-card);color:var(--g-ink);border:2px solid var(--g-line);border-radius:10px;padding:5px 8px}
+.gp-unit{display:flex;gap:12px;align-items:center;justify-content:space-between;margin:22px 0 4px;padding:16px 18px;border-radius:18px;background:var(--c);color:var(--ci);box-shadow:0 5px 0 var(--cd)}
+.gp-unit small{display:block;font-weight:900;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;opacity:.85}
+.gp-unit h3{margin:3px 0 2px;font-weight:900;font-size:22px;line-height:1.15}
+.gp-unit p{margin:0;font-weight:700;font-size:14px;opacity:.92}
+.gp-guide{flex:none;border:2px solid currentColor;background:rgba(255,255,255,.14);color:inherit;border-radius:12px;padding:9px 12px;font-weight:900;font-size:13px;letter-spacing:.05em;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.gp-path{display:flex;flex-direction:column;align-items:center;gap:6px;padding:34px 0 30px;--zx:1px}
+.gp-nw{position:relative;display:flex;flex-direction:column;align-items:center;transform:translateX(calc(var(--x) * var(--zx)));padding-top:6px}
+.gp-node{position:relative;width:78px;height:72px;border-radius:50%;border:0;cursor:pointer;background:var(--c);color:var(--ci);box-shadow:0 7px 0 var(--cd);font-size:32px;display:grid;place-items:center;transition:transform .08s,box-shadow .08s}
+.gp-node:active{transform:translateY(5px);box-shadow:0 2px 0 var(--cd)}
+.gp-node.locked{background:var(--g-lock);box-shadow:0 7px 0 var(--g-lockd)}
+.gp-node.locked .ic{filter:grayscale(1);opacity:.45}
+.gp-node .ring{position:absolute;inset:-9px;pointer-events:none}
+.gp-node.cur{animation:gpulse 1.8s ease-in-out infinite}
+@keyframes gpulse{0%,100%{outline:0 solid transparent}50%{outline:6px solid color-mix(in srgb,var(--c) 30%,transparent)}}
+.gp-crown{position:absolute;right:-12px;bottom:-4px;background:var(--g-card);border:2px solid var(--g-line2);border-radius:99px;font-size:11.5px;font-weight:900;padding:1px 6px;color:var(--g-gold);line-height:1.5}
+.gp-nlabel{display:block;text-align:center;font-weight:800;font-size:12.5px;color:var(--g-soft);margin-top:13px;max-width:150px;line-height:1.25}
+.gp-nw.locked .gp-nlabel{color:var(--g-faint)}
+.gp-startb{position:absolute;top:-34px;left:50%;transform:translateX(-50%);background:var(--g-card);border:2px solid var(--g-line2);color:var(--c);font-weight:900;font-size:13px;letter-spacing:.06em;padding:5px 12px;border-radius:10px;white-space:nowrap;animation:gbob 1.3s ease-in-out infinite;pointer-events:none;z-index:2}
+.gp-startb::after{content:"";position:absolute;left:50%;bottom:-7px;width:10px;height:10px;background:var(--g-card);border-right:2px solid var(--g-line2);border-bottom:2px solid var(--g-line2);transform:translateX(-50%) rotate(45deg)}
+@keyframes gbob{0%,100%{margin-top:0}50%{margin-top:-5px}}
+.gp-pop{width:min(330px,100%);margin:6px 0 10px;padding:16px;border-radius:16px;background:var(--c);color:var(--ci);box-shadow:0 5px 0 var(--cd);position:relative;text-align:left}
+.gp-pop.locked{background:var(--g-card);color:var(--g-ink);border:2px solid var(--g-line);box-shadow:0 4px 0 var(--g-line)}
+.gp-pop h4{margin:0 0 3px;font-weight:900;font-size:18px}
+.gp-pop p{margin:0 0 12px;font-weight:700;font-size:14px;line-height:1.4;opacity:.92}
+.gp-pop .gb{width:100%;background:#fff;color:var(--cd);box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.gp-pop.locked .gb{background:var(--c);color:var(--ci);box-shadow:0 4px 0 var(--cd)}
+/* ---- lesson ---- */
+.gq{max-width:680px;margin:0 auto}
+.gq-bar{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.gq-x{background:none;border:0;color:var(--g-faint);font-size:24px;font-weight:900;cursor:pointer;padding:2px 6px;line-height:1}
+.gq-prog{flex:1;height:16px;border-radius:99px;background:var(--g-lock);overflow:hidden}
+.gq-prog i{display:block;height:100%;border-radius:99px;background:var(--c);box-shadow:inset 0 4px 0 rgba(255,255,255,.28);transition:width .35s ease}
+.gq-hearts{font-weight:900;font-size:17px;color:var(--g-bad);white-space:nowrap}
+.gq-tag{display:inline-flex;gap:6px;align-items:center;font-weight:900;font-size:12px;letter-spacing:.06em;padding:4px 10px;border-radius:99px;background:color-mix(in srgb,var(--c) 18%,transparent);color:var(--c);margin-bottom:10px}
+.gq-tag.retry{background:color-mix(in srgb,var(--g-bad) 18%,transparent);color:var(--g-bad)}
+.gq-prompt{font-weight:900;font-size:23px;margin:0 0 12px;line-height:1.2}
+.gq-q{font-weight:700;font-size:19px;line-height:1.45;margin:0 0 16px}
+.gq-q .kw{font-weight:900;border-bottom:3px solid var(--c);padding-bottom:1px}
+.gq-passage{font-family:var(--serif);font-size:16px;line-height:1.6;padding:14px 16px;border:2px solid var(--g-line);border-radius:14px;background:var(--g-card);margin:0 0 14px;max-height:42vh;overflow:auto}
+.gq-passage mark,.gq-passage .proof{background:color-mix(in srgb,var(--g-gold) 35%,transparent);color:inherit}
+.gq-chs{display:grid;gap:10px}
+.gq-chs.ao{grid-template-columns:1fr 1fr}
+.gq-ch{display:flex;gap:12px;align-items:center;width:100%;text-align:left;cursor:pointer;border:2px solid var(--g-line2);border-bottom-width:4px;border-radius:14px;padding:12px 14px;background:var(--g-card);color:var(--g-ink);font-weight:700;font-size:16.5px;line-height:1.35;transition:border-color .12s,background .12s}
+.gq-ch .n{flex:none;display:grid;place-items:center;width:28px;height:28px;border:2px solid var(--g-line2);border-radius:8px;font-size:13px;font-weight:900;color:var(--g-faint)}
+.gq-ch:hover{background:var(--g-card2)}
+.gq-ch.sel{border-color:var(--c);background:color-mix(in srgb,var(--c) 14%,var(--g-card))}
+.gq-ch.sel .n{border-color:var(--c);color:var(--c)}
+.gq-ch.right{border-color:var(--g-ok);background:var(--g-okbg)}
+.gq-ch.right .n{border-color:var(--g-ok);color:var(--g-ok)}
+.gq-ch.wrong{border-color:var(--g-bad);background:var(--g-badbg);animation:gshake .4s}
+.gq-ch:disabled{cursor:default}
+.gq-ch svg{max-width:100%;height:auto}
+.gq-chs.ao .gq-ch{flex-direction:column;align-items:flex-start;padding:10px}
+.gq-ao{border:2px solid var(--g-line);border-radius:14px;background:var(--g-card);padding:10px;margin:0 0 14px;text-align:center}
+.gq-ao svg{max-width:100%;height:auto}
+.gq-type{display:flex;align-items:center;gap:8px;font-weight:900;font-size:22px}
+.gq-type input{flex:1;min-width:0;font-family:var(--gf);font-weight:800;font-size:22px;padding:12px 14px;border:2px solid var(--g-line2);border-bottom-width:4px;border-radius:14px;background:var(--g-card);color:var(--g-ink)}
+.gq-type input:focus{outline:none;border-color:var(--c)}
+.gq-swap{margin-top:10px;background:none;border:0;color:var(--c);font-weight:900;font-size:13px;letter-spacing:.04em;cursor:pointer;padding:4px 0}
+.gq-match{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gq-match > div{display:grid;gap:10px}
+.gq-tile{cursor:pointer;border:2px solid var(--g-line2);border-bottom-width:4px;border-radius:14px;padding:12px 10px;background:var(--g-card);color:var(--g-ink);font-weight:800;font-size:15.5px;min-height:52px;transition:opacity .25s,border-color .12s}
+.gq-tile.sel{border-color:var(--c);background:color-mix(in srgb,var(--c) 14%,var(--g-card))}
+.gq-tile.done{border-color:var(--g-ok);background:var(--g-okbg);opacity:.45;pointer-events:none}
+.gq-tile.wrong{border-color:var(--g-bad);animation:gshake .4s}
+@keyframes gshake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+.gq-foot{position:sticky;bottom:0;margin:22px -16px 0;padding:14px 16px 16px;background:var(--g-bg);border-top:2px solid var(--g-line);z-index:5}
+.gq-foot.ok{background:var(--g-okbg);border-top-color:transparent}
+.gq-foot.bad{background:var(--g-badbg);border-top-color:transparent}
+.gq-foot-in{max-width:680px;margin:0 auto}
+.gq-fb{max-height:44vh;overflow:auto;margin-bottom:12px;font-size:15px;line-height:1.5}
+.gq-fb h4{margin:0 0 4px;font-weight:900;font-size:21px}
+.gq-foot.ok h4,.gq-foot.ok .gq-fb{color:var(--g-okink)}
+.gq-foot.bad h4,.gq-foot.bad .gq-fb{color:var(--g-badink)}
+.gq-fb .ans{font-weight:800;font-size:16px}
+.gq-fb .gq-why{margin-top:6px}
+.gq-fb .exm{margin-top:8px;padding-top:8px;border-top:1px dashed currentColor;opacity:.95}
+.gq-foot.ok .gb{--c:var(--g-ok);--cd:var(--g-okd)}
+.gq-foot.bad .gb{--c:var(--g-bad);--cd:var(--g-badd)}
+.gq-combo{font-family:"Nunito",var(--sans);position:fixed;left:50%;top:84px;transform:translateX(-50%);z-index:70;background:var(--g-flame);color:#fff;font-weight:900;font-size:17px;padding:9px 16px;border-radius:99px;box-shadow:0 4px 0 rgba(0,0,0,.25);animation:gcombo 1.4s ease forwards;pointer-events:none}
+@keyframes gcombo{0%{opacity:0;transform:translate(-50%,10px) scale(.8)}15%{opacity:1;transform:translate(-50%,0) scale(1.05)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-14px)}}
+/* ---- end screens, overlays ---- */
+.gq-end{text-align:center;padding:18px 0}
+.gq-end .big{font-size:64px;line-height:1;margin:6px 0 8px}
+.gq-end h2{font-weight:900;font-size:30px;margin:0 0 6px;color:var(--g-gold)}
+.gq-end h2.fail{color:var(--g-bad)}
+.gq-end > p{color:var(--g-soft);font-weight:700;margin:0 0 18px;font-size:15.5px;line-height:1.5}
+.gq-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 auto 16px;max-width:520px}
+.gq-card{border:2px solid var(--k);border-radius:14px;overflow:hidden;background:var(--g-card)}
+.gq-card span{display:block;background:var(--k);color:#fff;font-weight:900;font-size:11.5px;letter-spacing:.08em;padding:5px 4px;text-transform:uppercase}
+.gq-card b{display:block;font-weight:900;font-size:22px;padding:10px 4px;color:var(--k)}
+.gq-badge{display:inline-block;margin:0 4px 10px;padding:8px 14px;border-radius:99px;font-weight:900;font-size:15px;background:var(--g-card);border:2px solid var(--g-line2)}
+.gq-miss{text-align:left;max-width:560px;margin:4px auto 18px;border:2px solid var(--g-line);border-radius:14px;background:var(--g-card);padding:10px 14px;font-size:14.5px;line-height:1.45}
+.gq-miss p{margin:6px 0}
+.gq-end .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.gq-end .row .gb{min-width:180px}
+.g-ov{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center;padding:16px}
+.g-ov-in{width:min(560px,100%);max-height:86vh;overflow:auto;background:var(--g-card);color:var(--g-ink);border-radius:20px 20px 16px 16px;padding:20px 18px 18px;border:2px solid var(--g-line);font-family:var(--gf)}
+.g-ov-in h3{margin:0 0 6px;font-weight:900;font-size:22px}
+.g-ov-in > p{margin:0 0 14px;color:var(--g-soft);font-weight:700;line-height:1.45}
+.g-ov-in .row{display:grid;gap:10px}
+.g-guide ol,.g-guide ul{padding-left:20px;margin:4px 0 12px;line-height:1.5;font-size:15px}
+.g-guide li{margin-bottom:5px}
+.g-guide .gl{display:block;font-weight:900;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--c);margin-top:6px}
+.g-guide .study-b{border:0;padding:0;font-family:var(--serif)}
+.g-conf{position:fixed;width:10px;height:14px;top:-20px;z-index:90;pointer-events:none;animation:gfall linear forwards;border-radius:2px}
 @keyframes gfall{to{transform:translateY(105vh) rotate(720deg)}}
-.g-end{text-align:center;padding:10px 0}
-.g-stars{font-size:54px;letter-spacing:6px;margin:6px 0}
-.g-big{font-size:48px;font-weight:800;margin:0}
-.g-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
-.g-match{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.g-tile{border:0;border-radius:14px;padding:14px 10px;font-family:var(--sans);font-weight:700;font-size:16px;cursor:pointer;color:#fff;box-shadow:0 5px 0 rgba(0,0,0,.3);transition:transform .1s,opacity .3s}
-.g-tile.w{background:#7b4dff}.g-tile.m{background:#ff7a45}
-.g-tile.sel{outline:4px solid #ffe27a;transform:scale(1.03)}
-.g-tile.done{background:#17b985;opacity:.35;pointer-events:none}
-.g-tile.wrong{animation:gshake .4s}
-.g-review{text-align:left;margin-top:16px;font-size:14px;line-height:1.5;max-height:260px;overflow:auto;background:rgba(0,0,0,.2);border-radius:14px;padding:10px 14px}
-.g-review p{margin:6px 0}
+@media (max-width:640px){
+  #screen-game{padding:14px 12px 30px}
+  .gp-subs.gp-afqt{grid-template-columns:1fr 1fr}
+  .gp-subs.gp-more{grid-template-columns:1fr 1fr}
+  .gp-quick{grid-template-columns:1fr}
+  .gp-path{--zx:.55px}
+  .gp-title{font-size:24px}
+  .gp-stat{font-size:13.5px;padding:6px 9px}
+  .gp-unit h3{font-size:19px}
+  .gq-prompt{font-size:20px}
+  .gq-q{font-size:17.5px}
+  .gq-foot{margin:18px -12px 0;padding:12px}
+  .gq-cards b{font-size:19px}
+  .gq-end .row .gb{flex:1 1 100%}
+}
+@media (prefers-reduced-motion:reduce){.gp-node.cur,.gp-startb{animation:none}}
 </style>
 
 <div id="screen-game" class="hidden"><div class="gw" id="g-root"></div></div>
 
 <script>
-/* ================= GAME MODE ================= */
+/* =====================================================================
+   GAME MODE v6 — "ASVAB Path": a lesson path per subject, AFQT first.
+   Short lessons (10 exercises, PC/AO 6), 5 hearts, missed items come
+   back at the end of the lesson, a daily streak, a daily XP goal,
+   crowns (level 1–3 per lesson), treasure chests, a unit review,
+   "Jump here" to test out, AFQT Mix and Fix-my-mistakes practice.
+   Exercise types: multiple choice, type-the-number (generated math),
+   match-the-pairs (209-word list) and Assembling Objects figures.
+   Everything reuses the original question bank + generators.
+   ===================================================================== */
 (function(){
   const LS = {get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},
               set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-  const WORLDS = [
-    {id:'mix',  em:'🎲', name:'Mix It Up',      sub:'Everything, random',      codes:['GS','AR','MK','WK','EI','AS','MC'], bg:'linear-gradient(135deg,#ff5a8a,#7b4dff)'},
-    {id:'w209', em:'🌟', name:'209 Words',      sub:'Your vocab list',         codes:['W209'], bg:'linear-gradient(135deg,#ffb700,#ff5a8a)'},
-    {id:'words',em:'📖', name:'Word Power',     sub:'Word Knowledge',          codes:['WK','W209'], bg:'linear-gradient(135deg,#a24dff,#4d8dff)'},
-    {id:'math', em:'🔢', name:'Math Attack',    sub:'Arithmetic + Math',       codes:['AR','MK'], secs:45, bg:'linear-gradient(135deg,#4d8dff,#1fd4c9)'},
-    {id:'sci',  em:'🧪', name:'Science Lab',    sub:'General Science',         codes:['GS'], bg:'linear-gradient(135deg,#1fd49a,#1f8bd4)'},
-    {id:'ei',   em:'⚡', name:'Power Up',       sub:'Electronics',             codes:['EI'], bg:'linear-gradient(135deg,#ffbe0b,#ff7a45)'},
-    {id:'as',   em:'🚗', name:'Garage',         sub:'Auto & Shop',             codes:['AS'], bg:'linear-gradient(135deg,#ff7a45,#e0365a)'},
-    {id:'mc',   em:'⚙️', name:'Gear Works',     sub:'Mechanical',              codes:['MC'], secs:30, bg:'linear-gradient(135deg,#6b7cff,#b04dff)'},
-    {id:'match',em:'🃏', name:'Word Match',     sub:'Tap word → meaning',      match:true, bg:'linear-gradient(135deg,#17b985,#ffbe0b)'}
-  ];
-  const ROUND = 10, HEARTS = 3, SECS = 20;
-  let G = null, timer = null, muted = LS.get('asvab_g_mute', false);
+  const byId = id => document.getElementById(id);
+  const root = () => byId('g-root');
+  const strip = s => String(s || '').replace(/<[^>]+>/g, '');
+  const bpName = c => (BLUEPRINT.find(b => b.code === c) || {}).name || c;
 
-  /* ---------- sound ---------- */
-  let AC = null;
+  /* ---------- subjects (AFQT four first) ---------- */
+  const SUBJ = [
+    {code:'AR', short:'Math word problems',          afqt:1, col:'#FF9F1C', ci:'#231300'},
+    {code:'MK', short:'Numbers, algebra, geometry',  afqt:1, col:'#3A86FF', ci:'#FFFFFF'},
+    {code:'WK', short:'Vocabulary — word meanings',  afqt:1, col:'#9B5DE5', ci:'#FFFFFF'},
+    {code:'PC', short:'Reading short paragraphs',    afqt:1, col:'#F15BB5', ci:'#FFFFFF'},
+    {code:'GS', short:'Life, earth, chemistry, physics',  col:'#2EC4B6', ci:'#04211E'},
+    {code:'EI', short:'Circuits, wiring, parts',          col:'#FFC300', ci:'#261D00'},
+    {code:'AS', short:'Engines, cars and shop tools',     col:'#EF476F', ci:'#FFFFFF'},
+    {code:'MC', short:'Levers, gears, forces',            col:'#4CC9F0', ci:'#03202B'},
+    {code:'AO', short:'Shapes and pieces',                col:'#7678ED', ci:'#FFFFFF'}
+  ];
+  SUBJ.forEach(s => { s.name = bpName(s.code); s.cd = shade(s.col, .72); });
+  const subj = c => SUBJ.find(s => s.code === c);
+  function shade(hex, f){
+    const n = parseInt(hex.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+    const h = v => Math.round(v * f).toString(16).padStart(2, '0');
+    return '#' + h(r) + h(g) + h(b);
+  }
+  const cvars = s => `--c:${s.col};--cd:${s.cd};--ci:${s.ci}`;
+
+  /* ---------- topics: static items are sorted by the first matching pattern ---------- */
+  const TOPICS = {
+    AR: [
+      {id:'ar-pct',  em:'💯', name:'Percents & sales',     gens:['discount','reversePct','growth'], re:/percent|%|discount|sale\b|marked down|tax|tip\b|commission|markup/i},
+      {id:'ar-rate', em:'🚚', name:'Speed & distance',     gens:['distance','speedMinutes','fuel','tank'], re:/miles?\b|mph|km|kilomet|speed|gallon|travel|drives?\b|driving|fuel|flight|flies|walks?\b|jog|runs?\b/i},
+      {id:'ar-money',em:'💵', name:'Money & pay',          gens:['overtime','change','unitPrice','flatFee'], re:null},
+      {id:'ar-ratio',em:'🍳', name:'Ratios & sharing',     gens:['ratio','recipe','pieces','roundUp'], re:/ratio|recipe|serves|share|split|divided|each|per person|proportion|scale|map\b|cut into/i},
+      {id:'ar-avg',  em:'📊', name:'Averages & interest',  gens:['needScore','interest','interestMonths'], re:/average|mean\b|interest|loan|borrow|invest/i},
+      {id:'ar-time', em:'⏱️', name:'Time & teamwork',      gens:['clock','together'], re:/a\.m\.|p\.m\.|clock|o'clock|minutes?|hours?|together|crew|days?\b|weeks?\b/i},
+      {id:'ar-more', em:'🧠', name:'Ages, units & puzzles', gens:[], re:/./}
+    ],
+    MK: [
+      {id:'mk-num',  em:'🔢', name:'Numbers & exponents',  gens:['power','roots','pctOf'], re:null},
+      {id:'mk-alg',  em:'✖️', name:'Algebra: solve for x', gens:['linear','fracEq','inequality','ineqFlip','evalNeg'], re:/solve|equation|inequal|if [a-z] =|value of|[<>≤≥]|[a-z] =/i},
+      {id:'mk-poly', em:'🧩', name:'Algebra: expressions', gens:['foil','distribute','powProd'], re:/simplify|multiply|factor|expand|expression|polynomial|\([a-z]\s*[+−-]/i},
+      {id:'mk-geo',  em:'📐', name:'Geometry',             gens:['circle','volume','angles','pythag','square','circleFromC'], re:/angle|triangle|circle|radius|diameter|area|perimeter|volume|cube\b|rectangle|polygon|hypotenuse|°|square (feet|inch|yard|meter|unit)|parallel|slope|coordinate|circumference|sides?\b|cylinder|sphere/i},
+      {id:'mk-stat', em:'🎲', name:'Stats & chance',       gens:['stats','marbles'], re:/\bmean\b|median|\bmode\b|average|probab|chance|random|marble|\brange\b|dice|\bdie\b|coin/i}
+    ],
+    WK: [
+      {id:'wk-209a', em:'🌟', name:'209 Words · set 1', w209:[0, 42]},
+      {id:'wk-syn',  em:'🔁', name:'Same meaning',       re:/^\s*<span class="kw">[^<]+<\/span>\s*(most nearly|means|is closest)/i},
+      {id:'wk-209b', em:'🌟', name:'209 Words · set 2', w209:[42, 84]},
+      {id:'wk-ctx',  em:'📝', name:'Words in sentences', re:/./},
+      {id:'wk-209c', em:'🌟', name:'209 Words · set 3', w209:[84, 126]},
+      {id:'wk-209d', em:'🌟', name:'209 Words · set 4', w209:[126, 168]},
+      {id:'wk-209e', em:'🌟', name:'209 Words · set 5', w209:[168, 209]}
+    ],
+    PC: [
+      {id:'pc-main', em:'🎯', name:'Main idea',            re:/main idea|mainly|best title|primar|mostly about|central|purpose|summar|concerned with/i},
+      {id:'pc-det',  em:'📌', name:'Find the detail',      re:null},
+      {id:'pc-inf',  em:'🔍', name:'Clues & word meaning', re:/infer|suggest|impl|most likely|conclude|agree|assume|tone|attitude|would|as used|the word|the phrase|means|meaning|refers to/i}
+    ],
+    GS: [
+      {id:'gs-life', em:'🧬', name:'Life science',  re:/cell|blood|body|organ|plant|animal|gene|dna|bacteri|virus|disease|vitamin|bone|heart|lung|digest|ecosys|species|muscle|nerve|kidney|liver|skin|photosynth|protein|enzyme|hormone|immune|mammal|insect|reptile|fungi|chromosom|mitosis|food chain|predator|tissue|brain|tooth|teeth/i},
+      {id:'gs-earth',em:'🌍', name:'Earth & space', re:/rock|earth(?!worm)|planet|moon|sun\b|stars?\b|weather|cloud|volcan|ocean|atmospher|mineral|fossil|tide|season|galax|orbit|comet|asteroid|glacier|erosion|earthquake|plate|climate|front\b|humid|barometer|troposph|solar|mars|jupiter|venus|mercury\b|saturn/i},
+      {id:'gs-chem', em:'⚗️', name:'Chemistry',     re:/atom|element|molecule|compound|acid|\bbase\b|ph\b|chemical|periodic|electron|proton|neutron|\bion|reaction|mixture|solution|metal|boil|freez|melt|density|isotope|oxid|h₂o|co₂|symbol/i},
+      {id:'gs-phys', em:'🔭', name:'Physics',       re:/./}
+    ],
+    EI: [
+      {id:'ei-ohm',  em:'⚡', name:"Ohm's law & power", re:/ohm|volt|amp|current|resist|watt|power|series|parallel|E\s*=|I\s*=|P\s*=|Ω/i},
+      {id:'ei-wire', em:'🏠', name:'Wiring & safety',   re:/wire|ground|breaker|fuse|outlet|\bAC\b|\bDC\b|conduct|insulat|gauge|shock|circuit|switch|plug|neutral|hot\b/i},
+      {id:'ei-part', em:'🔌', name:'Parts & symbols',   re:/./}
+    ],
+    AS: [
+      {id:'as-eng',  em:'🔧', name:'The engine',        re:/engine|piston|cylinder|spark|combust|stroke|crank|camshaft|valve|fuel|carburet|inject|exhaust|oil|coolant|radiator|ignition|timing|compression|intake|manifold/i},
+      {id:'as-car',  em:'🚗', name:'Brakes, drive & electrics', re:/brake|tire|transmission|clutch|steer|suspension|alignment|battery|alternator|starter|axle|differential|vehicle|\bcar\b|wheel|shock absorb|strut|drive ?shaft|u-joint|gear/i},
+      {id:'as-shop', em:'🔨', name:'Shop tools',        re:/./}
+    ],
+    MC: [
+      {id:'mc-lev',  em:'⚙️', name:'Levers, pulleys & gears', re:/lever|pulley|fulcrum|gear|mechanical advantage|block and tackle|wheel and axle|screw|wedge|inclined|ramp|teeth|sprocket|belt/i},
+      {id:'mc-force',em:'🧲', name:'Force, work & fluids',    re:/./}
+    ],
+    AO: [
+      {id:'ao-con',  em:'🔗', name:'Connectors', ao:'con'},
+      {id:'ao-puz',  em:'🧩', name:'Puzzles',    ao:'puz'}
+    ]
+  };
+  /* sort order for classification (path order stays as listed) */
+  const CLASSIFY = {
+    AR: ['ar-avg','ar-pct','ar-rate','ar-ratio','ar-time','ar-money:/\\$|pay|earn|wage|cost|price|bill|salary|budget|dollar|cents?/i','ar-more'],
+    MK: ['mk-stat','mk-geo','mk-poly','mk-alg','mk-num:/./'],
+    PC: ['pc-main','pc-inf','pc-det:/./']
+  };
+  const TOPIC = {};                 // id → {t, code, bank:[indices]}
+  Object.keys(TOPICS).forEach(code => TOPICS[code].forEach(t => { TOPIC[t.id] = {t, code, bank:[]}; }));
+  Object.keys(TOPICS).forEach(code => {
+    const order = (CLASSIFY[code] || TOPICS[code].map(t => t.id)).map(s => {
+      const m = s.match(/^([^:]+):\/(.+)\/(\w*)$/);
+      return m ? {id:m[1], re:new RegExp(m[2], m[3])} : {id:s, re:TOPIC[s].t.re};
+    }).filter(o => o.re);
+    (BANK[code] || []).forEach((q, i) => {
+      if (code === 'AO'){ TOPIC['ao-con'].bank.push(i); return; }
+      const s = code === 'WK' ? q.q : strip(q.q);
+      const hit = order.find(o => o.re.test(s));
+      if (hit) TOPIC[hit.id].bank.push(i);
+    });
+  });
+
+  /* path = lessons, a chest after every 2nd lesson, a unit review at the end */
+  function nodesFor(code){
+    const ts = TOPICS[code], out = [];
+    ts.forEach((t, i) => {
+      out.push({id:t.id, type:'lesson', t, code});
+      if (i % 2 === 1 && i < ts.length - 1) out.push({id:`${code}-chest${i}`, type:'chest', code});
+    });
+    out.push({id:`${code}-review`, type:'review', code});
+    return out;
+  }
+
+  /* ---------- saved progress ---------- */
+  const today = () => new Date().toLocaleDateString('en-CA');
+  const yday = () => new Date(Date.now() - 864e5).toLocaleDateString('en-CA');
+  const P = () => LS.get('asvab_g_path', {});
+  const lvlOf = id => P()[id] || 0;
+  function setLvl(id, v){ const p = P(); p[id] = v; LS.set('asvab_g_path', p); }
+  const xpTotal = () => LS.get('asvab_g_xp', 0);
+  function dayXP(){ const d = LS.get('asvab_g_day', {d:'', xp:0}); return d.d === today() ? d.xp : 0; }
+  const goal = () => LS.get('asvab_g_goal', 30);
+  function streak(){
+    const s = LS.get('asvab_g_streak', {n:0, last:''});
+    return {n: s.last === today() || s.last === yday() ? s.n : 0, doneToday: s.last === today()};
+  }
+  function addXP(n){
+    LS.set('asvab_g_xp', xpTotal() + n);
+    LS.set('asvab_g_day', {d: today(), xp: dayXP() + n});
+  }
+  function bumpStreak(){           // returns true when today's first lesson extends the streak
+    const s = LS.get('asvab_g_streak', {n:0, last:''});
+    if (s.last === today()) return false;
+    const n = s.last === yday() ? s.n + 1 : 1;
+    LS.set('asvab_g_streak', {n, last: today()});
+    return true;
+  }
+  const crowns = () => Object.entries(P()).reduce((a, [k, v]) => a + (TOPIC[k] ? v : 0), 0);
+  const MISS_KEY = 'asvab_g_miss';
+  const missKey = x => x.q.q || x.q.key || JSON.stringify(x.q.base || x.q.w || '');
+  function addMiss(ex){
+    if (ex.kind === 'match') return;
+    const m = LS.get(MISS_KEY, []), k = missKey(ex);
+    if (m.some(x => missKey(x) === k)) return;
+    m.push({code: ex.code, kind: ex.kind, q: ex.q, topic: ex.topic});
+    LS.set(MISS_KEY, m.slice(-40));
+  }
+  function dropMiss(ex){ const k = missKey(ex); LS.set(MISS_KEY, LS.get(MISS_KEY, []).filter(x => missKey(x) !== k)); }
+
+  /* ---------- sound + fx ---------- */
+  let muted = LS.get('asvab_g_mute', false), AC = null;
   function beep(freqs, dur){
     if (muted) return;
     try{
@@ -5358,257 +5632,524 @@ function renderReview(filter){
     }catch(e){}
   }
   const sndOk = () => beep([660, 880], .09), sndBad = () => beep([220, 160], .14), sndWin = () => beep([523, 659, 784, 1046], .12);
-
-  /* ---------- fx ---------- */
-  const COLORS = ['#ff5a8a','#ffbe0b','#1fd49a','#4d8dff','#a24dff','#ff7a45'];
+  const CONF = ['#FF9F1C','#3A86FF','#9B5DE5','#F15BB5','#2EC4B6','#FFC300'];
   function confetti(n){
     for (let i = 0; i < (n || 40); i++){
       const c = document.createElement('i'); c.className = 'g-conf';
-      c.style.left = Math.random() * 100 + 'vw'; c.style.background = COLORS[i % COLORS.length];
+      c.style.left = Math.random() * 100 + 'vw'; c.style.background = CONF[i % CONF.length];
       c.style.animationDuration = (1.2 + Math.random() * 1.4) + 's'; c.style.animationDelay = Math.random() * .3 + 's';
       document.body.appendChild(c); setTimeout(() => c.remove(), 3000);
     }
   }
-  function floatTxt(txt, el){
-    const r = el.getBoundingClientRect(), f = document.createElement('div');
-    f.className = 'g-float'; f.textContent = txt;
-    f.style.left = (r.left + r.width / 2 - 40) + 'px'; f.style.top = (r.top - 10) + 'px';
-    document.body.appendChild(f); setTimeout(() => f.remove(), 1000);
+  function comboToast(n){
+    const t = document.createElement('div'); t.className = 'gq-combo';
+    t.textContent = `🔥 ${n} in a row!`; document.body.appendChild(t); setTimeout(() => t.remove(), 1400);
   }
 
-  /* ---------- XP / level ---------- */
-  const xp = () => LS.get('asvab_g_xp', 0);
-  const lvl = x => Math.floor(x / 500) + 1;
-  function addXP(n){ LS.set('asvab_g_xp', xp() + n); }
-
-  /* ---------- questions ---------- */
-  function makeQ(code){
-    if (code === 'W209') return w209Item(W209[Math.floor(Math.random() * W209.length)]);
-    let q;
-    if (GEN[code] && code !== 'WK' && Math.random() < .35) q = GEN[code]();
-    else { const pool = BANK[code]; q = JSON.parse(JSON.stringify(pool[Math.floor(Math.random() * pool.length)])); }
-    finalizeChoices(q, code);
-    return q;
+  /* ---------- building exercises ---------- */
+  const SEEN_KEY = 'asvab_g_seen';
+  function pickIdx(topicId, arr, n){            // prefer indices this browser hasn't used in this topic
+    const all = LS.get(SEEN_KEY, {}), seen = all[topicId] || [];
+    const unseen = shuffled(arr.filter(i => seen.indexOf(i) === -1)), old = shuffled(arr.filter(i => seen.indexOf(i) !== -1));
+    const take = unseen.concat(old).slice(0, n);
+    let ns = seen.concat(take.filter(i => seen.indexOf(i) === -1));
+    if (ns.length >= arr.length) ns = take.slice();
+    all[topicId] = ns; LS.set(SEEN_KEY, all);
+    return take;
   }
-  function nextQ(){
+  const clone = q => JSON.parse(JSON.stringify(q));
+  /* numeric answers that can be typed: "$46.75", "13 trucks", "31°", "x = 6" */
+  function typeSpec(q){
+    const t = strip(q.c[q.a]).trim();
+    const m = t.match(/^(\$|x = )?(−?[\d,]*\.?\d+)(\s?(?:°|%|[a-z]+(?:\s[a-z]+)?))?$/i);
+    if (!m) return null;
+    const val = parseFloat(m[2].replace('−', '-').replace(/,/g, ''));
+    return isFinite(val) ? {pre: m[1] || '', val, suf: m[3] || ''} : null;
+  }
+  const exOf = (code, q, topic, kind) => ({code, q, topic, kind: kind || (code === 'AO' ? 'ao' : 'mc')});
+  function genItem(code, names, used){
+    const list = code === 'AR' ? GEN_AR : GEN_MK;
     for (let t = 0; t < 30; t++){
-      const code = G.w.codes[Math.floor(Math.random() * G.w.codes.length)];
-      const q = makeQ(code);
-      if (!G.seen.has(q.q)){ G.seen.add(q.q); q._code = code; return q; }
+      const f = list.find(g => g.name === rpick(names));
+      if (!f) continue;
+      const q = f(); q.tpl = f.name;
+      if (used.has(q.q)) continue;
+      used.add(q.q);
+      return q;
     }
-    return makeQ(G.w.codes[0]);
+    return null;
+  }
+  function matchEx(range, topic){
+    const pool = shuffled(W209.slice(range[0], range[1])), out = [], ks = new Set();
+    for (const e of pool){
+      if (out.length >= 5) break;
+      if (ks.has(e.k) || (e.cl >= 0 && out.some(o => o.cl === e.cl))) continue;
+      ks.add(e.k); out.push(e);
+    }
+    return {code:'WK', kind:'match', topic, q:{pairs: out.map(e => ({w: e.w, k: e.k}))}};
+  }
+  function buildTopic(topicId, n, withMatch){
+    const T = TOPIC[topicId], t = T.t, code = T.code, out = [], used = new Set();
+    if (t.w209){
+      const idx = []; for (let i = t.w209[0]; i < t.w209[1]; i++) idx.push(i);
+      pickIdx(topicId, idx, n).forEach(i => { const q = w209Item(W209[i]); finalizeChoices(q, 'WK'); out.push(exOf('WK', q, t.name)); });
+    } else if (t.ao){
+      for (let k = 0; out.length < n && k < 60; k++){
+        let q;
+        if (t.ao === 'puz') q = genAOPuzzle();
+        else q = (T.bank.length && Math.random() < .5) ? clone(BANK.AO[rpick(T.bank)]) : genAO();
+        const key = q.key || JSON.stringify(q.base) + JSON.stringify(q.options);
+        if (used.has(key)) continue; used.add(key);
+        finalizeChoices(q, 'AO'); out.push(exOf('AO', q, t.name, 'ao'));
+      }
+    } else {
+      const gens = t.gens || [];
+      const nStatic = gens.length ? Math.min(T.bank.length, Math.ceil(n / 2)) : Math.min(T.bank.length, n);
+      pickIdx(topicId, T.bank, nStatic).forEach(i => {
+        const q = clone(BANK[code][i]); finalizeChoices(q, code); used.add(q.q); out.push(exOf(code, q, t.name));
+      });
+      while (out.length < n && gens.length){
+        const q = genItem(code, gens, used); if (!q) break;
+        finalizeChoices(q, code);
+        out.push(exOf(code, q, t.name, typeSpec(q) && Math.random() < .5 ? 'type' : 'mc'));
+      }
+    }
+    let res = shuffled(out);
+    if (withMatch && code === 'WK') res.splice(Math.min(4, res.length), 0, matchEx(t.w209 || [0, W209.length], t.name));
+    return res;
+  }
+  const lessonLen = code => code === 'PC' || code === 'AO' ? 6 : 10;
+  function buildReview(code){
+    const ts = TOPICS[code], n = code === 'PC' || code === 'AO' ? 8 : 12, per = Math.ceil(n / ts.length) + 1;
+    let all = [];
+    ts.forEach(t => { all = all.concat(buildTopic(t.id, per, false)); });
+    return shuffled(all).slice(0, n);
+  }
+  function buildMix(){
+    let all = [];
+    ['AR','MK','WK','PC'].forEach(code => {
+      const t = rpick(TOPICS[code]);
+      all = all.concat(buildTopic(t.id, 3, false).map(e => Object.assign(e, {topic: `${code} · ${t.name}`})));
+    });
+    return shuffled(all);
   }
 
-  /* ---------- screens ---------- */
-  const root = () => document.getElementById('g-root');
-  function hub(){
-    stopTimer(); G = null;
-    const x = xp(), best = LS.get('asvab_g_best', {});
+  /* ---------- hub ---------- */
+  let L = null, openPop = null;
+  let curSub = LS.get('asvab_g_subj', 'AR');
+  if (!subj(curSub)) curSub = 'AR';
+  function ringSVG(frac, size, col){
+    const r = size / 2 - 4, c = 2 * Math.PI * r;
+    return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true">
+      <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--g-lock)" stroke-width="6"/>
+      <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${col}" stroke-width="6" stroke-linecap="round"
+        stroke-dasharray="${(c * Math.min(1, frac)).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 ${size/2} ${size/2})"/></svg>`;
+  }
+  function subjProgress(code){
+    const ns = nodesFor(code);
+    return {done: ns.filter(n => lvlOf(n.id) >= 1).length, total: ns.length};
+  }
+  function subChip(s){
+    const pr = subjProgress(s.code);
+    return `<button type="button" class="gp-sub${s.code === curSub ? ' on' : ''}" data-sub="${s.code}" style="${cvars(s)}" aria-pressed="${s.code === curSub}">
+      <span class="c">${s.code}</span><span class="eq"><i>=</i> ${s.name}</span>
+      <span class="pr"><i style="width:${Math.round(pr.done / pr.total * 100)}%"></i></span>
+      <small>${pr.done} / ${pr.total} done</small></button>`;
+  }
+  const X_PATTERN = [0, 48, 80, 48, 0, -48, -80, -48];
+  function hub(keepScroll){
+    L = null; openPop = null; closeOverlay();
+    const s = subj(curSub), ns = nodesFor(curSub), st = streak(), dx = dayXP(), gl = goal();
+    const cur = ns.findIndex(n => lvlOf(n.id) < 1);
+    const misses = LS.get(MISS_KEY, []).length;
     root().innerHTML = `
-      <div class="g-top">
-        <h2 class="g-title">🎮 <span>ASVAB Arcade</span></h2>
-        <span class="g-pill">⭐ Level ${lvl(x)}</span>
-        <span class="g-pill">✨ ${x.toLocaleString()} XP</span>
-        <button class="g-btn ghost" id="g-mute" style="margin-left:auto;padding:8px 12px">${muted ? '🔇' : '🔊'}</button>
+      <div class="gp-top">
+        <span class="gp-stat flame${st.doneToday ? '' : ' off'}" title="Day streak — finish one lesson a day">🔥 <b id="gp-streak">${st.n}</b> day${st.n === 1 ? '' : 's'}</span>
+        <span class="gp-stat" title="Today's XP goal">${ringSVG(dx / gl, 26, 'var(--g-gold)')} <b id="gp-day">${dx}</b>/${gl} XP today</span>
+        <span class="gp-stat gold" title="Total XP">⭐ <b id="gp-xp">${xpTotal().toLocaleString()}</b> XP</span>
+        <span class="gp-stat gold" title="Crowns — each lesson can reach level 3">👑 <b id="gp-crowns">${crowns()}</b></span>
+        <button type="button" class="gp-mute" id="gp-mute" aria-label="${muted ? 'Sound off' : 'Sound on'}">${muted ? '🔇' : '🔊'}</button>
       </div>
-      <div class="g-lvl"><i style="width:${(x % 500) / 5}%"></i></div>
-      <p class="g-sub">Pick a world. 10 questions · 3 ❤️ · answer fast for bonus points · 3 in a row = 🔥 combo!</p>
-      <div class="g-worlds">${WORLDS.map(w => `
-        <button class="g-world" data-world="${w.id}" style="background:${w.bg}">
-          ${best[w.id] ? `<span class="best">🏆 ${best[w.id]}</span>` : ''}
-          <span class="em">${w.em}</span><b>${w.name}</b><small>${w.sub}</small>
-        </button>`).join('')}</div>`;
-    root().querySelectorAll('[data-world]').forEach(b => b.addEventListener('click', () => {
-      const w = WORLDS.find(v => v.id === b.dataset.world);
-      w.match ? startMatch(w) : startRound(w);
+      <h2 class="gp-title">🎮 ASVAB Path</h2>
+      <p class="gp-intro">Short lessons · 5 ❤️ per lesson · missed questions come back until you get them · keep your 🔥 streak with one lesson a day. Start with the <b>AFQT</b> four.</p>
+      <span class="gp-lbl">⭐ AFQT — the 4 tests that decide if you can join</span>
+      <div class="gp-subs gp-afqt">${SUBJ.filter(x => x.afqt).map(subChip).join('')}</div>
+      <span class="gp-lbl">More subjects — they decide which jobs you get</span>
+      <div class="gp-subs gp-more">${SUBJ.filter(x => !x.afqt).map(subChip).join('')}</div>
+      <div class="gp-quick">
+        <button type="button" class="gp-qbtn" id="gp-mix"><span class="em">⚡</span><span><b>AFQT Mix</b><small>12 questions: 3 each from AR · MK · WK · PC</small></span></button>
+        <button type="button" class="gp-qbtn" id="gp-fix"${misses ? '' : ' disabled'}><span class="em">🔁</span><span><b>Fix my mistakes${misses ? ` (${misses})` : ''}</b><small>${misses ? 'Questions you missed before — get them right to clear them' : 'Nothing to fix yet — missed questions land here'}</small></span></button>
+      </div>
+      <label class="gp-goal">🎯 Daily goal
+        <select id="gp-goal">${[[10,'Casual'],[20,'Regular'],[30,'Serious'],[50,'Intense']].map(([v, n]) => `<option value="${v}"${v === gl ? ' selected' : ''}>${v} XP · ${n}</option>`).join('')}</select></label>
+      <div class="gp-unit" style="${cvars(s)}">
+        <div><small>${s.afqt ? 'AFQT · counts toward joining' : 'Job score subject'}</small>
+          <h3 id="gp-unit-h">${s.code} = ${s.name}</h3><p>${s.short}</p></div>
+        <button type="button" class="gp-guide" id="gp-guide">📖 GUIDE</button>
+      </div>
+      <div class="gp-path" id="gp-path" style="${cvars(s)}">${ns.map((n, k) => nodeHTML(n, k, cur)).join('')}</div>`;
+    root().querySelectorAll('[data-sub]').forEach(b => b.addEventListener('click', () => {
+      curSub = b.dataset.sub; LS.set('asvab_g_subj', curSub); hub(true);
+      const u = byId('gp-unit-h'); if (u) u.closest('.gp-unit').scrollIntoView({behavior:'smooth', block:'start'});
     }));
-    document.getElementById('g-mute').addEventListener('click', () => { muted = !muted; LS.set('asvab_g_mute', muted); hub(); });
+    root().querySelectorAll('[data-node]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); nodeClick(b.dataset.node); }));
+    byId('gp-mute').addEventListener('click', () => { muted = !muted; LS.set('asvab_g_mute', muted); hub(true); });
+    byId('gp-goal').addEventListener('change', e => { LS.set('asvab_g_goal', +e.target.value); hub(true); });
+    byId('gp-guide').addEventListener('click', () => guide(curSub));
+    byId('gp-mix').addEventListener('click', () => start({mode:'mix', title:'AFQT Mix', items: buildMix()}));
+    byId('gp-fix').addEventListener('click', () => {
+      const m = LS.get(MISS_KEY, []).slice(-10).reverse();
+      if (!m.length) return;
+      start({mode:'fix', title:'Fix my mistakes', items: m.map(x => exOf(x.code, x.q, x.topic, x.kind))});
+    });
+    if (!keepScroll) window.scrollTo(0, 0);
+  }
+  function nodeHTML(n, k, cur){
+    const lv = lvlOf(n.id), done = lv >= 1, locked = k > cur && cur !== -1, isCur = k === cur;
+    const ic = n.type === 'chest' ? (done ? '📦' : '🎁') : n.type === 'review' ? '🏆' : n.t.em;
+    const label = n.type === 'chest' ? (done ? 'Opened' : 'Treasure') : n.type === 'review' ? 'Unit review' : n.t.name;
+    const ring = n.type === 'lesson' && !locked ? `<span class="ring">${ringSVG(lv / 3, 96, 'var(--g-gold)')}</span>` : '';
+    return `<div class="gp-nw${locked ? ' locked' : ''}" style="--x:${X_PATTERN[k % X_PATTERN.length]}" data-wrap="${n.id}">
+      ${isCur ? '<span class="gp-startb">START</span>' : ''}
+      <button type="button" class="gp-node ${n.type}${locked ? ' locked' : ''}${isCur ? ' cur' : ''}${done ? ' done' : ''}" data-node="${n.id}"
+        aria-label="${label}${locked ? ' (locked)' : done ? ' (done)' : ''}">${ring}<span class="ic">${ic}</span>${n.type === 'lesson' && lv ? `<span class="gp-crown">👑${lv}</span>` : ''}</button>
+      <span class="gp-nlabel">${label}</span></div>`;
+  }
+  function nodeClick(id){
+    const ns = nodesFor(curSub), k = ns.findIndex(n => n.id === id), n = ns[k];
+    const cur = ns.findIndex(x => lvlOf(x.id) < 1), locked = cur !== -1 && k > cur;
+    const old = root().querySelector('.gp-pop'); if (old) old.remove();
+    if (openPop === id){ openPop = null; return; }
+    openPop = id;
+    if (n.type === 'chest' && !locked){
+      if (lvlOf(id) >= 1){ openPop = null; return; }
+      const gain = 5 + Math.floor(Math.random() * 11);
+      addXP(gain); setLvl(id, 1); sndWin(); confetti(50);
+      overlay(`<div style="text-align:center"><div style="font-size:64px">🎁</div><h3>Treasure! +${gain} XP</h3><p>Nice work keeping at it.</p><div class="row"><button type="button" class="gb wide" id="g-ov-ok">Continue</button></div></div>`);
+      byId('g-ov-ok').addEventListener('click', () => hub(true));
+      return;
+    }
+    const lv = lvlOf(id), T = n.type === 'lesson' ? n.t : null;
+    let h = '', p = '', btn = '';
+    if (locked){
+      h = n.type === 'review' ? '🏆 Unit review' : n.type === 'chest' ? '🎁 Treasure' : `${T.em} ${T.name}`;
+      p = n.type === 'chest' ? 'Finish the lessons above to open this chest.' : 'Locked — finish the lessons above first. Already know this? Jump here: pass this lesson and everything before it unlocks.';
+      btn = n.type === 'chest' ? '' : `<button type="button" class="gb" data-go="${id}" data-jump="1">Jump here?</button>`;
+    } else if (n.type === 'review'){
+      h = '🏆 Unit review'; p = `${n.code === 'PC' || n.code === 'AO' ? 8 : 12} mixed questions from every lesson in ${n.code}. Only 3 ❤️!${lv ? ' ✓ Passed — practice anytime.' : ''}`;
+      btn = `<button type="button" class="gb" data-go="${id}">${lv ? 'Practice +10 XP' : 'Start +20 XP'}</button>`;
+    } else {
+      h = `${T.em} ${T.name}`;
+      p = lv >= 3 ? '👑 Legendary! Practice anytime to stay sharp.' : `Level ${lv + 1} of 3 · ${lessonLen(n.code)} exercises`;
+      btn = `<button type="button" class="gb" data-go="${id}">${lv >= 3 ? 'Practice +5 XP' : lv ? 'Level up +10 XP' : 'Start +10 XP'}</button>`;
+    }
+    const pop = document.createElement('div');
+    pop.className = 'gp-pop' + (locked ? ' locked' : '');
+    pop.innerHTML = `<h4>${h}</h4><p>${p}</p>${btn}`;
+    root().querySelector(`[data-wrap="${id}"]`).after(pop);
+    const go = pop.querySelector('[data-go]');
+    if (go) go.addEventListener('click', e => { e.stopPropagation(); startNode(n, k, !!go.dataset.jump); });
+    pop.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+  function startNode(n, k, jump){
+    if (n.type === 'review') start({mode:'review', node:n, k, jump, code:n.code, hearts:3, title:'Unit review', items: buildReview(n.code)});
+    else start({mode:'lesson', node:n, k, jump, code:n.code, title:n.t.name, items: buildTopic(n.id, lessonLen(n.code), n.code === 'WK')});
   }
 
-  function startRound(w){
-    G = {w, i:0, hearts:HEARTS, score:0, streak:0, bestStreak:0, right:0, seen:new Set(), miss:[], lock:false};
+  /* ---------- overlays (quit sheet, guide, chest) ---------- */
+  function overlay(html, extraClass){
+    closeOverlay();
+    const o = document.createElement('div'); o.className = 'g-ov'; o.id = 'g-ov';
+    o.innerHTML = `<div class="g-ov-in ${extraClass || ''}" role="dialog" aria-modal="true">${html}</div>`;
+    o.addEventListener('click', e => { if (e.target === o) closeOverlay(); });
+    byId('screen-game').appendChild(o);
+    const f = o.querySelector('button'); if (f) f.focus();
+  }
+  function closeOverlay(){ const o = byId('g-ov'); if (o) o.remove(); }
+  function guide(code){
+    const s = subj(code), SL = window.ASVAB_STUDY && window.ASVAB_STUDY.LESSONS[code];
+    let body;
+    if (SL) body = `<p>${SL.what}</p><span class="gl">Step by step</span><ol>${SL.steps.map(x => `<li>${x}</li>`).join('')}</ol>
+        <span class="gl">Must know</span><ul>${SL.know.map(x => `<li>${x}</li>`).join('')}</ul>
+        <span class="gl">⚠️ Traps</span><ul>${SL.traps.map(x => `<li>${x}</li>`).join('')}</ul>`;
+    else body = `<div class="study-b">${(STUDY.find(x => x.code === code) || {}).body || ''}</div>`;
+    overlay(`<div class="g-guide" style="${cvars(s)}"><h3>📖 ${s.code} = ${s.name}</h3>${body}
+      <div class="row">${SL ? `<button type="button" class="gb ghost wide" id="g-ov-study">Open the full ${s.code} lesson in 📚 Study</button>` : ''}
+      <button type="button" class="gb wide" id="g-ov-ok" style="${cvars(s)}">Got it</button></div></div>`);
+    byId('g-ov-ok').addEventListener('click', closeOverlay);
+    const so = byId('g-ov-study');
+    if (so) so.addEventListener('click', () => {
+      closeOverlay(); setMode('study');
+      window.ASVAB_STUDY.selectTab(code);
+      const el = byId('st-lessons'); if (el) el.scrollIntoView({block:'start'});
+    });
+  }
+
+  /* ---------- lesson engine ---------- */
+  function start(o){
+    if (!o.items || !o.items.length) return;
+    const s = subj(o.code || 'AR');
+    L = Object.assign({hearts:5, maxHearts:o.hearts || 5, queue:o.items.slice(), total:o.items.length, done:0,
+      combo:0, best:0, first:0, wrong:0, missed:[], t0:Date.now(), phase:'answer', sel:null, s}, o);
+    L.hearts = L.maxHearts;
+    L.items.forEach(e => { e.tries = 0; });
     ask();
   }
-  function stopTimer(){ clearInterval(timer); timer = null; }
+  const exSub = ex => subj(ex.code) || subj('AR');
+  function promptFor(ex){
+    if (ex.kind === 'match') return 'Tap the matching pairs';
+    if (ex.kind === 'type') return 'Type the answer';
+    if (ex.kind === 'ao') return ex.q.kind === 'puz' ? 'Which figure do these pieces make?' : 'Which figure joins the shapes at the dots?';
+    if (ex.code === 'WK') return /most nearly means/.test(ex.q.q) ? 'What does this word mean?' : 'Pick the word with the same meaning';
+    if (ex.code === 'PC') return 'Read, then answer';
+    if (ex.code === 'AR') return 'Solve the word problem';
+    if (ex.code === 'MK') return 'Solve';
+    return 'Choose the correct answer';
+  }
   function ask(){
-    if (G.i >= ROUND || G.hearts <= 0) return endRound();
-    G.q = nextQ(); G.lock = false;
-    const secs = G.w.secs || (G.q._code === 'AR' || G.q._code === 'MK' ? 45 : SECS);
-    G.total = secs * 10; G.left = G.total;
-    const mult = G.streak >= 6 ? 3 : G.streak >= 3 ? 2 : 1;
-    root().innerHTML = `
-      <div class="g-top">
-        <button class="g-btn ghost" id="g-quit" style="padding:8px 12px">← Worlds</button>
-        <span class="g-pill">${G.w.em} ${G.w.name}</span>
-        <span class="g-pill" style="margin-left:auto">🏅 <span id="g-score">${G.score}</span></span>
-      </div>
-      <div class="g-play">
-        <div class="g-hud">
-          <span class="g-hearts">${'❤️'.repeat(G.hearts)}${'🤍'.repeat(HEARTS - G.hearts)}</span>
-          <span class="g-pill">Q ${G.i + 1}/${ROUND}</span>
-          <span class="g-combo">${mult > 1 ? '🔥 x' + mult : ''}</span>
-        </div>
-        <div class="g-timer"><i id="g-bar" style="width:100%"></i></div>
-        <div class="g-q">${G.q.q}</div>
-        <div class="g-choices">${G.q.c.map((c, i) => `<button class="g-ch" data-i="${i}">${c}</button>`).join('')}</div>
-        <div id="g-fb"></div>
-      </div>`;
-    document.getElementById('g-quit').addEventListener('click', hub);
-    root().querySelectorAll('.g-ch').forEach(b => b.addEventListener('click', () => answer(+b.dataset.i, b)));
-    stopTimer();
-    timer = setInterval(() => {
-      G.left--; const bar = document.getElementById('g-bar');
-      if (bar) bar.style.width = (G.left / G.total * 100) + '%';
-      if (G.left <= 0){ stopTimer(); answer(-1, null); }
-    }, 100);
-  }
-  function answer(i, btn){
-    if (!G || G.lock) return; G.lock = true; stopTimer();
-    const ok = i === G.q.a, btns = root().querySelectorAll('.g-ch');
-    btns.forEach((b, k) => { if (k === G.q.a) b.classList.add('right'); else b.classList.add('dim'); });
-    G.i++;
-    if (ok){
-      G.streak++; G.right++; G.bestStreak = Math.max(G.bestStreak, G.streak);
-      const mult = G.streak >= 6 ? 3 : G.streak >= 3 ? 2 : 1;
-      const pts = (100 + Math.round(G.left / G.total * 100)) * mult;
-      G.score += pts; document.getElementById('g-score').textContent = G.score;
-      floatTxt('+' + pts + (mult > 1 ? ' 🔥' : ''), btn); sndOk();
-      if (G.streak === 3 || G.streak === 6) confetti(30);
-      setTimeout(ask, 950);
+    closeOverlay();
+    if (!L.queue.length) return finish();
+    const ex = L.queue[0], s = exSub(ex);
+    L.phase = 'answer'; L.sel = null; L.ex = ex;
+    const pct = Math.round(L.done / L.total * 100);
+    let body = '';
+    if (ex.kind === 'match'){
+      const left = shuffled(ex.q.pairs), right = shuffled(ex.q.pairs);
+      ex.left = ex.q.pairs.length; ex.pick = null;
+      body = `<div class="gq-match"><div>${left.map(p => `<button type="button" class="gq-tile" data-w="${p.w}">${p.w}</button>`).join('')}</div>
+        <div>${right.map(p => `<button type="button" class="gq-tile" data-m="${p.w}">${p.k}</button>`).join('')}</div></div>`;
+    } else if (ex.kind === 'ao'){
+      const q = ex.q, puz = q.kind === 'puz';
+      body = `<div class="gq-ao">${puz ? aopStemSVG(q) : aoSVG(q.base, false)}</div>
+        <div class="gq-chs ao" role="radiogroup">${q.options.map((o, k) => `<button type="button" class="gq-ch" role="radio" aria-checked="false" data-k="${k}"><span class="n">${k + 1}</span>${puz ? aopOptSVG(o, q.pie) : aoSVG(o, true)}</button>`).join('')}</div>`;
     } else {
-      G.streak = 0; G.hearts--; sndBad();
-      if (btn){ btn.classList.remove('dim'); btn.classList.add('wrong'); }
-      G.miss.push(G.q);
-      document.getElementById('g-fb').innerHTML = `<div class="g-fb">
-        <h4>${i < 0 ? '⏰ Time’s up!' : '😬 Not quite!'}</h4>
-        Answer: <b>${G.q.c[G.q.a]}</b><br>${G.q.why || ''}${(() => { const x = exampleFor(G.q, G.q._code === 'W209' ? 'WK' : G.q._code); return x ? `<div class="g-ex"><b>💡 Example</b><br>${x}</div>` : ''; })()}
-        <div style="margin-top:12px"><button class="g-btn" id="g-next">${G.hearts > 0 && G.i < ROUND ? 'Next ➜' : 'See results ➜'}</button></div></div>`;
-      document.getElementById('g-next').addEventListener('click', ask);
-    }
-  }
-  function saveBest(id, score){
-    const best = LS.get('asvab_g_best', {});
-    const isNew = !best[id] || score > best[id];
-    if (isNew){ best[id] = score; LS.set('asvab_g_best', best); }
-    return isNew;
-  }
-  function endRound(){
-    stopTimer();
-    const acc = G.right / Math.max(G.i, 1), survived = G.hearts > 0;
-    const stars = !survived ? (G.right >= 5 ? 1 : 0) : acc >= .9 ? 3 : acc >= .7 ? 2 : 1;
-    const gained = Math.round(G.score / 10) + stars * 20, before = lvl(xp());
-    addXP(gained); const up = lvl(xp()) > before, isNew = saveBest(G.w.id, G.score);
-    if (stars >= 2 || isNew) { confetti(90); sndWin(); }
-    const msg = stars === 3 ? 'LEGENDARY! 🏆' : stars === 2 ? 'Awesome job! 🎉' : stars === 1 ? 'Nice work — keep going! 💪' : 'Out of hearts — try again! 💖';
-    root().innerHTML = `
-      <div class="g-play g-end">
-        <div class="g-stars">${'⭐'.repeat(stars)}${'☆'.repeat(3 - stars)}</div>
-        <h2 class="g-title"><span>${msg}</span></h2>
-        <p class="g-big">${G.score}</p>
-        <p class="g-sub">${G.right} / ${G.i} correct · best streak 🔥 ${G.bestStreak} · +${gained} XP${isNew ? ' · 🏆 NEW BEST!' : ''}${up ? ' · ⬆️ LEVEL UP!' : ''}</p>
-        ${G.miss.length ? `<div class="g-review"><b>📌 Review these:</b>${G.miss.map(q => `<p>${q.q} → <b>${q.c[q.a]}</b></p>`).join('')}</div>` : ''}
-        <div class="g-row">
-          <button class="g-btn" id="g-again">🔁 Play again</button>
-          <button class="g-btn ghost" id="g-home">🗺️ Worlds</button>
-        </div>
-      </div>`;
-    const w = G.w;
-    document.getElementById('g-again').addEventListener('click', () => startRound(w));
-    document.getElementById('g-home').addEventListener('click', hub);
-  }
-
-  /* ---------- word match ---------- */
-  const BOARDS = 3, PAIRS = 6;
-  function startMatch(w){
-    G = {w, board:0, mistakes:0, t0:Date.now(), matched:0, sel:null, done:[]};
-    drawBoard();
-  }
-  function pickPairs(){
-    const out = [], used = new Set();
-    for (const e of shuffled(W209)){
-      if (out.length >= PAIRS) break;
-      if (used.has(e.k) || (e.cl >= 0 && out.some(o => o.cl === e.cl))) continue;
-      used.add(e.k); out.push(e);
-    }
-    return out;
-  }
-  function drawBoard(){
-    G.pairs = pickPairs(); G.matched = 0; G.sel = null;
-    const left = shuffled(G.pairs), right = shuffled(G.pairs);
-    root().innerHTML = `
-      <div class="g-top">
-        <button class="g-btn ghost" id="g-quit" style="padding:8px 12px">← Worlds</button>
-        <span class="g-pill">🃏 Word Match</span>
-        <span class="g-pill" style="margin-left:auto">Board ${G.board + 1}/${BOARDS}</span>
-        <span class="g-pill">❌ <span id="g-mis">${G.mistakes}</span></span>
-      </div>
-      <div class="g-play">
-        <p class="g-sub">Tap a <b style="color:#c9b6ff">word</b>, then its <b style="color:#ffb08a">meaning</b>.</p>
-        <div class="g-match">
-          <div style="display:grid;gap:10px">${left.map(e => `<button class="g-tile w" data-w="${e.w}">${e.w}</button>`).join('')}</div>
-          <div style="display:grid;gap:10px">${right.map(e => `<button class="g-tile m" data-m="${e.w}">${e.k}</button>`).join('')}</div>
-        </div>
-      </div>`;
-    document.getElementById('g-quit').addEventListener('click', hub);
-    root().querySelectorAll('.g-tile.w').forEach(b => b.addEventListener('click', () => {
-      root().querySelectorAll('.g-tile.w').forEach(x => x.classList.remove('sel'));
-      b.classList.add('sel'); G.sel = b.dataset.w; beep([520], .05);
-    }));
-    root().querySelectorAll('.g-tile.m').forEach(b => b.addEventListener('click', () => {
-      if (!G.sel) { b.classList.add('wrong'); setTimeout(() => b.classList.remove('wrong'), 400); return; }
-      const wb = root().querySelector(`.g-tile.w[data-w="${G.sel}"]`);
-      if (b.dataset.m === G.sel){
-        wb.classList.remove('sel'); wb.classList.add('done'); b.classList.add('done');
-        floatTxt('✔', b); sndOk(); G.matched++; G.sel = null;
-        if (G.matched === PAIRS){
-          G.board++; confetti(35);
-          setTimeout(() => G.board >= BOARDS ? endMatch() : drawBoard(), 700);
-        }
+      const q = ex.q;
+      body = (q.p ? `<div class="gq-passage" id="gq-passage">${PASSAGES[q.p]}</div>` : '') + `<p class="gq-q">${q.q}</p>`;
+      if (ex.kind === 'type'){
+        const sp = typeSpec(q);
+        body += `<div class="gq-type">${sp.pre ? `<span>${sp.pre}</span>` : ''}<input type="text" id="gq-in" inputmode="decimal" autocomplete="off" aria-label="Your answer" placeholder="Type a number">${sp.suf ? `<span>${sp.suf.trim()}</span>` : ''}</div>
+          <button type="button" class="gq-swap" id="gq-swap">🔢 Show choices instead</button>`;
       } else {
-        G.mistakes++; document.getElementById('g-mis').textContent = G.mistakes; sndBad();
+        body += `<div class="gq-chs" role="radiogroup">${q.c.map((c, k) => `<button type="button" class="gq-ch" role="radio" aria-checked="false" data-k="${k}"><span class="n">${k + 1}</span><span>${c}</span></button>`).join('')}</div>`;
+      }
+    }
+    root().innerHTML = `<div class="gq" style="${cvars(s)}">
+      <div class="gq-bar"><button type="button" class="gq-x" id="gq-x" aria-label="Quit lesson">✕</button>
+        <div class="gq-prog" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div>
+        <span class="gq-hearts" id="gq-hearts" aria-label="${L.hearts} hearts left">❤️ ${L.hearts}</span></div>
+      <span class="gq-tag${ex.tries ? ' retry' : ''}">${ex.tries ? '↻ Try again · ' : ''}${ex.code} · ${ex.topic || subj(ex.code).name}</span>
+      <h3 class="gq-prompt">${promptFor(ex)}</h3>
+      ${body}
+      <div class="gq-foot" id="gq-foot"><div class="gq-foot-in">${ex.kind === 'match' ? '<p style="margin:0;text-align:center;font-weight:800;color:var(--g-soft)">Match all the pairs to continue</p>' : '<button type="button" class="gb wide" id="gq-check" disabled>Check</button>'}</div></div>
+    </div>`;
+    byId('gq-x').addEventListener('click', quitSheet);
+    if (ex.kind === 'match') wireMatch(ex);
+    else {
+      root().querySelectorAll('.gq-ch').forEach(b => b.addEventListener('click', () => choose(+b.dataset.k)));
+      const inp = byId('gq-in');
+      if (inp){
+        inp.addEventListener('input', () => { byId('gq-check').disabled = !inp.value.trim(); });
+        inp.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); e.stopPropagation(); if (inp.value.trim()) check(); } });
+        byId('gq-swap').addEventListener('click', () => { ex.kind = 'mc'; ask(); });
+        setTimeout(() => inp.focus({preventScroll:true}), 30);
+      }
+      byId('gq-check').addEventListener('click', check);
+    }
+    window.scrollTo(0, 0);
+  }
+  function choose(k){
+    if (!L || L.phase !== 'answer') return;
+    L.sel = k;
+    root().querySelectorAll('.gq-ch').forEach(b => { const on = +b.dataset.k === k; b.classList.toggle('sel', on); b.setAttribute('aria-checked', on); });
+    const c = byId('gq-check'); if (c) c.disabled = false;
+    beep([520], .04);
+  }
+  function wireMatch(ex){
+    root().querySelectorAll('.gq-tile[data-w]').forEach(b => b.addEventListener('click', () => {
+      root().querySelectorAll('.gq-tile[data-w]').forEach(x => x.classList.remove('sel'));
+      b.classList.add('sel'); ex.pick = b.dataset.w; beep([520], .04);
+    }));
+    root().querySelectorAll('.gq-tile[data-m]').forEach(b => b.addEventListener('click', () => {
+      if (!ex.pick){ b.classList.add('wrong'); setTimeout(() => b.classList.remove('wrong'), 400); return; }
+      const wb = root().querySelector(`.gq-tile[data-w="${ex.pick}"]`);
+      if (b.dataset.m === ex.pick){
+        wb.classList.remove('sel'); wb.classList.add('done'); b.classList.add('done'); sndOk();
+        ex.pick = null; ex.left--;
+        if (ex.left === 0){ L.sel = 'match'; check(); }
+      } else {
+        ex.miss = (ex.miss || 0) + 1; sndBad();
         b.classList.add('wrong'); setTimeout(() => b.classList.remove('wrong'), 400);
       }
     }));
   }
-  function endMatch(){
-    const secs = Math.round((Date.now() - G.t0) / 1000);
-    const score = Math.max(100, 2000 - secs * 10 - G.mistakes * 60);
-    const stars = G.mistakes <= 1 ? 3 : G.mistakes <= 4 ? 2 : 1;
-    const gained = Math.round(score / 10) + stars * 20, before = lvl(xp());
-    addXP(gained); const up = lvl(xp()) > before, isNew = saveBest('match', score);
-    confetti(90); sndWin();
-    root().innerHTML = `
-      <div class="g-play g-end">
-        <div class="g-stars">${'⭐'.repeat(stars)}${'☆'.repeat(3 - stars)}</div>
-        <h2 class="g-title"><span>All matched! 🎉</span></h2>
-        <p class="g-big">${score}</p>
-        <p class="g-sub">${BOARDS * PAIRS} words · ${secs}s · ${G.mistakes} mistakes · +${gained} XP${isNew ? ' · 🏆 NEW BEST!' : ''}${up ? ' · ⬆️ LEVEL UP!' : ''}</p>
-        <div class="g-row">
-          <button class="g-btn" id="g-again">🔁 Play again</button>
-          <button class="g-btn ghost" id="g-home">🗺️ Worlds</button>
-        </div>
-      </div>`;
-    const w = G.w;
-    document.getElementById('g-again').addEventListener('click', () => startMatch(w));
-    document.getElementById('g-home').addEventListener('click', hub);
+  const PRAISE = ['Nice!', 'Great job!', 'Correct!', 'You got it!', 'Awesome!', 'Well done!'];
+  function answerText(ex){
+    const q = ex.q;
+    if (ex.kind === 'ao') return `Figure ${q.a + 1}`;
+    return q.c[q.a];
+  }
+  function check(){
+    if (!L || L.phase !== 'answer') return;
+    const ex = L.ex, q = ex.q;
+    let ok;
+    if (ex.kind === 'match') ok = true;
+    else if (ex.kind === 'type'){
+      const raw = (byId('gq-in').value || '').replace(/[\s,$]/g, '').replace(/−/g, '-').replace(/^x=/i, '');
+      const m = raw.match(/^-?\d*\.?\d+/), sp = typeSpec(q);
+      ok = !!m && Math.abs(parseFloat(m[0]) - sp.val) < 1e-6;
+      byId('gq-in').disabled = true;
+    } else {
+      if (L.sel === null) return;
+      ok = L.sel === q.a;
+      root().querySelectorAll('.gq-ch').forEach(b => {
+        const k = +b.dataset.k; b.disabled = true;
+        if (k === q.a) b.classList.add('right');
+        else if (k === L.sel) b.classList.add('wrong');
+      });
+    }
+    L.phase = 'feedback';
+    const firstTry = !ex.tries;
+    ex.tries++;
+    if (ok){
+      L.done++; L.queue.shift(); L.combo++; L.best = Math.max(L.best, L.combo);
+      if (firstTry) L.first++;
+      if (L.mode === 'fix') dropMiss(ex);
+      sndOk();
+      if (L.combo === 3 || L.combo === 5 || L.combo === 10) comboToast(L.combo);
+    } else {
+      L.hearts--; L.wrong++; L.combo = 0; sndBad();
+      L.queue.push(L.queue.shift());               // comes back at the end of the lesson
+      if (L.missed.indexOf(ex) === -1) L.missed.push(ex);
+      addMiss(ex);
+      const h = byId('gq-hearts'); if (h){ h.textContent = '❤️ ' + L.hearts; h.setAttribute('aria-label', L.hearts + ' hearts left'); }
+    }
+    if (q.p && q.proof){ const ps = byId('gq-passage'); if (ps) ps.innerHTML = markProof(PASSAGES[q.p], q.proof); }
+    const why = ex.kind === 'match' ? '' : ex.kind === 'ao' ? (q.kind === 'puz' ? q.why : aoConWhy(q)) : q.why;
+    const exm = ex.kind === 'match' ? '' : exampleFor(q, ex.code);
+    const foot = byId('gq-foot');
+    foot.className = 'gq-foot ' + (ok ? 'ok' : 'bad');
+    const head = ok ? `✅ ${rpick(PRAISE)}` : '❌ Not quite';
+    foot.innerHTML = `<div class="gq-foot-in"><div class="gq-fb" id="gq-fb" aria-live="polite"><h4>${head}</h4>
+        ${ex.kind === 'match' ? `<div>All pairs matched${ex.miss ? ` · ${ex.miss} wrong tap${ex.miss > 1 ? 's' : ''}` : ' · no mistakes'}.</div>` : ''}
+        ${ex.kind !== 'match' ? `<div class="ans">${ok ? 'Answer' : 'Correct answer'}: ${answerText(ex)}</div>` : ''}
+        ${!ok && why ? `<div class="gq-why">${why}</div>` : ''}
+        ${ok && why && ex.code !== 'WK' ? `<div class="gq-why">${why}</div>` : ''}
+        ${!ok && exm ? `<div class="exm">💡 <b>Example:</b> ${exm}</div>` : ''}
+        ${!ok ? `<div class="exm" style="border:0;padding:0">↻ You'll see this one again before the lesson ends.</div>` : ''}
+      </div><button type="button" class="gb wide" id="gq-next">Continue</button></div>`;
+    byId('gq-next').addEventListener('click', next);
+    const pr = root().querySelector('.gq-prog i'); if (pr) pr.style.width = Math.round(L.done / L.total * 100) + '%';
+    byId('gq-next').focus({preventScroll:true});
+  }
+  function next(){
+    if (!L || L.phase !== 'feedback') return;
+    if (L.hearts <= 0) return fail();
+    ask();
+  }
+  function quitSheet(){
+    overlay(`<div style="text-align:center"><div style="font-size:52px">😢</div><h3>Wait — don't go yet!</h3>
+      <p>If you quit now you'll lose this lesson's progress.</p>
+      <div class="row"><button type="button" class="gb wide" id="g-ov-keep">Keep learning</button>
+      <button type="button" class="gb ghost wide" id="g-ov-quit">Quit lesson</button></div></div>`);
+    byId('g-ov-keep').addEventListener('click', closeOverlay);
+    byId('g-ov-quit').addEventListener('click', () => { closeOverlay(); hub(); });
+  }
+  const mmss = ms => { const s = Math.round(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+  function finish(){
+    const o = L, lvBefore = o.node ? lvlOf(o.node.id) : 0;
+    let gain;
+    if (o.mode === 'review') gain = (lvBefore ? 10 : 20) + (o.wrong ? 0 : 10);
+    else if (o.mode === 'lesson') gain = (lvBefore >= 3 ? 5 : 10) + (o.wrong ? 0 : 5);
+    else if (o.mode === 'mix') gain = 15 + (o.wrong ? 0 : 5);
+    else gain = 10;
+    const dayBefore = dayXP();
+    addXP(gain);
+    const ext = bumpStreak(), st = streak();
+    const goalHit = dayBefore < goal() && dayXP() >= goal();
+    let lvNow = lvBefore;
+    if (o.node){
+      if (o.jump){
+        nodesFor(o.code).slice(0, o.k).forEach(n => { if (lvlOf(n.id) < 1) setLvl(n.id, 1); });
+      }
+      lvNow = o.mode === 'review' ? 1 : Math.min(3, lvBefore + 1);
+      setLvl(o.node.id, Math.max(lvBefore, lvNow));
+    }
+    const acc = Math.round(o.first / o.total * 100);
+    sndWin(); confetti(o.wrong ? 60 : 110);
+    const title = o.mode === 'review' ? 'Unit review passed!' : o.mode === 'mix' ? 'AFQT Mix done!' : o.mode === 'fix' ? 'Mistakes fixed!' : o.wrong ? 'Lesson complete!' : 'Perfect lesson!';
+    root().innerHTML = `<div class="gq-end" style="${cvars(o.s)}">
+      <div class="big">${o.mode === 'review' ? '🏆' : o.wrong ? '🎉' : '🌟'}</div>
+      <h2>${title}</h2>
+      <p>${o.title}${o.node && o.mode === 'lesson' ? ` · ${lvNow >= 3 ? '👑 Legendary (level 3 of 3)' : `👑 level ${lvNow} of 3`}` : ''}${o.jump ? ' · everything before it is unlocked' : ''}</p>
+      <div class="gq-cards">
+        <div class="gq-card" style="--k:var(--g-gold)"><span>Total XP</span><b id="gq-gain">⚡ ${gain}</b></div>
+        <div class="gq-card" style="--k:var(--g-ok)"><span>${acc >= 90 ? 'Amazing' : acc >= 70 ? 'Good' : 'Accuracy'}</span><b>🎯 ${acc}%</b></div>
+        <div class="gq-card" style="--k:#3A86FF"><span>Time</span><b>⏱ ${mmss(Date.now() - o.t0)}</b></div>
+      </div>
+      <div>${ext ? `<span class="gq-badge" id="gq-streak">🔥 ${st.n}-day streak!</span>` : ''}${goalHit ? '<span class="gq-badge">🎯 Daily goal reached!</span>' : ''}${o.best >= 5 ? `<span class="gq-badge">🔥 Best combo: ${o.best}</span>` : ''}</div>
+      ${o.missed.length ? `<div class="gq-miss"><b>📌 Review these:</b>${o.missed.filter(e => e.kind !== 'match').map(e => `<p>${e.kind === 'ao' ? 'Assembling Objects figure' : strip(e.q.q)} → <b>${e.kind === 'ao' ? answerText(e) : strip(answerText(e))}</b></p>`).join('')}</div>` : ''}
+      <div class="row"><button type="button" class="gb" id="gq-cont">Continue</button>
+        <button type="button" class="gb ghost" id="gq-again">Practice again</button></div></div>`;
+    const again = {mode:o.mode, node:o.node, k:o.k};
+    L = null;
+    byId('gq-cont').addEventListener('click', () => {
+      hub();
+      const c = root().querySelector('.gp-node.cur'); if (c) c.scrollIntoView({block:'center'});
+    });
+    byId('gq-again').addEventListener('click', () => {
+      if (again.mode === 'mix') start({mode:'mix', title:'AFQT Mix', items: buildMix()});
+      else if (again.mode === 'fix') hub();
+      else startNode(again.node, again.k, false);
+    });
+    window.scrollTo(0, 0);
+  }
+  function fail(){
+    const o = L;
+    sndBad();
+    root().innerHTML = `<div class="gq-end" style="${cvars(o.s)}">
+      <div class="big">💔</div><h2 class="fail">Out of hearts</h2>
+      <p>You got ${o.done} of ${o.total} right in <b>${o.title}</b>. The questions you missed are saved in 🔁 Fix my mistakes. Take a breath and try again!</p>
+      ${o.missed.length ? `<div class="gq-miss"><b>📌 Learn these first:</b>${o.missed.filter(e => e.kind !== 'match').map(e => `<p>${e.kind === 'ao' ? 'Assembling Objects figure' : strip(e.q.q)} → <b>${e.kind === 'ao' ? answerText(e) : strip(answerText(e))}</b></p>`).join('')}</div>` : ''}
+      <div class="row"><button type="button" class="gb" id="gq-retry">Try again</button>
+        <button type="button" class="gb ghost" id="gq-back">Back to path</button></div></div>`;
+    const again = {mode:o.mode, node:o.node, k:o.k, jump:o.jump};
+    L = null;
+    byId('gq-retry').addEventListener('click', () => {
+      if (again.mode === 'mix') start({mode:'mix', title:'AFQT Mix', items: buildMix()});
+      else if (again.mode === 'fix') hub();
+      else startNode(again.node, again.k, again.jump);
+    });
+    byId('gq-back').addEventListener('click', () => hub());
+    window.scrollTo(0, 0);
   }
 
-  /* ---------- keyboard (1–4 / A–D) in game ---------- */
+  /* ---------- keyboard: 1–4 choose, Enter = check / continue, Esc closes sheets ---------- */
   document.addEventListener('keydown', e => {
-    if (document.getElementById('screen-game').classList.contains('hidden') || !G || !G.q || G.lock) return;
-    const k = '1234'.indexOf(e.key) >= 0 ? '1234'.indexOf(e.key) : 'abcd'.indexOf(e.key.toLowerCase());
-    if (k >= 0 && e.key.length === 1){ const b = root().querySelectorAll('.g-ch')[k]; if (b) b.click(); }
+    if (byId('screen-game').classList.contains('hidden')) return;
+    if (e.key === 'Escape' && byId('g-ov')){ closeOverlay(); return; }
+    if (byId('g-ov') || !L) return;
+    if (e.target && e.target.tagName === 'INPUT') return;
+    if (L.phase === 'answer' && /^[1-4]$/.test(e.key) && L.ex && (L.ex.kind === 'mc' || L.ex.kind === 'ao')){ choose(+e.key - 1); e.preventDefault(); }
+    else if (e.key === 'Enter'){
+      if (L.phase === 'answer' && L.sel !== null && L.ex.kind !== 'match'){ check(); e.preventDefault(); }
+      else if (L.phase === 'feedback'){ next(); e.preventDefault(); }
+    }
   });
+  document.addEventListener('click', e => {        // tap outside a node popover closes it
+    if (!openPop || byId('screen-game').classList.contains('hidden')) return;
+    if (!e.target.closest('.gp-pop') && !e.target.closest('[data-node]')){ const p = root().querySelector('.gp-pop'); if (p) p.remove(); openPop = null; }
+  });
+  function leaveGame(){ L = null; closeOverlay(); }
 
-  /* ---------- Exam / Game switch ---------- */
+  /* ---------- Study / Exam / Mock / Game switch ---------- */
   const nLabels = () => $$('.modes .mode .n').forEach(n => {
     if (n.dataset.n0 === undefined) n.dataset.n0 = n.textContent;
     n.textContent = MOCK ? n.dataset.n0.replace(/ · [\d–]+ min/, ' · no clock') : n.dataset.n0;
   });
   function setMode(m, save){
     const examOpen = !$('#screen-exam').classList.contains('hidden');
-    if (m !== 'game' && examOpen && EX && (m === 'mock') !== !!EX.mock){
-      if (!confirm(`Leave this ${EX.mock ? 'mock test' : 'exam'} and switch to ${m === 'mock' ? 'Mock test' : 'Exam'} mode? This sitting won't be scored.`)) return;
+    if (m !== 'game' && examOpen && EX && m !== (EX.modeAt || (EX.mock ? 'mock' : 'exam'))){
+      if (!confirm(`Leave this ${EX.mock ? 'mock test' : 'exam'} and switch to ${({mock:'Mock test', study:'Study', exam:'Exam'})[m]} mode? This sitting won't be scored.`)) return;
       stopAdvance(); clearInterval(tick); EX = null;
       $('#screen-exam').classList.add('hidden');
     }
@@ -5618,29 +6159,432 @@ function renderReview(filter){
         if (!confirm("Leave this exam and switch to Game mode? This sitting won't be scored.")) return;
         stopAdvance(); clearInterval(tick); EX = null;
       }
-      ['#screen-start','#screen-exam','#screen-results'].forEach(s => $(s).classList.add('hidden'));
+      ['#screen-start','#screen-study','#screen-exam','#screen-results'].forEach(s => $(s).classList.add('hidden'));
       $('#screen-game').classList.remove('hidden');
       hub();
     } else {
-      stopTimer(); G = null;
+      leaveGame();
       $('#screen-game').classList.add('hidden');
-      if ($('#screen-exam').classList.contains('hidden') && $('#screen-results').classList.contains('hidden'))
-        $('#screen-start').classList.remove('hidden');
     }
     MOCK = m === 'mock';
     document.body.classList.toggle('mock', MOCK);
+    document.body.classList.toggle('study', m === 'study');
+    document.body.dataset.mode = m;
+    if (m !== 'game'){
+      if ($('#screen-exam').classList.contains('hidden') && $('#screen-results').classList.contains('hidden')) showHomeScreen();
+      else { $('#screen-start').classList.add('hidden'); $('#screen-study').classList.add('hidden'); }
+    }
     nLabels();
     $$('[data-mode-sw]').forEach(b => b.classList.toggle('on', b.dataset.modeSw === m));
     if (save !== false) LS.set('asvab_mode', m);
     window.scrollTo(0, 0);
   }
   $$('[data-mode-sw]').forEach(b => b.addEventListener('click', () => setMode(b.dataset.modeSw)));
-  // home badge: in game mode → back to the worlds hub
+  // home badge: in game mode → back to the path (mid-lesson it asks first)
   $('#home-btn').addEventListener('click', e => {
-    if (!$('#screen-game').classList.contains('hidden')){ e.stopImmediatePropagation(); hub(); }
+    if (!$('#screen-game').classList.contains('hidden')){ e.stopImmediatePropagation(); if (L) quitSheet(); else hub(); }
   }, true);
-  { const saved = LS.get('asvab_mode', 'exam'); if (saved === 'game' || saved === 'mock') setMode(saved, false); }
-  window.ASVAB_GAME = {setMode, hub};
+  { const saved = LS.get('asvab_mode', 'exam'); if (saved === 'game' || saved === 'mock' || saved === 'study') setMode(saved, false); }
+  window.ASVAB_GAME = {setMode, hub,
+    /* test hooks */
+    _state: () => L, _topics: TOPICS, _pool: id => TOPIC[id], _nodes: nodesFor, _build: buildTopic, _review: buildReview, _mix: buildMix, _typeSpec: typeSpec};
+})();
+</script>
+
+<style>
+/* ================= v5.6 📚 STUDY mode — AFQT focus ================= */
+:root{--study:#B79CFF;--study-tint:rgba(183,156,255,.13);--study-text:#150A2E}
+:root[data-theme="light"]{--study:#5B3BA8;--study-tint:rgba(91,59,168,.10);--study-text:#FFFFFF}
+.mode-sw button[data-mode-sw="study"].on{background:var(--study);color:var(--study-text)}
+#screen-study{overflow-x:clip}
+#screen-study .lbl{color:var(--study)}
+.st-hero{padding:40px 0 26px;border-bottom:1px solid var(--rule)}
+.st-hero h1{font-family:var(--sans);font-size:clamp(28px,5vw,44px);line-height:1.08;margin:8px 0 12px;letter-spacing:-.02em}
+.st-hero h1 em{font-style:normal;color:var(--study)}
+.st-hero p{max-width:720px;font-size:16.5px;line-height:1.55;color:var(--ink-soft);margin:0}
+.st-sec{padding:30px 0;border-bottom:1px solid var(--rule)}
+.st-sec > .lbl{display:block;margin-bottom:14px}
+.st-keys{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.st-key{all:unset;box-sizing:border-box;cursor:pointer;display:block;padding:16px 16px 14px;border:1px solid var(--rule);border-top:4px solid var(--study);background:var(--card);border-radius:2px;transition:transform .12s ease,border-color .12s ease}
+.st-key:hover,.st-key:focus-visible{transform:translateY(-2px);border-color:var(--study)}
+.st-key .c{display:block;font-family:var(--mono);font-weight:600;font-size:34px;line-height:1;color:var(--study);letter-spacing:.02em}
+.st-key .eq{display:block;font-family:var(--sans);font-weight:700;font-size:16.5px;margin:8px 0 4px;color:var(--ink)}
+.st-key .eq i{font-style:normal;color:var(--ink-faint)}
+.st-key .d{display:block;font-size:14px;line-height:1.4;color:var(--ink-soft)}
+.st-key .w{display:inline-block;margin-top:10px;font-family:var(--mono);font-size:11.5px;font-weight:600;padding:3px 7px;border:1px solid var(--rule);border-radius:2px;color:var(--ink-soft)}
+.st-key .w.x2{border-color:var(--study);color:var(--study);background:var(--study-tint)}
+.st-others{margin:14px 0 0;font-size:13.5px;color:var(--ink-faint);line-height:1.6}
+.st-others .mono{color:var(--ink-soft)}
+.st-formula{display:grid;grid-template-columns:1.1fr 1fr;gap:18px;align-items:start}
+.st-eqn{font-family:var(--mono);font-size:15px;line-height:1.9;padding:14px 16px;background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--study);border-radius:2px}
+.st-eqn b{color:var(--study);font-weight:600}
+.st-eqn small{display:block;font-family:var(--serif);font-size:14px;color:var(--ink-soft);line-height:1.5;margin-top:6px}
+.st-bar{display:flex;height:42px;border-radius:2px;overflow:hidden;border:1px solid var(--rule);font-family:var(--mono);font-size:12.5px;font-weight:600}
+.st-bar span{display:flex;align-items:center;justify-content:center;text-align:center;padding:0 4px}
+.st-bar .v{flex:2;background:var(--study);color:var(--study-text)}
+.st-bar .a{flex:1;background:var(--study-tint);color:var(--ink);border-left:1px solid var(--rule)}
+.st-bar .m{flex:1;background:var(--card-2);color:var(--ink);border-left:1px solid var(--rule)}
+.st-bar-cap{font-size:14px;color:var(--ink-soft);margin:8px 0 0;line-height:1.5}
+.st-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:18px}
+.st-tab{all:unset;box-sizing:border-box;cursor:pointer;text-align:center;padding:10px 6px;border:1px solid var(--rule);background:var(--card);border-radius:2px;font-family:var(--sans);font-weight:700;font-size:13px;color:var(--ink-soft)}
+.st-tab b{display:block;font-family:var(--mono);font-size:19px;color:var(--ink)}
+.st-tab[aria-selected="true"]{background:var(--study);border-color:var(--study);color:var(--study-text)}
+.st-tab[aria-selected="true"] b{color:var(--study-text)}
+.st-tab:focus-visible{outline:2px solid var(--study);outline-offset:2px}
+.st-lesson{display:none}
+.st-lesson.on{display:block}
+.st-lh{display:flex;gap:16px;align-items:flex-start;margin-bottom:12px}
+.st-lh .big{font-family:var(--mono);font-weight:600;font-size:40px;line-height:1;color:var(--study);padding:8px 10px;border:2px solid var(--study);border-radius:2px;flex:none}
+.st-lh h2{font-family:var(--sans);font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+.st-lh p{margin:0;font-size:16px;line-height:1.5;color:var(--ink-soft)}
+.st-facts{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+.st-facts span{font-family:var(--mono);font-size:12px;padding:5px 9px;border:1px solid var(--rule);border-radius:2px;background:var(--card);color:var(--ink-soft)}
+.st-facts span.hi{border-color:var(--study);color:var(--study);background:var(--study-tint)}
+.st-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.st-box{padding:14px 16px;border:1px solid var(--rule);background:var(--card);border-radius:2px;font-size:15px;line-height:1.55}
+.st-box > .lbl{display:block;margin-bottom:6px}
+.st-box ol,.st-box ul{margin:4px 0 0;padding-left:20px}
+.st-box li{margin-bottom:6px}
+.st-box.trap{border-left:4px solid var(--flag)}
+.st-box.trap > .lbl{color:var(--flag)}
+.st-exs{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:0 0 18px}
+.st-ex{padding:14px 16px;border:1px solid var(--rule);border-left:4px solid var(--study);background:var(--card-2);border-radius:2px;font-size:15px;line-height:1.55}
+.st-ex .tag{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;color:var(--study);text-transform:uppercase}
+.st-ex .q{margin:6px 0 8px;font-weight:600}
+.st-ex .passage{margin:6px 0 8px;padding:10px 12px;background:var(--card);border:1px solid var(--rule);font-size:14.5px}
+.st-ex u{text-decoration-thickness:2px;text-underline-offset:3px}
+.st-ex ol.ch{list-style:none;margin:0 0 8px;padding:0}
+.st-ex ol.ch li{margin:2px 0;font-family:var(--serif)}
+.st-ex ol.ch li::before{content:attr(data-l) ". ";font-family:var(--mono);font-weight:600;color:var(--ink-faint)}
+.st-ex details summary{cursor:pointer;display:inline-block;font-family:var(--sans);font-weight:700;font-size:13px;padding:7px 12px;border:1px dashed var(--study);color:var(--study);border-radius:2px;list-style:none}
+.st-ex details summary::-webkit-details-marker{display:none}
+.st-ex details[open] summary{margin-bottom:8px}
+.st-ex .ans{padding:10px 12px;background:var(--study-tint);border-radius:2px}
+.st-ex .ans p{margin:0 0 6px}
+.st-ex .ans p:last-child{margin:0}
+.st-ex .ans .ok{font-weight:700;color:var(--ink)}
+.st-ex .ans .tr{color:var(--flag)}
+#screen-study .study-d{border-left-color:var(--study);margin:0 0 18px}
+#screen-study .study-d summary::after{color:var(--study)}
+.st-go{display:flex;flex-wrap:wrap;gap:10px}
+.st-btn{font-family:var(--sans);font-weight:700;font-size:14px;letter-spacing:.02em;padding:12px 16px;border-radius:2px;cursor:pointer;border:1px solid var(--study);background:transparent;color:var(--study)}
+.st-btn:hover{background:var(--study-tint)}
+.st-btn.solid{background:var(--study);color:var(--study-text)}
+.st-btn.solid:hover{filter:brightness(1.08)}
+.st-btn small{display:block;font-family:var(--mono);font-weight:500;font-size:11px;opacity:.85;margin-top:2px}
+.st-plan{counter-reset:stp;list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.st-plan li{counter-increment:stp;padding:14px;border:1px solid var(--rule);background:var(--card);border-radius:2px;font-size:14.5px;line-height:1.5}
+.st-plan li::before{content:counter(stp);display:block;font-family:var(--mono);font-weight:600;font-size:22px;color:var(--study);margin-bottom:4px}
+.st-plan li b{display:block;font-family:var(--sans);margin-bottom:2px}
+@media (max-width:820px){
+  .st-keys{grid-template-columns:repeat(2,1fr)}
+  .st-formula{grid-template-columns:1fr}
+  .st-plan{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:620px){
+  .st-grid{grid-template-columns:1fr}
+  .st-tab{font-size:10.5px;line-height:1.2;padding:9px 3px}
+  .st-tab b{font-size:18px}
+  .st-lh .big{font-size:30px}
+  .st-lh h2{font-size:20px}
+  .st-key .c{font-size:28px}
+  .st-key .eq{font-size:15px}
+  .st-exs{grid-template-columns:1fr}
+  .st-go .st-btn{flex:1 1 100%}
+  .st-bar{font-size:11px}
+}
+@media print{.st-tabs,.st-go{display:none}.st-lesson{display:block}}
+</style>
+<script>
+/* =====================================================================
+   v5.6 — 📚 STUDY mode: AFQT focus (AR · MK · WK · PC)
+   All lesson text and worked examples are ORIGINAL, written for this
+   site in simple English. Launch buttons reuse startExam(): the
+   "with answers" buttons run it as a Mock sitting, "Timed" as a timed one.
+   ===================================================================== */
+(function initStudyMode(){
+  const AFQT_ORDER = ['AR', 'MK', 'WK', 'PC'];
+  const L4 = ['A', 'B', 'C', 'D'];
+  const ch = arr => `<ol class="ch">${arr.map((t, i) => `<li data-l="${L4[i]}">${t}</li>`).join('')}</ol>`;
+  const ex = (tag, body, answer) => `<div class="st-ex"><span class="tag">${tag}</span>${body}
+    <details><summary>👀 Show answer</summary><div class="ans">${answer}</div></details></div>`;
+
+  const LESSONS = {
+    AR: {
+      short: 'Math word problems',
+      what: 'Math <b>word problems</b>. You read a short story with numbers, then work out the answer. It tests if you can turn words into math.',
+      weight: '×1 in AFQT',
+      steps: [
+        'Read the <b>last sentence first</b>. What do they want — the total? each one? how much more?',
+        'Write the numbers down with their units (dollars, miles, hours).',
+        'Pick the tool: percent, rate (d = r × t), average, ratio, or unit change.',
+        'Guess a rough answer first, then solve on paper.',
+        'Check: does it make sense? Is it the thing they asked for, in the right unit?'
+      ],
+      know: [
+        '<b>Percent:</b> part = % × whole · 25% = 0.25 · sale price = price × (1 − % off)',
+        '<b>Rate:</b> distance = rate × time · rate = distance ÷ time',
+        '<b>Average:</b> total ÷ count · total = average × count',
+        '<b>Ratio 2 : 3</b> with 40 total → 5 parts → 1 part = 8 → 16 and 24',
+        '<b>Interest:</b> I = P × r × t (t in years — 6 months = 0.5)',
+        '<b>Units:</b> 12 in = 1 ft · 3 ft = 1 yd · 16 oz = 1 lb · 60 min = 1 hr · 4 qt = 1 gal'
+      ],
+      traps: [
+        'Stopping at a middle step (the discount instead of the sale price).',
+        'Mixing minutes and hours — change everything to one unit first.',
+        'Average speed is total distance ÷ total time, not the average of two speeds.'
+      ],
+      examples: [
+        ex('Example 1 · percent',
+          `<p class="q">A jacket costs $80. It is on sale for 25% off. What is the sale price?</p>${ch(['$20', '$55', '$60', '$100'])}`,
+          `<p class="ok">✅ C — $60</p><p>25% of 80 = 0.25 × 80 = 20 (the discount). 80 − 20 = <b>60</b>.</p><p>Shortcut: 25% off means you pay 75% → 0.75 × 80 = 60.</p><p class="tr">Trap: A ($20) is only the discount. D ($100) added the 25%.</p>`),
+        ex('Example 2 · rate',
+          `<p class="q">A convoy drives 180 miles in 3 hours. At the same speed, how far does it go in 5 hours?</p>${ch(['240 miles', '300 miles', '360 miles', '900 miles'])}`,
+          `<p class="ok">✅ B — 300 miles</p><p>Speed = 180 ÷ 3 = 60 miles per hour. Distance = 60 × 5 = <b>300</b>.</p><p class="tr">Trap: D (900) is 180 × 5 — it forgot to find the speed first.</p>`),
+        ex('Example 3 · average',
+          `<p class="q">Kim scored 70, 85 and 90 on three tests. What must she score on test 4 to average 85?</p>${ch(['85', '90', '95', '100'])}`,
+          `<p class="ok">✅ C — 95</p><p>Needed total = 85 × 4 = 340. She has 70 + 85 + 90 = 245. 340 − 245 = <b>95</b>.</p><p>Check: (70 + 85 + 90 + 95) ÷ 4 = 340 ÷ 4 = 85 ✓</p>`)
+      ]
+    },
+    MK: {
+      short: 'Math rules: algebra, geometry',
+      what: 'Math <b>rules and facts</b> — numbers, algebra and geometry. No story: the question is just the math.',
+      weight: '×1 in AFQT',
+      steps: [
+        'Name the topic: numbers, algebra (has an x), or geometry (a shape).',
+        'Remember the rule or formula for it.',
+        'Work on paper, one small step per line.',
+        'Algebra: put your answer back in to check it.',
+        'Stuck? Try each answer choice in the problem — one will work.'
+      ],
+      know: [
+        '<b>Order:</b> ( ) → exponents → × ÷ → + − (PEMDAS)',
+        '<b>Signs:</b> − × − = + · − × + = −',
+        '<b>Exponents:</b> x² · x³ = x⁵ · x⁰ = 1 · 2⁻¹ = ½',
+        '<b>Fractions:</b> to divide, flip the second one and multiply',
+        '<b>Area:</b> rectangle l × w · triangle ½ × b × h · circle πr² · circle edge 2πr',
+        '<b>Angles:</b> triangle 180° · straight line 180° · square/rectangle 360°',
+        '<b>Right triangle:</b> a² + b² = c² (3-4-5, 6-8-10, 5-12-13)'
+      ],
+      traps: [
+        'Area vs perimeter — area is inside (square units), perimeter is the edge.',
+        'Radius vs diameter — diameter is 2 × radius.',
+        'With inequalities, multiplying or dividing by a negative flips the sign (&lt; becomes &gt;).'
+      ],
+      examples: [
+        ex('Example 1 · algebra',
+          `<p class="q">Solve: 4x − 5 = 23</p>${ch(['4.5', '6', '7', '7.5'])}`,
+          `<p class="ok">✅ C — x = 7</p><p>Add 5 to both sides: 4x = 28. Divide by 4: x = <b>7</b>.</p><p>Check: 4 × 7 − 5 = 28 − 5 = 23 ✓</p><p class="tr">Trap: A (4.5) subtracted 5 instead of adding it.</p>`),
+        ex('Example 2 · geometry',
+          `<p class="q">A rectangle is 9 cm long and 4 cm wide. What is its area?</p>${ch(['13 cm²', '26 cm²', '36 cm²', '72 cm²'])}`,
+          `<p class="ok">✅ C — 36 cm²</p><p>Area = length × width = 9 × 4 = <b>36</b>.</p><p class="tr">Trap: B (26) is the perimeter: 2 × (9 + 4).</p>`),
+        ex('Example 3 · right triangle',
+          `<p class="q">A right triangle has legs of 6 and 8. How long is the longest side?</p>${ch(['10', '12', '14', '48'])}`,
+          `<p class="ok">✅ A — 10</p><p>6² + 8² = 36 + 64 = 100. √100 = <b>10</b>. (It is the 3-4-5 triangle doubled.)</p><p class="tr">Trap: C (14) just added 6 + 8.</p>`)
+      ]
+    },
+    WK: {
+      short: 'Vocabulary — word meanings',
+      what: '<b>Vocabulary.</b> Pick the word that means the <b>same</b> as the underlined word. Sometimes the word is alone, sometimes it is in a sentence.',
+      weight: 'counts ×2 (part of VE)',
+      steps: [
+        'Read the word (and the sentence, if there is one).',
+        'Say your own meaning <b>before</b> you look at the choices.',
+        'Don’t know it? Break it into parts: prefix + root + ending.',
+        'Feel the “charge”: is it a good word or a bad word? Cross out choices with the wrong charge.',
+        'Put each choice into the sentence. Keep the one that still makes sense.'
+      ],
+      know: [
+        '<b>Front parts:</b> bene- good · mal- bad · pre- before · post- after · sub- under · anti- against · re- again · un-/in-/im- not',
+        '<b>Roots:</b> dict say · port carry · spect/vis see · aud hear · chron time · bio life · cred believe',
+        '<b>Endings:</b> -less without · -ful full of · -able can be · -ology study of · -ist a person who',
+        '<b>Look-alikes:</b> negligent (careless) ≠ negligible (tiny) · wary (careful) ≠ weary (tired)',
+        '<b>Best habit:</b> 10–15 words a day from the 209-word list beats one long night.'
+      ],
+      traps: [
+        'A word that is <i>related</i> but does not mean the same (fire → hot).',
+        'Sound-alike words — read every letter.',
+        'On the computer test you have about 36 seconds per word — don’t get stuck, guess and move.'
+      ],
+      examples: [
+        ex('Example 1 · word parts',
+          `<p class="q">The captain gave the new soldier a <u>benevolent</u> smile.</p>${ch(['angry', 'kind', 'lazy', 'loud'])}`,
+          `<p class="ok">✅ B — kind</p><p><b>bene-</b> = good. A “good” smile is a kind one. Charge: positive, so angry is out.</p>`),
+        ex('Example 2 · look-alike',
+          `<p class="q">The storm did only <u>negligible</u> damage to the base.</p>${ch(['careless', 'very small', 'serious', 'sudden'])}`,
+          `<p class="ok">✅ B — very small</p><p>“Only … damage” tells you it was small. <b>negligible</b> = so small you can ignore it.</p><p class="tr">Trap: A (careless) is the meaning of negligent — a different word.</p>`),
+        ex('Example 3 · charge + context',
+          `<p class="q">After the ice storm, the mountain road was <u>treacherous</u>.</p>${ch(['dangerous', 'pretty', 'new', 'narrow'])}`,
+          `<p class="ok">✅ A — dangerous</p><p>An ice storm makes a road risky. The word feels negative, so pretty and new are out. Narrow is not about ice.</p>`)
+      ]
+    },
+    PC: {
+      short: 'Reading short paragraphs',
+      what: '<b>Reading.</b> You read a short paragraph, then answer 1–2 questions about it. The answer is always in the paragraph.',
+      weight: 'counts ×2 (part of VE)',
+      steps: [
+        'Read the <b>question first</b> so you know what to look for.',
+        'Read the paragraph once, calmly.',
+        'Find the sentence that <b>proves</b> your answer. Point to it.',
+        'Answer from the paragraph only — not from what you already know.'
+      ],
+      know: [
+        '<b>Main idea:</b> what the whole paragraph is about. Often the first or last sentence.',
+        '<b>Detail:</b> a fact said in the paragraph, usually in new words.',
+        '<b>Inference:</b> not said, but the paragraph makes it clear. Choose the safe, small claim.',
+        '<b>Word in context:</b> what a word means <i>here</i>. Swap each choice into the sentence.',
+        '<b>Purpose / tone:</b> is the writer informing, persuading, or warning?'
+      ],
+      traps: [
+        'Too narrow (one detail) or too broad (the whole topic) for a main-idea question.',
+        'True in real life, but <i>not in this paragraph</i>.',
+        'Strong words — always, never, all, must — are usually wrong.'
+      ],
+      examples: [
+        ex('Example · main idea',
+          `<div class="passage">Many new runners buy the most expensive shoes in the store. Price, however, says little about fit. A shoe that costs twice as much can still rub a heel raw if it is the wrong shape for the foot. A clerk who watches a customer jog for one minute often picks a better shoe than the price tag does.</div><p class="q">What is the main idea?</p>${ch(['Expensive shoes last longer.', 'Fit matters more than price when you choose running shoes.', 'Store clerks should jog with customers.', 'New runners should not run far.'])}`,
+          `<p class="ok">✅ B</p><p>Every sentence points to one idea: the <b>fit</b> of the shoe matters, not the <b>price</b>.</p><p class="tr">A is never said. C twists one detail. D is not in the paragraph at all.</p>`),
+        ex('Example · inference',
+          `<p class="q">Same paragraph. The writer would most likely agree that a new runner should…</p>${ch(['always buy the cheapest shoes.', 'try shoes on and move in them before buying.', 'never ask a clerk for help.', 'buy two pairs at once.'])}`,
+          `<p class="ok">✅ B</p><p>The paragraph says fit is what counts and that watching someone jog finds the best shoe. So: try them on and move.</p><p class="tr">A uses “always” and the paragraph never says cheap is better. C is the opposite of the last sentence.</p>`)
+      ]
+    }
+  };
+
+  const bp = c => BLUEPRINT.find(b => b.code === c);
+  const sheet = c => (STUDY.find(s => s.code === c) || {}).body || '';
+  const mins = c => Math.round(TIMES[c] / 60);
+
+  const keyTile = c => {
+    const L = LESSONS[c], b = bp(c), x2 = c === 'WK' || c === 'PC';
+    return `<button type="button" class="st-key" data-st-jump="${c}">
+      <span class="c">${c}</span>
+      <span class="eq"><i>=</i> ${b.name}</span>
+      <span class="d">${L.short}</span>
+      <span class="w${x2 ? ' x2' : ''}">${x2 ? 'VE · counts ×2' : 'counts ×1'}</span>
+    </button>`;
+  };
+
+  const lesson = c => {
+    const L = LESSONS[c], b = bp(c);
+    return `<section class="st-lesson" id="st-l-${c}" data-l="${c}" role="tabpanel" aria-labelledby="st-t-${c}">
+      <div class="st-lh"><span class="big">${c}</span><div><h2>${c} = ${b.name}</h2><p>${L.what}</p></div></div>
+      <div class="st-facts">
+        <span>Real test (computer): ${b.cat}</span>
+        <span>Paper test: ${b.paper}</span>
+        <span class="hi">${L.weight}</span>
+      </div>
+      <div class="st-grid">
+        <div class="st-box"><span class="lbl">How to answer — step by step</span><ol>${L.steps.map(s => `<li>${s}</li>`).join('')}</ol></div>
+        <div class="st-box"><span class="lbl">Must know</span><ul>${L.know.map(s => `<li>${s}</li>`).join('')}</ul></div>
+      </div>
+      <span class="lbl" style="display:block;margin-bottom:10px">Worked examples — try first, then tap Show answer</span>
+      <div class="st-exs">${L.examples.join('')}</div>
+      <div class="st-box trap" style="margin-bottom:18px"><span class="lbl">⚠️ Common traps</span><ul>${L.traps.map(s => `<li>${s}</li>`).join('')}</ul></div>
+      <details class="study-d"><summary><span class="tcode">${c}</span> Full ${b.name} cheat sheet</summary><div class="study-b">${sheet(c)}</div></details>
+      <div class="st-go">
+        <button type="button" class="st-btn solid" data-st-go="${c}" data-kind="mock">📖 Practice 10 — with answers<small>no clock · see why after each one</small></button>
+        <button type="button" class="st-btn" data-st-go="${c}" data-kind="timed">📝 Timed 10 — test pace<small>10 questions · ${mins(c)} min</small></button>
+        ${c === 'WK' ? `<button type="button" class="st-btn" data-st-go="W209" data-kind="mock">🔤 209 Words — with answers<small>20 words from the study list</small></button>` : ''}
+      </div>
+    </section>`;
+  };
+
+  $('#study-root').innerHTML = `
+    <section class="st-hero">
+      <span class="lbl">📚 Study mode · AFQT focus</span>
+      <h1>Learn the 4 tests that decide <em>if you can join.</em></h1>
+      <p>Your <b>AFQT</b> score (Armed Forces Qualification Test) comes from only four subtests. Learn what each code means, study one lesson, then practice it — with answers first, then on the clock.</p>
+    </section>
+
+    <section class="st-sec">
+      <span class="lbl">The codes — what the letters mean</span>
+      <div class="st-keys">${AFQT_ORDER.map(keyTile).join('')}</div>
+      <p class="st-others">Also on the ASVAB, but <b>not</b> in the AFQT (they decide which jobs you get): <span class="mono">GS</span> = General Science · <span class="mono">EI</span> = Electronics Information · <span class="mono">AS</span> = Auto &amp; Shop · <span class="mono">MC</span> = Mechanical Comprehension · <span class="mono">AO</span> = Assembling Objects.</p>
+    </section>
+
+    <section class="st-sec">
+      <span class="lbl">How the AFQT score is made</span>
+      <div class="st-formula">
+        <div class="st-eqn">
+          <b>VE</b> = WK + PC &nbsp;<span style="color:var(--ink-faint)">(Verbal Expression)</span><br>
+          <b>AFQT</b> = <b>2 × VE</b> + AR + MK
+          <small>Words and reading count <b>two times</b>. The raw total becomes a percentile from 1 to 99. The Army’s usual minimum is <b>31</b>; <b>50+</b> opens up many more jobs.</small>
+        </div>
+        <div>
+          <div class="st-bar" role="img" aria-label="About half of the AFQT comes from WK and PC, a quarter from AR, a quarter from MK">
+            <span class="v">WK + PC ≈ ½</span><span class="a">AR ≈ ¼</span><span class="m">MK ≈ ¼</span>
+          </div>
+          <p class="st-bar-cap">So: study <b>WK</b> a little every day — it is the fastest points. The same four tests also make the <span class="mono">CL</span> line score (VE + AR + MK) for <b>92A</b>, and <span class="mono">GT</span> (VE + AR).</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="st-sec" id="st-lessons">
+      <span class="lbl">Lessons — pick one</span>
+      <div class="st-tabs" role="tablist" aria-label="AFQT lessons">${AFQT_ORDER.map(c => `<button type="button" class="st-tab" role="tab" id="st-t-${c}" data-st-tab="${c}" aria-controls="st-l-${c}" aria-selected="false"><b>${c}</b>${bp(c).name}</button>`).join('')}</div>
+      ${AFQT_ORDER.map(lesson).join('')}
+    </section>
+
+    <section class="st-sec">
+      <span class="lbl">A simple daily plan (20–30 min)</span>
+      <ol class="st-plan">
+        <li><b>Words</b>10–15 words from the 209 list (WK).</li>
+        <li><b>Learn</b>Read one lesson above and try its examples.</li>
+        <li><b>Practice</b>“Practice 10 — with answers” for that code.</li>
+        <li><b>Test</b>Next day: “Timed 10”. Missed ones → read the lesson again.</li>
+      </ol>
+    </section>
+
+    <section class="st-sec" style="border-bottom:0">
+      <span class="lbl">Put it all together — AFQT test (AR · WK · PC · MK)</span>
+      <div class="st-go">
+        <button type="button" class="st-btn solid" data-st-go="AFQT" data-kind="mock">📖 AFQT practice — with answers<small>40 questions · no clock</small></button>
+        <button type="button" class="st-btn" data-st-go="AFQT" data-kind="timed">📝 AFQT timed — like the real test<small>40 questions · 34 min · score estimate</small></button>
+      </div>
+      <p class="note" style="margin-top:14px">All lessons and examples are original, written for this site. Score estimates are unofficial.</p>
+    </section>`;
+
+  /* ---- tabs ---- */
+  const TAB_KEY = 'asvab_study_tab';
+  function selectTab(c, focus){
+    if (!LESSONS[c]) c = 'AR';
+    $$('.st-tab').forEach(t => { const on = t.dataset.stTab === c; t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; });
+    $$('.st-lesson').forEach(l => l.classList.toggle('on', l.dataset.l === c));
+    try { localStorage.setItem(TAB_KEY, c); } catch(e){}
+    if (focus) $('#st-t-' + c).focus();
+  }
+  $$('.st-tab').forEach(t => {
+    t.addEventListener('click', () => selectTab(t.dataset.stTab));
+    t.addEventListener('keydown', e => {
+      const i = AFQT_ORDER.indexOf(t.dataset.stTab);
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){
+        e.preventDefault();
+        selectTab(AFQT_ORDER[(i + (e.key === 'ArrowRight' ? 1 : 3)) % 4], true);
+      }
+    });
+  });
+  $$('.st-key').forEach(k => k.addEventListener('click', () => {
+    selectTab(k.dataset.stJump);
+    $('#st-lessons').scrollIntoView({behavior: 'smooth', block: 'start'});
+  }));
+  let saved = 'AR';
+  try { saved = localStorage.getItem(TAB_KEY) || 'AR'; } catch(e){}
+  selectTab(saved);
+
+  /* ---- launch practice: "mock" = with answers, no clock; "timed" = timed sitting ---- */
+  $$('[data-st-go]').forEach(b => b.addEventListener('click', () => {
+    const go = b.dataset.stGo, mock = b.dataset.kind === 'mock';
+    const list = go === 'AFQT' ? SUBTESTS.filter(s => s.afqt)
+               : go === 'W209' ? [W209_TEST]
+               : [byCode(go)];
+    const tBox = $('#opt-timer'), wasTimed = tBox.checked, wasMock = MOCK;
+    MOCK = mock; if (!mock) tBox.checked = true;
+    try { startExam(list); }
+    finally { MOCK = wasMock; tBox.checked = wasTimed; }
+  }));
+
+  window.ASVAB_STUDY = {LESSONS, selectTab};
 })();
 </script>
 
