@@ -17,7 +17,7 @@ A free, self-contained ASVAB practice exam that runs entirely in the browser —
 - Modes: full 90-item ASVAB, AFQT-only, single-subtest drill, the 209-word test, and **MOS mode** — pick a no-clearance Army job (92A, 68A, 68C, 36B), drill the subtests behind its line score, and get an unofficial line-score estimate
 - **Study mode (📚 STUDY)** — AFQT focus: what AR, MK, WK and PC stand for, how the AFQT is built (VE = WK + PC; 2 × VE + AR + MK), a simple-English lesson for each (step by step, must-know list, worked examples with a Show-answer button, common traps, full cheat sheet), and one-tap practice with answers or on the clock
 - **Mock test mode (📖 MOCK)** — no clock; after every question it shows whether you were right, the correct answer, why, and an example (a real-world case, a same-idea mini-problem with new numbers, or the word used in a sentence). Reading questions highlight the proof in the passage; Assembling Objects items explain what is wrong with every other figure
-- **Game mode (🎮 ASVAB Path)** — a lesson path for every subject, AFQT first (AR = Arithmetic Reasoning, MK = Mathematics Knowledge, WK = Word Knowledge, PC = Paragraph Comprehension), then GS, EI, AS, MC and AO. Short lessons with 5 hearts, missed questions come back, type-the-answer math, match-the-pairs vocab, crowns, treasure chests, unit reviews, a daily streak and XP goal, AFQT Mix and Fix-my-mistakes practice
+- **Game mode (🎮 ASVAB Path)** — a lesson path for every subject, AFQT first (AR = Arithmetic Reasoning, MK = Mathematics Knowledge, WK = Word Knowledge, PC = Paragraph Comprehension), then GS, EI, AS, MC and AO. Short lessons with 5 hearts, missed questions come back, type-the-answer math, match-the-pairs vocab, crowns, treasure chests, unit reviews, a daily streak and XP goal, AFQT Mix and Fix-my-mistakes practice. In WK and PC lessons you can tap any word to hear it (browser speech) and open a meaning card — part of speech, a simple definition, synonyms — from an original built-in learner dictionary; passages can be read aloud
 - Keyboard-friendly: A–D to answer, arrows to move, F to flag
 - **Dark mode by default**, with a light theme one click away (remembered per browser); printing always uses the light palette
 
@@ -41,6 +41,7 @@ It's one file. Download `index.html` and open it in any browser.
   - `tools/smoke54.mjs` — study sections, AO puzzles in exam and review, 390-px phone layout
   - `tools/gsmoke.mjs` — game mode end to end
   - `tools/studysmoke.mjs` — study mode: code key, lessons, example answer keys, practice launchers, mode switching, 390 px
+  - `tools/wordsmoke.mjs` — word voice + meaning cards (speech stubbed), dictionary coverage
   - `tools/mocksmoke.mjs` — mock mode end to end: no clock, feedback after every answer, Show answer, proof highlights, 390 px
 - `CLAUDE.md` — project notes for AI-assisted sessions
 

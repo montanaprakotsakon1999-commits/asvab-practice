@@ -8,8 +8,9 @@
     "smoke54": "node tools/smoke54.mjs",
     "gsmoke": "node tools/gsmoke.mjs",
     "mocksmoke": "node tools/mocksmoke.mjs",
-    "test": "node tools/validate.js && node tools/smoke.mjs && node tools/smoke54.mjs && node tools/gsmoke.mjs && node tools/mocksmoke.mjs && node tools/studysmoke.mjs",
-    "studysmoke": "node tools/studysmoke.mjs"
+    "test": "node tools/validate.js && node tools/smoke.mjs && node tools/smoke54.mjs && node tools/gsmoke.mjs && node tools/mocksmoke.mjs && node tools/studysmoke.mjs && node tools/wordsmoke.mjs",
+    "studysmoke": "node tools/studysmoke.mjs",
+    "wordsmoke": "node tools/wordsmoke.mjs"
   },
   "devDependencies": {
     "playwright": "^1.63.0"
