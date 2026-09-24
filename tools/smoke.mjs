@@ -83,7 +83,7 @@ try {
   check(poolTotal >= 512, `POOL_TOTAL is ${poolTotal}, expected ≥ 512`);
   check((await page.textContent('#stat-pool')) === poolTotal + '+', 'pool stat does not show the live count');
   check((await page.textContent('#pool-n')) === String(poolTotal), 'footer pool count does not show the live count');
-  check(await page.locator('#study-wrap details').count() === 9, 'expected 9 study sheets');
+  check(await page.locator('#study-wrap > details').count() === 11, 'expected 11 study sheets (9 subtests + TIP + 209)');
   await page.click('#study-wrap details >> nth=0 >> summary');
   check(await page.evaluate(() => document.querySelector('#study-wrap details').open), 'first study sheet did not open');
   check((await page.innerText('#study-wrap details >> nth=0 >> .study-b')).trim().length > 100, 'first study sheet has no content');
