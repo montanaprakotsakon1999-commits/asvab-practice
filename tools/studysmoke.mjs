@@ -46,7 +46,7 @@ try {
 
   step('📚 STUDY pill is first, before 📝 EXAM; default stays EXAM');
   const pills = await page.$$eval('[data-mode-sw]', b => b.map(x => x.dataset.modeSw));
-  check(JSON.stringify(pills) === JSON.stringify(['study', 'exam', 'mock', 'game', 'gameth']), `mode pills are ${pills}`);
+  check(JSON.stringify(pills) === JSON.stringify(['plan', 'study', 'exam', 'mock', 'game', 'gameth']), `mode pills are ${pills}`);
   check(await vis(page, '#screen-start') && !(await vis(page, '#screen-study')), 'fresh load should open the EXAM start screen');
 
   step('switch to STUDY: screen, body class, persistence');

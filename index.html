@@ -427,7 +427,7 @@ body::-webkit-scrollbar-thumb:hover{background:var(--ink-faint)}
   <div class="masthead-in">
     <button class="mark" id="home-btn" type="button" aria-label="Return to the start screen" title="Back to start">ASVAB</button>
     <span class="sub">PRACTICE EXAM · 9 SUBTESTS · NEW DRAW EVERY SITTING</span>
-    <div class="mode-sw" role="tablist" aria-label="Mode"><button type="button" data-mode-sw="study">📚 STUDY</button><button type="button" data-mode-sw="exam" class="on">📝 EXAM</button><button type="button" data-mode-sw="mock">📖 MOCK</button><button type="button" data-mode-sw="game">🎮 GAME</button><button type="button" data-mode-sw="gameth" lang="th" title="Game in Thai + English">🇹🇭 เกม ไทย</button></div>
+    <div class="mode-sw" role="tablist" aria-label="Mode"><button type="button" data-mode-sw="plan">📅 PLAN</button><button type="button" data-mode-sw="study">📚 STUDY</button><button type="button" data-mode-sw="exam" class="on">📝 EXAM</button><button type="button" data-mode-sw="mock">📖 MOCK</button><button type="button" data-mode-sw="game">🎮 GAME</button><button type="button" data-mode-sw="gameth" lang="th" title="Game in Thai + English">🇹🇭 เกม ไทย</button></div>
     <button class="theme-btn" id="theme-btn" type="button" aria-label="Switch color theme">LIGHT MODE</button>
   </div>
 </header>
@@ -524,6 +524,7 @@ body::-webkit-scrollbar-thumb:hover{background:var(--ink-faint)}
 
 <!-- ============ STUDY (v5.6) ============ -->
 <div id="screen-study" class="hidden"><div class="wrap" id="study-root"></div></div>
+<div id="screen-plan" class="hidden"><div class="wrap" id="plan-root"></div></div>
 
 <!-- ============ EXAM ============ -->
 <div id="screen-exam" class="hidden">
@@ -4766,9 +4767,11 @@ function goHome(){
 }
 /* v5.6: in 📚 STUDY mode "home" is the study screen, otherwise the start screen */
 function showHomeScreen(){
-  const study = document.body.classList.contains('study');
-  $('#screen-start').classList.toggle('hidden', study);
+  const study = document.body.classList.contains('study'), plan = document.body.classList.contains('plan');   // v6.4: 📅 PLAN
+  $('#screen-start').classList.toggle('hidden', study || plan);
   $('#screen-study').classList.toggle('hidden', !study);
+  $('#screen-plan').classList.toggle('hidden', !plan);
+  if (plan && window.ASVAB_PLAN) ASVAB_PLAN.refresh();
 }
 $('#home-btn').addEventListener('click', goHome);
 
@@ -4877,6 +4880,7 @@ function startExam(list){
   };
   $('#screen-start').classList.add('hidden');
   $('#screen-study').classList.add('hidden');
+  $('#screen-plan').classList.add('hidden');
   $('#screen-results').classList.add('hidden');
   $('#screen-exam').classList.remove('hidden');
   window.scrollTo(0,0);
@@ -5094,6 +5098,24 @@ function finish(){
   $('#screen-results').classList.remove('hidden');
   window.scrollTo(0,0);
   renderResults();
+  try { document.dispatchEvent(new CustomEvent('asvab:finished', {detail: sittingSummary()})); } catch(e){}
+}
+/* v6.4: what a finished sitting scored, for the 📅 PLAN score log. afqt / cl are null
+   unless the sitting had all four AFQT parts; the formulas match renderResults(). */
+function sittingSummary(){
+  const P = c => EX.parts.find(p => p.code === c && p.name !== W209_TEST.name);
+  const right = p => p.qs.reduce((n, _, i) => n + (isRight(p, i) ? 1 : 0), 0);
+  const out = {mock: !!EX.mock, timed: !!EX.timed, mos: EX.mos ? EX.mos.id : null, modeAt: EX.modeAt || null,
+               codes: EX.parts.map(p => p.name === W209_TEST.name ? 'W209' : p.code), afqt: null, cl: null, answered: 0};
+  const wk = P('WK'), pc = P('PC'), ar = P('AR'), mk = P('MK');
+  if (!(wk && pc && ar && mk)) return out;
+  const four = [wk, pc, ar, mk];
+  const ve = (right(wk) + right(pc)) / (wk.qs.length + pc.qs.length), arP = right(ar) / ar.qs.length, mkP = right(mk) / mk.qs.length;
+  const std = v => Math.max(23, Math.min(77, Math.round(50 + (v - .5) * 54)));
+  out.afqt = toPercentile((2 * ve + arP + mkP) / 4);
+  out.cl = Math.round(2 * (std(ve) + std(arP) + std(mkP)) / 3);
+  out.answered = four.reduce((n, p) => n + p.ans.filter(a => a !== null).length, 0) / four.reduce((n, p) => n + p.qs.length, 0);
+  return out;
 }
 
 function renderResults(){
@@ -6431,7 +6453,7 @@ window.TH_DATA = {"why":{"18rvyec":"เซลล์เม็ดเลือด�
     const isGame = m === 'game' || m === 'gameth';
     const wasGame = !$('#screen-game').classList.contains('hidden');
     if (!isGame && examOpen && EX && m !== (EX.modeAt || (EX.mock ? 'mock' : 'exam'))){
-      if (!confirm(`Leave this ${EX.mock ? 'mock test' : 'exam'} and switch to ${({mock:'Mock test', study:'Study', exam:'Exam'})[m]} mode? This sitting won't be scored.`)) return;
+      if (!confirm(`Leave this ${EX.mock ? 'mock test' : 'exam'} and switch to ${({mock:'Mock test', study:'Study', exam:'Exam', plan:'Plan'})[m]} mode? This sitting won't be scored.`)) return;
       stopAdvance(); clearInterval(tick); EX = null;
       $('#screen-exam').classList.add('hidden');
     }
@@ -6443,7 +6465,7 @@ window.TH_DATA = {"why":{"18rvyec":"เซลล์เม็ดเลือด�
       }
       TH = m === 'gameth';
       document.body.classList.toggle('th', TH);
-      ['#screen-start','#screen-study','#screen-exam','#screen-results'].forEach(s => $(s).classList.add('hidden'));
+      ['#screen-start','#screen-study','#screen-plan','#screen-exam','#screen-results'].forEach(s => $(s).classList.add('hidden'));
       $('#screen-game').classList.remove('hidden');
       if (wasGame && L && L.phase === 'answer') ask();       // switching language mid-lesson: redraw the same question
       else hub();
@@ -6455,10 +6477,11 @@ window.TH_DATA = {"why":{"18rvyec":"เซลล์เม็ดเลือด�
     MOCK = m === 'mock';
     document.body.classList.toggle('mock', MOCK);
     document.body.classList.toggle('study', m === 'study');
+    document.body.classList.toggle('plan', m === 'plan');
     document.body.dataset.mode = m;
     if (!isGame){
       if ($('#screen-exam').classList.contains('hidden') && $('#screen-results').classList.contains('hidden')) showHomeScreen();
-      else { $('#screen-start').classList.add('hidden'); $('#screen-study').classList.add('hidden'); }
+      else { $('#screen-start').classList.add('hidden'); $('#screen-study').classList.add('hidden'); $('#screen-plan').classList.add('hidden'); }
     }
     nLabels();
     $$('[data-mode-sw]').forEach(b => b.classList.toggle('on', b.dataset.modeSw === m));
@@ -6470,7 +6493,7 @@ window.TH_DATA = {"why":{"18rvyec":"เซลล์เม็ดเลือด�
   $('#home-btn').addEventListener('click', e => {
     if (!$('#screen-game').classList.contains('hidden')){ e.stopImmediatePropagation(); if (L) quitSheet(); else hub(); }
   }, true);
-  { const saved = LS.get('asvab_mode', 'exam'); if (saved === 'game' || saved === 'gameth' || saved === 'mock' || saved === 'study') setMode(saved, false); }
+  { const saved = LS.get('asvab_mode', 'exam'); if (saved === 'game' || saved === 'gameth' || saved === 'mock' || saved === 'study' || saved === 'plan') setMode(saved, false); }
   window.ASVAB_GAME = {setMode, hub,
     /* test hooks */
     _state: () => L, _th: () => TH, _thWhy: thWhy, _lookup: lookup, _tapify: tapify, _topics: TOPICS, _pool: id => TOPIC[id], _nodes: nodesFor, _build: buildTopic, _review: buildReview, _mix: buildMix, _typeSpec: typeSpec};
@@ -6874,10 +6897,657 @@ window.TH_DATA = {"why":{"18rvyec":"เซลล์เม็ดเลือด�
 })();
 </script>
 
+<style>
+/* ================= v6.4 📅 PLAN mode — the year study plan, built in ================= */
+:root{--plan:#FF8CC6;--plan-tint:rgba(255,140,198,.13);--plan-text:#2A0718;
+  --pl-p0:#8E9993;--pl-p1:#6D97D8;--pl-p2:#5DB38B;--pl-p3:#E8A04B;--pl-p4:#D2825C;--pl-p5:#9585D0;--pl-p6:#6F766C}
+:root[data-theme="light"]{--plan:#A2336F;--plan-tint:rgba(162,51,111,.10);--plan-text:#FFFFFF;
+  --pl-p0:#6E7973;--pl-p1:#3F6FB5;--pl-p2:#3E8E6A;--pl-p3:#A8641A;--pl-p4:#B0603A;--pl-p5:#6B5BA8;--pl-p6:#8A9186}
+.mode-sw button[data-mode-sw="plan"].on{background:var(--plan);color:var(--plan-text)}
+@media (max-width:470px){.mode-sw{display:grid;grid-template-columns:repeat(3,1fr);border-radius:14px;width:100%}.mode-sw button{text-align:center}}
+#screen-plan{overflow-x:clip}
+#screen-plan .lbl{color:var(--plan)}
+.pl-hero{padding:36px 0 22px;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:1fr auto;gap:16px 24px;align-items:end}
+.pl-hero h1{font-family:var(--sans);font-size:clamp(28px,5vw,44px);line-height:1.08;margin:8px 0 10px;letter-spacing:-.02em}
+.pl-hero h1 em{font-style:normal;color:var(--plan)}
+.pl-hero p{max-width:640px;font-size:16px;line-height:1.55;color:var(--ink-soft);margin:0}
+.pl-counts{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.pl-count{background:var(--card);border:1px solid var(--rule);border-top:4px solid var(--plan);border-radius:2px;padding:10px 14px;min-width:124px}
+.pl-count b{display:block;font-family:var(--mono);font-size:30px;line-height:1;font-weight:600;color:var(--ink-strong)}
+.pl-count span{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+.pl-sec{padding:26px 0;border-bottom:1px solid var(--rule)}
+.pl-sec > .lbl{display:block;margin-bottom:12px}
+.pl-quick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.pl-qcard{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:4px;padding:14px 16px;border:1px solid var(--rule);border-top:4px solid var(--plan);background:var(--card);border-radius:2px;transition:transform .12s ease,border-color .12s ease}
+.pl-qcard:hover,.pl-qcard:focus-visible{transform:translateY(-2px);border-color:var(--plan)}
+.pl-qcard .n{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--plan)}
+.pl-qcard h3{font-family:var(--sans);font-size:20px;margin:0}
+.pl-qcard p{margin:0;font-size:14px;line-height:1.45;color:var(--ink-soft)}
+.pl-opt{display:flex;gap:10px;align-items:flex-start;margin-top:12px;font-size:14.5px;color:var(--ink-soft);cursor:pointer}
+.pl-opt input{width:18px;height:18px;margin:2px 0 0;accent-color:var(--plan);flex:none}
+.pl-opt b{color:var(--ink);font-family:var(--sans)}
+.pl-stats{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--rule);border-radius:2px;background:var(--card)}
+.pl-stat{padding:12px 14px;border-right:1px solid var(--rule);min-width:0}
+.pl-stat:last-child{border-right:0}
+.pl-stat .v{font-family:var(--mono);font-size:26px;font-weight:600;line-height:1.1;color:var(--ink-strong)}
+.pl-stat .l{font-size:12.5px;color:var(--ink-soft);line-height:1.35}
+.pl-meter{height:6px;background:var(--card-2);border-radius:2px;margin-top:8px;overflow:hidden}
+.pl-meter i{display:block;height:100%;background:var(--plan)}
+.pl-strip-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.pl-legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--ink-soft);font-family:var(--mono)}
+.pl-legend span{display:inline-flex;align-items:center;gap:6px}
+.pl-legend i{width:10px;height:10px;border-radius:2px;display:inline-block;background:var(--pc)}
+.pl-strip{display:grid;grid-template-columns:repeat(27,1fr);gap:4px;margin-top:10px}
+.pl-cell{position:relative;aspect-ratio:1/1.35;border-radius:2px;border:0;padding:0;background:var(--card-2);overflow:hidden;cursor:pointer;min-width:0}
+.pl-cell .t{position:absolute;inset:0;background:var(--pc);opacity:.22}
+.pl-cell .f{position:absolute;left:0;right:0;bottom:0;background:var(--pc)}
+.pl-cell .n{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--mono);font-size:10px;color:var(--ink)}
+.pl-cell.now{box-shadow:0 0 0 2px var(--ink)}
+.pl-cell.sel{box-shadow:0 0 0 2px var(--plan)}
+.pl-cell.now.sel{box-shadow:0 0 0 2px var(--plan),0 0 0 4px var(--ink)}
+.pl-cell:focus-visible{outline:2px solid var(--plan);outline-offset:2px}
+.pl-main{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:18px;align-items:start}
+.pl-panel{background:var(--card);border:1px solid var(--rule);border-radius:2px;padding:16px}
+.pl-panel.today{border-top:4px solid var(--plan)}
+.pl-ph{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.pl-ph h2,.pl-ph h3{font-family:var(--sans);margin:2px 0 0;letter-spacing:-.01em}
+.pl-ph h2{font-size:26px}.pl-ph h3{font-size:21px}
+.pl-eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--plan)}
+.pl-pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;border:1px solid var(--rule);white-space:nowrap;color:var(--ink)}
+.pl-pill i{width:8px;height:8px;border-radius:50%;background:var(--pc)}
+.pl-tasks{display:flex;flex-direction:column;gap:8px}
+.pl-task{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;padding:10px 12px;border:1px solid var(--rule);border-radius:2px;background:var(--card-2)}
+.pl-task.opt{border-style:dashed}
+.pl-task label{display:grid;grid-template-columns:20px 46px minmax(0,1fr);gap:10px;align-items:start;cursor:pointer;min-width:0}
+.pl-task input{width:18px;height:18px;margin:2px 0 0;accent-color:var(--plan);cursor:pointer}
+.pl-task .txt{font-size:15px;line-height:1.45;overflow-wrap:anywhere}
+.pl-task.done{background:var(--plan-tint)}
+.pl-task.done .txt{color:var(--ink-soft);text-decoration:line-through;text-decoration-color:var(--ink-faint)}
+.pl-code{font-family:var(--mono);font-size:11px;font-weight:600;text-align:center;padding:2px 0;border-radius:2px;border:1px solid var(--rule);color:var(--ink)}
+.pl-code.QZ,.pl-code.DX{border-color:var(--plan);color:var(--plan)}
+.pl-code.ARMY{border-color:var(--pl-p5);color:var(--pl-p5)}
+.pl-code.REST,.pl-code.OPT{border-style:dashed;color:var(--ink-faint)}
+.pl-side{display:flex;flex-direction:column;align-items:flex-end;gap:6px;font-family:var(--mono);font-size:12px;color:var(--ink-soft);white-space:nowrap}
+.pl-go{font-family:var(--sans);font-weight:700;font-size:12.5px;letter-spacing:.02em;padding:5px 10px;border-radius:2px;border:1px solid var(--plan);background:var(--plan);color:var(--plan-text);cursor:pointer;white-space:nowrap}
+.pl-go:hover{filter:brightness(1.08)}
+.pl-go:focus-visible{outline:2px solid var(--plan);outline-offset:2px}
+.pl-alldone{margin-top:12px;padding:10px 12px;border-radius:2px;background:var(--ok-tint);font-weight:600;font-family:var(--sans)}
+.pl-focus{margin-top:12px;font-size:14px;color:var(--ink-soft)}
+.pl-wnav{display:flex;gap:6px}
+.pl-wnav button{border:1px solid var(--rule);background:var(--card-2);color:var(--ink);border-radius:2px;padding:4px 10px;font-family:var(--mono);font-size:13px;cursor:pointer}
+.pl-wnav button:disabled{opacity:.4;cursor:default}
+.pl-days{display:flex;flex-direction:column;gap:14px}
+.pl-day{display:grid;grid-template-columns:60px minmax(0,1fr);gap:12px}
+.pl-day .dl{font-family:var(--mono);font-size:12px;line-height:1.3;padding-top:10px;color:var(--ink-soft)}
+.pl-day .dl b{display:block;font-size:14px;color:var(--ink)}
+.pl-day .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-left:4px;vertical-align:middle}
+.pl-day.is-today .dl b{color:var(--plan)}
+.pl-day .none{padding:10px 0;color:var(--ink-faint);font-size:14px}
+.pl-note{font-size:14px;color:var(--ink-soft);margin:-4px 0 14px}
+.pl-road{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.pl-phase{all:unset;box-sizing:border-box;cursor:pointer;border:1px solid var(--rule);border-left:4px solid var(--pc);background:var(--card);border-radius:2px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.pl-phase:focus-visible{outline:2px solid var(--plan);outline-offset:2px}
+.pl-phase .r{font-family:var(--mono);font-size:11px;color:var(--ink-soft)}
+.pl-phase .t{font-family:var(--sans);font-size:17px;font-weight:700}
+.pl-phase .g{font-size:14px;color:var(--ink-soft);line-height:1.45}
+.pl-phase.cur{background:var(--plan-tint)}
+.pl-two{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:18px;align-items:start}
+.pl-chart{width:100%;height:auto;display:block}
+.pl-chart text{font-family:var(--mono);font-size:10px;fill:var(--ink-soft)}
+.pl-form{display:grid;grid-template-columns:minmax(0,1fr) 90px;gap:8px;margin-top:12px}
+.pl-form input,.pl-set input{font:inherit;font-size:14px;color:var(--ink);background:var(--card-2);border:1px solid var(--rule);border-radius:2px;padding:7px 10px;width:100%;min-width:0;color-scheme:dark}
+:root[data-theme="light"] .pl-form input,:root[data-theme="light"] .pl-set input{color-scheme:light}
+.pl-btn{font-family:var(--sans);font-weight:700;font-size:13.5px;padding:9px 14px;border-radius:2px;cursor:pointer;border:1px solid var(--plan);background:transparent;color:var(--plan)}
+.pl-btn:hover{background:var(--plan-tint)}
+.pl-btn.solid{background:var(--plan);color:var(--plan-text)}
+.pl-scores{list-style:none;padding:0;margin:12px 0 0;display:flex;flex-direction:column;font-size:14px}
+.pl-scores li{display:grid;grid-template-columns:88px 42px 58px minmax(0,1fr) auto;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--rule)}
+.pl-scores li .cl{font-family:var(--mono);font-size:12px;color:var(--ink-soft)}
+.pl-scores li button{border:0;background:none;color:var(--ink-faint);font-size:12px;cursor:pointer;font-family:var(--mono)}
+.pl-facts{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;font-size:14.5px;line-height:1.5}
+.pl-facts b{font-family:var(--mono);font-size:12px;color:var(--plan);display:block;letter-spacing:.03em}
+.pl-set{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:14px}
+.pl-set label{font-size:12.5px;color:var(--ink-soft);display:flex;flex-direction:column;gap:4px;font-family:var(--mono)}
+.pl-backup{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.pl-backup input[type=file]{display:none}
+.pl-msg{font-size:13.5px;color:var(--ink-soft);margin:8px 0 0;min-height:1em}
+.pl-logged{margin:0 0 22px;padding:12px 16px;border:1px solid var(--rule);border-left:4px solid var(--plan);background:var(--plan-tint);border-radius:2px;font-size:15px;line-height:1.5}
+.pl-logged b{font-family:var(--sans)}
+@media (max-width:860px){.pl-main,.pl-two{grid-template-columns:1fr}.pl-stats{grid-template-columns:repeat(3,1fr)}.pl-stat:nth-child(3){border-right:0}.pl-stat:nth-child(-n+3){border-bottom:1px solid var(--rule)}}
+@media (max-width:720px){.pl-hero{grid-template-columns:1fr}.pl-counts{justify-content:flex-start;flex-wrap:nowrap}.pl-count{flex:1 1 0;min-width:0}.pl-count span{font-size:10px}.pl-quick{grid-template-columns:1fr}.pl-strip{grid-template-columns:repeat(14,1fr)}}
+@media (max-width:560px){.pl-stats{grid-template-columns:1fr 1fr}.pl-stat{border-right:1px solid var(--rule)!important;border-bottom:1px solid var(--rule)}.pl-stat:nth-child(2n){border-right:0!important}.pl-set{grid-template-columns:1fr}
+  .pl-task{grid-template-columns:1fr}.pl-side{flex-direction:row;justify-content:space-between;align-items:center;padding-left:30px}
+  .pl-scores li{grid-template-columns:80px 36px minmax(0,1fr) auto}.pl-scores li .cl{display:none}.pl-day{grid-template-columns:48px minmax(0,1fr);gap:8px}
+  .pl-chart text{font-size:17px}}
+@media print{.pl-go,.pl-quick,.pl-opt,.pl-form,.pl-backup,.pl-wnav,.pl-scores li button{display:none!important}}
+</style>
+<script>
+/* =====================================================================
+   v6.4 — 📅 PLAN mode: a one-year, 30-minutes-a-day ASVAB study plan,
+   built into the site (it used to be a separate page that linked here
+   with #hash links). Every ▶ Start button runs the drill right here,
+   like the 📚 STUDY launchers (the sitting keeps PLAN as its mode, so
+   home / "Take another test" come back to the plan). Finished sittings
+   that include AR, WK, PC and MK are logged to the score log with their
+   AFQT and CL (92A) estimates. Progress lives in this browser
+   (localStorage asvab_plan); Backup / Load moves it between devices.
+   Plan text is original, written for this site.
+   ===================================================================== */
+(function initPlanMode(){
+  const root = $('#plan-root'); if (!root) return;
+  const KEY = 'asvab_plan';
+  const START = new Date(2026, 8, 21);      // Monday of week 1
+  const PLAN_START = new Date(2026, 8, 24); // first study day
+  const WEEKS = 53;
+  const DOW = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const CODES = {AR:'Arithmetic Reasoning',MK:'Mathematics Knowledge',WK:'Word Knowledge',PC:'Paragraph Comprehension',GS:'General Science',MC:'Mechanical Comprehension',EI:'Electronics Information',AS:'Auto & Shop',AO:'Assembling Objects',QZ:'Weekly quiz',DX:'Practice exam',ARMY:'Army knowledge',REST:'Rest / catch-up',OPT:'Optional',LOG:'Planning'};
+  const PHASES = [
+    {n:'Baseline',a:1,b:1,c:'--pl-p0',g:'Practice Exam 1, untrained. Log the score.'},
+    {n:'Foundation',a:2,b:10,c:'--pl-p1',g:'Arithmetic, algebra, geometry, plus vocab every day. AR, MK and WK drive the AFQT.'},
+    {n:'Build',a:11,b:22,c:'--pl-p2',g:'Reading, science, mechanical, electronics, auto & shop, assembling objects. Ends with Practice Exam 2.'},
+    {n:'Test Mode',a:23,b:28,c:'--pl-p3',g:'Timed sets on weak spots, a full retake, a taper week, then test week.'},
+    {n:'Scores & Retest',a:29,b:33,c:'--pl-p4',g:'Read your line scores. Retest if needed, otherwise pick jobs.'},
+    {n:'Soldier Prep',a:34,b:40,c:'--pl-p5',g:'Army Values, Soldier’s Creed, ranks, phonetic alphabet, general orders, first aid.'},
+    {n:'Ship Window',a:41,b:53,c:'--pl-p6',g:'Optional. Light review only if you haven’t shipped yet.'}
+  ];
+
+  /* ---------- the 53 weeks ---------- */
+  const VOCAB = [10,'WK','Vocab flashcards: 15 new cards'];
+  const REST = [[0,'REST','Rest, or catch up on anything missed this week']];
+  function std(A,B,F,S){ return [
+    [[20,A[0],A[1]],VOCAB],
+    [[20,A[0],A[2]],[10,'PC','1 reading passage + questions']],
+    [[20,B[0],B[1]],[10,'WK','Vocab: 15 cards + redo misses']],
+    [[20,B[0],B[2]],[10,'MK','Mental math: 20 quick problems, no calculator']],
+    [[20,F[0],F[1]],[10,'WK','Vocab review: every card marked hard']],
+    [[30,'QZ',S||'Weekly quiz: 20 mixed questions (20 min), then review misses (10 min)']],
+    REST]; }
+  function sol(topic,recall){ return [
+    [[20,'ARMY','Learn: '+topic],[10,'WK','Vocab flashcards']],
+    [[20,'ARMY','Make flashcards for: '+topic],[10,'AR','5 word problems']],
+    [[20,'ARMY','Write it from memory: '+recall],[10,'WK','Vocab flashcards']],
+    [[20,'ARMY','Have someone quiz you on this week’s topic'],[10,'MK','5 algebra problems']],
+    [[30,'ARMY','Review every Army flashcard so far']],
+    [[30,'QZ','Recall test: all Army topics so far']],
+    REST]; }
+  const SHIP = [[[15,'OPT','If not shipped yet: 15 min Army cards + 5 math problems']],null,[[15,'OPT','If not shipped yet: 1 reading passage + vocab']],null,[[15,'OPT','If not shipped yet: Army knowledge recall']],null,null];
+  const W = [];
+  const wk = (t, days, note) => W.push({t, days, note});
+  // Phase 0
+  wk('Diagnostic',[null,null,null,
+    [[30,'DX','Practice Exam 1, part 1: AR + MK (timed)']],
+    [[30,'DX','Practice Exam 1, part 2: WK + PC (timed)']],
+    [[30,'DX','Practice Exam 1, part 3: GS + EI + AS (timed)']],
+    [[30,'DX','Practice Exam 1, part 4: MC + AO (timed). Then take the AFQT-only test to log a baseline AFQT.']]],
+    'Take it cold. The baseline shows where the next months go.');
+  // Phase 1 Foundation
+  wk('Number sense & fractions',std(['AR','Order of operations, negatives, integers','15 order-of-operations problems'],['AR','Fractions: add, subtract, multiply, divide','15 fraction problems'],['GS','Scientific method + metric prefixes (kilo to milli)']));
+  wk('Decimals & percents',std(['AR','Decimals; converting fraction ↔ decimal ↔ percent','20 conversion problems'],['AR','Percent: part/whole, percent increase and decrease','15 percent problems'],['GS','Measurement: temperature scales, mass vs weight, density']));
+  wk('Ratios & rates',std(['AR','Ratios and proportions (cross-multiply)','15 proportion problems'],['AR','Rates: distance = rate × time, work-together problems','10 rate word problems'],['AO','Assembling Objects: 10 connector puzzles']));
+  wk('Word problems',std(['AR','Discount, tax, tips, simple interest','10 money word problems'],['AR','Averages, mixtures, age problems','10 mixed word problems'],['AO','Assembling Objects: 10 shape puzzles']));
+  wk('Exponents & roots',std(['MK','Exponent rules and square roots','20 exponent/root problems'],['MK','Scientific notation, primes, factors, LCM and GCF','15 factor problems'],['MC','Intro to levers and mechanical advantage']));
+  wk('Algebra I',std(['MK','One- and two-step equations','20 equations'],['MK','Distributing, combining like terms, variables on both sides','15 equations'],['EI','Electricity basics: voltage, current, resistance']));
+  wk('Algebra II',std(['MK','Inequalities and absolute value','15 inequality problems'],['MK','FOIL, factoring, simple quadratics','15 factoring problems'],['AS','Auto basics: the 4-stroke engine cycle']));
+  wk('Geometry I',std(['MK','Angles, parallel lines, triangle types','15 angle problems'],['MK','Perimeter and area: rectangles, triangles, trapezoids','15 area problems'],['AO','Assembling Objects: 10 mixed puzzles']));
+  wk('Geometry II + checkpoint',std(['MK','Circles: circumference, area, π','15 circle problems'],['MK','Volume + Pythagorean theorem','15 volume/right-triangle problems'],['AR','Mixed review: 10 word problems'],'Checkpoint: redo the AR + MK sections of Practice Exam 1, timed. Compare to baseline.'));
+  // Phase 2 Build
+  wk('Reading & roots',std(['PC','Main idea and author’s purpose','3 short passages'],['WK','Word roots and prefixes (bene-, mal-, -cide, -ology)','Build 20 words from roots'],['GS','Body systems: circulatory, respiratory']));
+  wk('Life science',std(['GS','Body systems: digestive, nervous, skeletal, muscular','20 body-system questions'],['GS','Genetics: DNA, Punnett squares, dominant vs recessive','10 genetics questions'],['MC','Work, force and power (W = F × d)']));
+  wk('Ecology & earth',std(['GS','Ecology: food chains, water and carbon cycles, nutrition','15 questions'],['GS','Earth science: rock types, plate tectonics, Earth’s layers','15 questions'],['EI','Series vs parallel circuits']));
+  wk('Weather & space',std(['GS','Weather and layers of the atmosphere','15 questions'],['GS','Astronomy: planets, moon phases, stars','15 questions'],['WK','Vocab catch-up: 30 cards'],'Short quiz: 15 science questions. Holiday week, keep it light.'));
+  wk('Holiday light week',[
+    [[15,'WK','Flashcards: 20 review cards']],[[15,'AR','5 word problems']],[[15,'WK','Flashcards: 20 review cards']],
+    [[0,'REST','New Year’s Eve. Rest.']],[[0,'REST','New Year’s Day. Rest.']],[[15,'WK','Flashcards: 20 review cards']],REST],
+    '15 minutes a day keeps the streak without burning out over the holidays.');
+  wk('Chemistry & physics',std(['GS','Atoms, periodic table, states of matter','15 chemistry questions'],['GS','Newton’s laws, speed and acceleration','15 physics questions'],['AO','Assembling Objects: 10 puzzles, timed']));
+  wk('Mechanical I',std(['MC','Levers (1st/2nd/3rd class), inclined planes, wedges, screws','15 MC questions'],['MC','Pulleys and mechanical advantage','15 pulley questions'],['AR','Keep math warm: 10 word problems']));
+  wk('Mechanical II',std(['MC','Gears: direction of turn and speed ratios','15 gear questions'],['MC','Fluids, pressure, hydraulics, springs','15 questions'],['MK','Algebra review: 15 problems']));
+  wk('Electronics',std(['EI','Ohm’s law (V = I × R) and power (P = V × I)','15 calculations'],['EI','Resistors, capacitors, diodes, transistors; AC vs DC','15 EI questions'],['AR','Keep math warm: 10 word problems']));
+  wk('Auto & shop',std(['AS','Engine systems: fuel, ignition, cooling, lubrication','15 auto questions'],['AS','Drivetrain, brakes, suspension, charging system','15 auto questions'],['AS','Shop: hand tools, measuring tools, fasteners']));
+  wk('Puzzles & inference',std(['AO','Assembling Objects: connector items, timed','15 timed AO items'],['PC','Inference and vocabulary in context','4 passages'],['MK','Geometry review: 15 problems']));
+  wk('Practice Exam 2',[
+    [[30,'DX','Practice Exam 2, part 1: AR + MK (timed)']],
+    [[30,'DX','Practice Exam 2, part 2: WK + PC (timed)']],
+    [[30,'DX','Practice Exam 2, part 3: GS + EI (timed)']],
+    [[30,'DX','Practice Exam 2, part 4: AS + MC + AO (timed)']],
+    [[30,'LOG','Read the score report. Write down your 3 weakest subtests.']],
+    [[30,'LOG','Take the AFQT-only test to log your AFQT. Redo every missed question.']],REST],
+    'Your 3 weakest subtests set the plan for Test Mode.');
+  // Phase 3 Test Mode
+  wk('Weak spot: AR',std(['AR','Timed AR sets (about 2 min per question)','16 questions, timed'],['AR','Redo every missed AR question from Exam 2','Explain each fix out loud'],['WK','Vocab speed round: 40 cards']));
+  wk('Weak spot: MK + verbal',std(['MK','Timed MK sets','16 questions, timed'],['PC','Timed reading passages','4 passages, timed'],['GS','Timed GS set: 16 questions']));
+  wk('Weak spot: tech',std(['MC','Timed MC + EI mixed set','Redo misses'],['AS','Timed AS + AO mixed set','Redo misses'],['AR','Timed AR: 10 questions']));
+  wk('Full retake',[
+    [[30,'DX','Retake Practice Exam 1, part 1: AR + MK (timed)']],
+    [[30,'DX','Retake, part 2: WK + PC (timed)']],
+    [[30,'DX','Retake, part 3: GS + EI + AS (timed)']],
+    [[30,'DX','Retake, part 4: MC + AO (timed)']],
+    [[30,'LOG','Take the AFQT-only test to log your AFQT. Compare to baseline and Exam 2.']],
+    [[30,'QZ','Redo every missed question']],REST]);
+  wk('Taper',[
+    [[20,'WK','Flashcards: missed cards only']],
+    [[20,'AR','10 AR problems, relaxed pace']],
+    [[30,'LOG','Confirm test date, time, place and ID with the recruiter']],
+    [[20,'PC','1 passage'],[10,'WK','10 vocab cards']],
+    [[20,'MK','10 MK problems, relaxed pace']],
+    [[0,'REST','Rest']],REST],
+    'Light work, good sleep. No cramming.');
+  wk('Test week',[
+    [[15,'AR','Warm-up: 5 easy word problems']],
+    [[15,'WK','Light flashcards']],
+    [[0,'REST','Rest. Lay out ID and documents. Early night.']],
+    [[0,'DX','ASVAB test day (target). Eat breakfast, arrive early.']],
+    [[20,'LOG','Log your real AFQT in the score log']],
+    [[0,'REST','Rest']],REST],
+    'Target test date. Change it under Key numbers once the recruiter sets the real one.');
+  // Phase 4 Scores & Retest
+  wk('Read your scores',[
+    [[30,'LOG','Get the full score sheet: AFQT + line scores (GT, CL, CO, EL, FA, GM, MM, OF, SC, ST)']],
+    [[30,'LOG','GT = VE + AR. Mark any line score below the jobs you want']],
+    [[30,'LOG','Decide: on target → job track. Below target → retest track']],
+    [[20,'AR','Timed AR set'],VOCAB],
+    [[20,'PC','2 timed passages'],VOCAB],
+    [[30,'QZ','Quiz on your weakest subtest']],REST]);
+  wk('Retest prep I',std(['AR','Retest track: weakest-subtest lesson. Job track: AR speed set','Timed set, about 2 min per question'],['PC','Timed main-idea and inference passages','Redo missed passages'],['LOG','Job research: read 2 job pages on goarmy.com']));
+  wk('Retest prep II',std(['MK','Timed MK set (algebra + geometry)','Redo misses'],['GS','Timed GS set','Redo misses'],['LOG','Shortlist 3 jobs and write questions for the recruiter']));
+  wk('Retest prep III',std(['AR','Full timed AR section','Redo misses'],['WK','Timed WK + PC section','Redo misses'],['MC','Tech line scores: MC + EI mixed set']));
+  wk('Retest window',[
+    [[20,'AR','Light AR set'],VOCAB],
+    [[20,'MK','Light MK set'],VOCAB],
+    [[30,'LOG','Retest track: confirm your retest date (about 1 month after the first test)']],
+    [[0,'DX','Retest, only if you need it. Otherwise rest.']],
+    [[30,'LOG','Log retest scores, or confirm your job choice with the recruiter']],
+    [[0,'REST','Rest']],REST]);
+  // Phase 5 Soldier Prep
+  wk('Army Values',sol('Army Values: LDRSHIP (Loyalty, Duty, Respect, Selfless Service, Honor, Integrity, Personal Courage)','all 7 values and what each means'));
+  wk('Soldier’s Creed',sol('The Soldier’s Creed','the full creed, line by line'));
+  wk('Ranks',sol('Enlisted, NCO and officer ranks + insignia','every enlisted rank in order'));
+  wk('Phonetic alphabet & time',sol('Phonetic alphabet (Alpha to Zulu) + 24-hour time','spell your name phonetically; convert 10 times to 24-hour'));
+  wk('General Orders & courtesy',sol('The 3 General Orders, saluting, reporting','all 3 General Orders word for word'));
+  wk('First aid',sol('Basic first aid: bleeding control, heat injuries, buddy aid','the steps, in order'));
+  wk('Final review',sol('Final review + ship paperwork checklist with the recruiter','everything from the last 6 weeks'));
+  // Phase 6 Ship window
+  for (let i = 41; i <= 53; i++) wk('Ship window', SHIP, 'Nothing required. If you have shipped, the training is the study.');
+
+  /* ---------- dates ---------- */
+  const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+  const iso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  const fromIso = s => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s || '')); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null; };
+  const okDate = s => { const d = fromIso(s); return !!d && d.getFullYear() >= 2020 && d.getFullYear() <= 2100; };   // a half-typed year (0002) is not a date
+  const fmt = d => MON[d.getMonth()] + ' ' + d.getDate();
+  const diffDays = (a, b) => Math.round((new Date(b.getFullYear(), b.getMonth(), b.getDate()) - new Date(a.getFullYear(), a.getMonth(), a.getDate())) / 86400000);
+  const phaseOf = w => PHASES.find(p => w >= p.a && w <= p.b);
+  const escP = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  let TODAY = null;                                   // test hook: pretend "today" is this date
+  function now(){ if (TODAY) return new Date(TODAY); const n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()); }
+  const tid = (wi, di, i) => 'w' + wi + 'd' + di + '_' + i;
+  function tasksFor(d){
+    if (d < PLAN_START) return null;
+    const off = diffDays(START, d), wi = Math.floor(off / 7);
+    if (wi < 0 || wi >= WEEKS) return null;
+    const di = off % 7, t = W[wi].days[di];
+    return t ? t.map((x, i) => ({id: tid(wi, di, i), min: x[0], code: x[1], text: x[2], opt: x[1] === 'REST' || x[1] === 'OPT'})) : null;
+  }
+  const curWeek = () => Math.min(WEEKS - 1, Math.max(0, Math.floor(diffDays(START, now()) / 7)));
+
+  /* ---------- where each task's ▶ Start goes ---------- */
+  const SUBJ = ['AR','MK','PC','GS','MC','EI','AS','AO'];
+  const named = s => { const m = String(s).match(/\b(GS|AR|WK|PC|MK|EI|AS|MC|AO)\b/g) || []; return m.filter((c, k) => m.indexOf(c) === k); };
+  const AFQT4 = ['AR','WK','PC','MK'];
+  function launchFor(t){
+    if (t.code === 'QZ'){
+      if (/Army|Recall/i.test(t.text)) return null;
+      if (/science/i.test(t.text)) return {codes: ['GS'], label: 'GS quiz'};
+      const n = named(t.text);
+      return n.length ? {codes: n, label: n.join(' + ')} : {codes: AFQT4, label: 'AFQT quiz'};
+    }
+    if (t.code === 'WK' || SUBJ.indexOf(t.code) !== -1){
+      const n = named(t.text);
+      if (n.length > 1) return {codes: n, label: n.join(' + ')};            // "Timed MC + EI mixed set", "Timed WK + PC section" (the real WK subtest)
+      if (t.code === 'WK') return {codes: ['W209'], label: '209 Words'};    // vocab tasks → the 209-word test
+      return {codes: [t.code], label: t.code + ' drill'};
+    }
+    if (t.code === 'LOG' && /AFQT-only test/.test(t.text)) return {codes: AFQT4, label: 'AFQT only'};
+    if (t.code === 'DX'){
+      const i = t.text.indexOf(':'), n = i === -1 ? [] : named(t.text.slice(i + 1));
+      if (n.length) return {codes: n, label: n.join(' + ')};
+    }
+    return null;
+  }
+  const listOf = codes => codes.map(c => c === 'W209' ? W209_TEST : byCode(c)).filter(Boolean);
+  function launch(codes){
+    const list = listOf(codes); if (!list.length) return;
+    const mock = !!state.mock, tBox = $('#opt-timer'), wasTimed = tBox.checked, wasMock = MOCK;
+    MOCK = mock; if (!mock) tBox.checked = true;             // "with answers" = a Mock sitting; otherwise timed
+    try { startExam(list); }
+    finally { MOCK = wasMock; tBox.checked = wasTimed; }
+  }
+
+  /* ---------- state ---------- */
+  const DEF = () => ({v: 1, done: {}, scores: [], testDate: '2027-04-01', shipDate: '2027-06-15', goal: 50, mock: false});
+  /* old planner page kept "done" keyed by date (20260924_0) — convert to week/day ids */
+  function convertKey(k){
+    if (/^w\d+d\d_\d+$/.test(k)) return k;
+    const m = /^(\d{4})(\d{2})(\d{2})_(\d+)$/.exec(k); if (!m) return null;
+    const off = diffDays(START, new Date(+m[1], +m[2] - 1, +m[3]));
+    if (off < 0 || off >= WEEKS * 7) return null;
+    return tid(Math.floor(off / 7), off % 7, +m[4]);
+  }
+  function clean(raw){
+    const s = DEF(); if (!raw || typeof raw !== 'object') return s;
+    if (raw.done && typeof raw.done === 'object') Object.keys(raw.done).forEach(k => { const n = convertKey(k); if (n && raw.done[k] === true) s.done[n] = true; });
+    if (Array.isArray(raw.scores)) s.scores = raw.scores.filter(x => x && okDate(x.d) && +x.s >= 1 && +x.s <= 99).map(x => ({
+      id: String(x.id || Math.random().toString(36).slice(2)), d: x.d, s: Math.round(+x.s),
+      cl: +x.cl > 0 ? Math.round(+x.cl) : undefined, n: String(x.n || '').slice(0, 80), auto: x.auto ? 1 : undefined}));
+    if (okDate(raw.testDate)) s.testDate = raw.testDate;
+    if (okDate(raw.shipDate)) s.shipDate = raw.shipDate;
+    if (+raw.goal >= 1 && +raw.goal <= 99) s.goal = Math.round(+raw.goal);
+    s.mock = !!raw.mock;
+    return s;
+  }
+  let state = DEF();
+  try { state = clean(JSON.parse(localStorage.getItem(KEY))); } catch(e){}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} };
+  /* another tab may have saved since this one loaded: re-read before every change so its ticks / scores survive */
+  const reload = () => { try { const raw = localStorage.getItem(KEY); if (raw) state = clean(JSON.parse(raw)); } catch(e){} };
+  window.addEventListener('storage', e => {
+    if (e.key !== KEY && e.key !== null) return;              // null = storage cleared in another tab
+    reload();
+    const a = document.activeElement;                         // don't wipe a half-typed score or date
+    if (!(a && root.contains(a) && a.tagName === 'INPUT' && a.type !== 'checkbox')) render();
+  });
+  let selWeek = curWeek(), msg = '';
+
+  /* ---------- stats ---------- */
+  function computeStats(){
+    let req = 0, done = 0, sessions = 0;
+    const end = addDays(START, WEEKS * 7 - 1);
+    for (let d = new Date(PLAN_START); d <= end; d = addDays(d, 1)){
+      const t = tasksFor(d); if (!t) continue;
+      const r = t.filter(x => !x.opt); req += r.length;
+      const dn = r.filter(x => state.done[x.id]).length; done += dn;
+      if (r.length && dn === r.length) sessions++;
+    }
+    const full = d => { const t = tasksFor(d); if (!t) return null; const r = t.filter(x => !x.opt); if (!r.length) return null; return r.every(x => state.done[x.id]); };
+    let streak = 0, d = now();
+    if (full(d) !== true) d = addDays(d, -1);
+    for (; d >= PLAN_START; d = addDays(d, -1)){ const f = full(d); if (f === null) continue; if (f) streak++; else break; }
+    return {req, done, sessions, streak};
+  }
+  function weekFrac(wi){
+    let r = 0, dn = 0;
+    for (let i = 0; i < 7; i++){ const t = tasksFor(addDays(START, wi * 7 + i)); if (!t) continue; t.filter(x => !x.opt).forEach(x => { r++; if (state.done[x.id]) dn++; }); }
+    return r ? dn / r : 0;
+  }
+  const sortedScores = () => state.scores.slice().sort((a, b) => a.d < b.d ? -1 : a.d > b.d ? 1 : 0);
+
+  /* ---------- render ---------- */
+  function taskHTML(t, prefix){
+    const l = launchFor(t), id = prefix + t.id;
+    return `<div class="pl-task${state.done[t.id] ? ' done' : ''}${t.opt ? ' opt' : ''}" data-task="${t.id}">
+      <label for="${id}"><input type="checkbox" id="${id}" data-t="${t.id}"${state.done[t.id] ? ' checked' : ''}>
+        <span class="pl-code ${t.code}" title="${escP(CODES[t.code] || t.code)}">${t.code}</span>
+        <span class="txt">${escP(t.text)}</span></label>
+      <span class="pl-side">${t.min ? t.min + ' min' : ''}${l ? `<button type="button" class="pl-go" data-go="${l.codes.join(',')}" title="Start ${escP(l.label)} ${state.mock ? 'with answers, no clock' : 'timed'}">▶ Start</button>` : ''}</span>
+    </div>`;
+  }
+  function countsHTML(){
+    const td = fromIso(state.testDate), sd = fromIso(state.shipDate);
+    const count = (n, l) => `<div class="pl-count"><b>${n < 0 ? 'Done' : n}</b><span>${l}</span></div>`;
+    return count(diffDays(now(), td), 'days to test · ' + fmt(td)) + count(diffDays(now(), sd), 'days to ship · ' + fmt(sd));
+  }
+  let shownDay = '';
+  function render(){
+    const s = computeStats(), pct = s.req ? Math.round(s.done / s.req * 100) : 0;
+    const sc = sortedScores(), last = sc.length ? sc[sc.length - 1] : null;
+    const lastCL = sc.filter(x => x.cl).slice(-1)[0];
+    const cw = Math.floor(diffDays(START, now()) / 7);
+    shownDay = iso(now());
+
+    let d = now(); if (d < PLAN_START) d = new Date(PLAN_START);
+    const wiT = Math.floor(diffDays(START, d) / 7);
+    let today;
+    if (wiT >= WEEKS) today = '<h2 style="font-family:var(--sans)">Plan complete</h2><p>The year is done. Nice work.</p>';
+    else {
+      const p = phaseOf(wiT + 1), t = tasksFor(d) || [], req = t.filter(x => !x.opt);
+      const all = req.length && req.every(x => state.done[x.id]), mins = t.reduce((a, x) => a + x.min, 0);
+      today = `<div class="pl-ph"><div><div class="pl-eyebrow">Today · week ${wiT + 1}</div><h2>${DOW[(d.getDay() + 6) % 7]} ${fmt(d)}</h2></div>
+        <span class="pl-pill" style="--pc:var(${p.c})"><i></i>${p.n}</span></div>
+        <div class="pl-tasks">${t.length ? t.map(x => taskHTML(x, 'pt-')).join('') : '<div class="pl-note">Nothing scheduled today.</div>'}</div>
+        ${all ? '<div class="pl-alldone">Session done. See you tomorrow.</div>' : ''}
+        <div class="pl-focus">This week: <b>${escP(W[wiT].t)}</b>${mins ? ` · ${mins} min today` : ''}</div>`;
+    }
+
+    const w = W[selWeek], wp = phaseOf(selWeek + 1), ws = addDays(START, selWeek * 7);
+    let days = '';
+    for (let i = 0; i < 7; i++){
+      const dd = addDays(ws, i), t = tasksFor(dd), isT = diffDays(dd, now()) === 0;
+      let dot = '';
+      if (t && dd < now()){ const r = t.filter(x => !x.opt); if (r.length){ const ok = r.every(x => state.done[x.id]); dot = `<span class="dot" style="background:var(${ok ? '--form' : '--flag'})" title="${ok ? 'Done' : 'Missed'}"></span>`; } }
+      days += `<div class="pl-day${isT ? ' is-today' : ''}"><div class="dl"><b>${DOW[i]}${dot}</b>${fmt(dd)}</div>
+        <div class="pl-tasks">${t ? t.map(x => taskHTML(x, 'pw-')).join('') : `<div class="none">${dd < PLAN_START ? 'Before the plan starts' : 'Free day'}</div>`}</div></div>`;
+    }
+
+    root.innerHTML = `
+      <section class="pl-hero">
+        <div><span class="lbl">📅 Plan · 30 minutes a day · Sep 2026 → Sep 2027</span>
+          <h1>My ASVAB <em>year</em></h1>
+          <p>One 30-minute session a day. Math and vocab first, because they drive the AFQT. Then science and tech for line scores, a timed test block, and Army basics before you ship. Tick each task when it’s done — the <b>▶ Start</b> buttons open that drill right here.</p></div>
+        <div class="pl-counts">${countsHTML()}</div>
+      </section>
+
+      <section class="pl-sec"><span class="lbl">Start studying</span>
+        <div class="pl-quick">
+          <button type="button" class="pl-qcard" data-go="AR,WK,PC,MK"><span class="n">40 items · AR · WK · PC · MK</span><h3>AFQT only</h3><p>The four subtests that decide whether you can enlist. Logs your AFQT and 92A (CL) estimate.</p></button>
+          <button type="button" class="pl-qcard" data-go="W209"><span class="n">20 items · vocab</span><h3>209 Words</h3><p>Word Knowledge drill from the 209-word list. Unseen words come first.</p></button>
+          <button type="button" class="pl-qcard" data-go="GS,AR,WK,PC,MK,EI,AS,MC,AO"><span class="n">90 items · all 9 subtests</span><h3>Full ASVAB</h3><p>The whole test in real order — the complete picture, job line scores included.</p></button>
+        </div>
+        <label class="pl-opt"><input type="checkbox" id="pl-mock"${state.mock ? ' checked' : ''}><span><b>With answers — no clock.</b> Shows the answer, why, and an example after each question (📖 MOCK style). Untick for timed practice. Scores from sittings with answers are not logged.</span></label>
+      </section>
+
+      <section class="pl-sec"><div class="pl-stats">
+        <div class="pl-stat"><div class="v">${pct}%</div><div class="l">of the year done</div><div class="pl-meter"><i style="width:${pct}%"></i></div></div>
+        <div class="pl-stat"><div class="v">${s.streak}</div><div class="l">day streak</div></div>
+        <div class="pl-stat"><div class="v">${s.sessions}</div><div class="l">full sessions done</div></div>
+        <div class="pl-stat"><div class="v">${last ? last.s : '—'}</div><div class="l">latest AFQT · goal ${state.goal}</div></div>
+        <div class="pl-stat"><div class="v">${lastCL ? lastCL.cl : '—'}</div><div class="l">latest CL estimate · 92A needs 90</div></div>
+      </div></section>
+
+      <section class="pl-sec">
+        <div class="pl-strip-h"><span class="lbl" style="margin:0">53 weeks</span>
+          <div class="pl-legend">${PHASES.map(p => `<span style="--pc:var(${p.c})"><i></i>${p.n}</span>`).join('')}</div></div>
+        <div class="pl-strip" role="list">${W.map((wk_, i) => { const p = phaseOf(i + 1), f = weekFrac(i);
+          return `<button type="button" class="pl-cell${i === cw ? ' now' : ''}${i === selWeek ? ' sel' : ''}" role="listitem" data-w="${i}" style="--pc:var(${p.c})" title="Week ${i + 1} · ${fmt(addDays(START, i * 7))} · ${escP(wk_.t)} · ${Math.round(f * 100)}%" aria-label="Week ${i + 1}, ${escP(wk_.t)}, ${Math.round(f * 100)} percent done"><span class="t"></span><span class="f" style="height:${f * 100}%"></span><span class="n">${i + 1}</span></button>`; }).join('')}</div>
+      </section>
+
+      <section class="pl-sec pl-main">
+        <div class="pl-panel today" id="pl-today">${today}</div>
+        <div class="pl-panel" id="pl-week">
+          <div class="pl-ph"><div><div class="pl-eyebrow">Week ${selWeek + 1} of ${WEEKS} · ${fmt(ws)}–${fmt(addDays(ws, 6))}</div><h3>${escP(w.t)}</h3></div>
+            <div class="pl-wnav"><button type="button" data-wn="-1" aria-label="Previous week"${selWeek === 0 ? ' disabled' : ''}>‹</button><button type="button" data-wn="0">Now</button><button type="button" data-wn="1" aria-label="Next week"${selWeek === WEEKS - 1 ? ' disabled' : ''}>›</button></div></div>
+          <div style="margin-bottom:10px"><span class="pl-pill" style="--pc:var(${wp.c})"><i></i>${wp.n}</span></div>
+          ${w.note ? `<p class="pl-note">${escP(w.note)}</p>` : ''}
+          <div class="pl-days">${days}</div>
+        </div>
+      </section>
+
+      <section class="pl-sec"><span class="lbl">Roadmap</span>
+        <div class="pl-road">${PHASES.map((p, i) => { const a = addDays(START, (p.a - 1) * 7), b = addDays(START, p.b * 7 - 1);
+          return `<button type="button" class="pl-phase${cw + 1 >= p.a && cw + 1 <= p.b ? ' cur' : ''}" data-jump="${p.a - 1}" style="--pc:var(${p.c})">
+            <span class="r">WK ${p.a}${p.b !== p.a ? '–' + p.b : ''} · ${fmt(a)} – ${fmt(b)}${b.getFullYear() !== a.getFullYear() || i === PHASES.length - 1 ? ', ' + b.getFullYear() : ''}</span>
+            <span class="t">${p.n}</span><span class="g">${p.g}</span></button>`; }).join('')}</div>
+      </section>
+
+      <section class="pl-sec pl-two">
+        <div class="pl-panel">
+          <div class="pl-ph"><div><h3>Score log</h3><div class="pl-note" style="margin:4px 0 0">Practice sittings with AR, WK, PC and MK log themselves here (AFQT + 92A CL estimate; untimed ones are marked). Sittings “with answers” don’t count. Add your real test scores by hand.</div></div></div>
+          ${chartSVG(sc)}${sc.length ? '' : '<p class="pl-note" style="margin:8px 0 0">No scores yet. Take the AFQT-only test above to log a baseline.</p>'}
+          <form class="pl-form" id="pl-add">
+            <input type="text" id="pl-sc-note" placeholder="Label, e.g. Real ASVAB" aria-label="Label" maxlength="80">
+            <input type="number" id="pl-sc-val" min="1" max="99" placeholder="AFQT" aria-label="AFQT score" required>
+            <input type="date" id="pl-sc-date" aria-label="Date" required value="${iso(now())}">
+            <button class="pl-btn solid" type="submit">Add score</button>
+          </form>
+          <ul class="pl-scores">${sc.slice().reverse().map(x => `<li data-score="${escP(x.id)}"><span class="mono" style="color:var(--ink-soft)">${escP(x.d)}</span><b class="mono">${x.s}</b><span class="cl">${x.cl ? 'CL ' + x.cl : ''}</span><span>${escP(x.n || '')}</span><button type="button" data-del="${escP(x.id)}" aria-label="Remove score">Remove</button></li>`).join('')}</ul>
+        </div>
+        <div class="pl-panel">
+          <h3 style="font-family:var(--sans);margin:0 0 12px">Key numbers</h3>
+          <ul class="pl-facts">
+            <li><b>AFQT = 2×VE + AR + MK</b>VE comes from Word Knowledge + Paragraph Comprehension, so vocab and reading count double.</li>
+            <li><b>ARMY MIN AFQT 31</b>Higher scores open more jobs and incentives. The goal here is ${state.goal}; change it below.</li>
+            <li><b>92A · CL = VE + AR + MK ≥ 90</b>The same four subtests as the AFQT, so every AFQT sitting also trains the 92A line score.</li>
+            <li><b>RETEST</b>Usually one calendar month after the first test. Confirm current rules with the recruiter.</li>
+          </ul>
+          <div class="pl-set">
+            <label>Test date<input type="date" id="pl-test" value="${escP(state.testDate)}"></label>
+            <label>Ship date<input type="date" id="pl-ship" value="${escP(state.shipDate)}"></label>
+            <label>AFQT goal<input type="number" id="pl-goal" min="1" max="99" value="${state.goal}"></label>
+          </div>
+          <div class="pl-backup">
+            <button type="button" class="pl-btn" id="pl-export">⬇ Save a backup file</button>
+            <button type="button" class="pl-btn" id="pl-import-btn">⬆ Load a backup</button>
+            <input type="file" id="pl-import" accept=".json,application/json">
+          </div>
+          <p class="pl-msg" id="pl-msg" role="status">${escP(msg)}</p>
+          <p class="pl-note" style="margin:10px 0 0">Your plan is saved in this browser. To use it on another phone or computer, save a backup file here and load it there.</p>
+        </div>
+      </section>`;
+  }
+  function chartSVG(sc){
+    const Wd = 560, H = 200, L = 30, R = 12, T = 14, B = 26;
+    const ts = sc.map(s => fromIso(s.d).getTime()).concat([fromIso(state.testDate).getTime()]);
+    const x0 = Math.min(PLAN_START.getTime(), ...ts), x1 = Math.max(addDays(START, WEEKS * 7).getTime(), ...ts);
+    const X = t => L + (t - x0) / (x1 - x0) * (Wd - L - R), Y = v => T + (1 - v / 99) * (H - T - B);
+    let g = '';
+    [0, 25, 50, 75, 99].forEach(v => { g += `<line x1="${L}" x2="${Wd - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--rule)" stroke-width="1"/><text x="${L - 6}" y="${Y(v) + 3}" text-anchor="end">${v}</text>`; });
+    const a = new Date(x0), span = Math.max(1, (new Date(x1).getFullYear() - a.getFullYear()) * 12 + new Date(x1).getMonth() - a.getMonth());
+    const stepM = span <= 15 ? 3 : span <= 30 ? 6 : 12 * Math.ceil(span / 60);
+    for (let t = new Date(a.getFullYear(), Math.floor(a.getMonth() / stepM) * stepM + stepM, 1); t.getTime() < x1; t = new Date(t.getFullYear(), t.getMonth() + stepM, 1))
+      g += `<text x="${X(t.getTime())}" y="${H - 8}" text-anchor="middle">${MON[t.getMonth()]} ’${String(t.getFullYear()).slice(2)}</text>`;
+    const goal = state.goal;
+    g += `<line x1="${L}" x2="${Wd - R}" y1="${Y(goal)}" y2="${Y(goal)}" stroke="var(--plan)" stroke-dasharray="4 4" stroke-width="1.5"/><text x="${Wd - R}" y="${Y(goal) - 5}" text-anchor="end" style="fill:var(--plan)">goal ${goal}</text>`;
+    g += `<line x1="${L}" x2="${Wd - R}" y1="${Y(31)}" y2="${Y(31)}" stroke="var(--ink-faint)" stroke-dasharray="2 4" stroke-width="1"/><text x="${Wd - R}" y="${Y(31) + 12}" text-anchor="end">Army min 31</text>`;
+    const tx = X(fromIso(state.testDate).getTime());
+    g += `<line x1="${tx}" x2="${tx}" y1="${T}" y2="${H - B}" stroke="var(--pl-p3)" stroke-width="1"/><text x="${tx + 4}" y="${T + 8}">test</text>`;
+    if (sc.length){
+      const pts = sc.map(s => [X(fromIso(s.d).getTime()), Y(s.s)]);
+      if (pts.length > 1) g += `<polyline points="${pts.map(p => p.join(',')).join(' ')}" fill="none" stroke="var(--form)" stroke-width="2"/>`;
+      pts.forEach((p, i) => { const lastP = i === pts.length - 1; g += `<circle cx="${p[0]}" cy="${p[1]}" r="${lastP ? 5 : 3.5}" fill="var(--form)" stroke="var(--card)" stroke-width="2"/>`; if (lastP) g += `<text x="${p[0]}" y="${p[1] - 10}" text-anchor="middle" style="fill:var(--ink);font-weight:600">${sc[i].s}</text>`; });
+    }
+    return `<svg class="pl-chart" viewBox="0 0 ${Wd} ${H}" role="img" aria-label="AFQT scores over the year">${g}</svg>`;
+  }
+  const say = m => { msg = m; const el = $('#pl-msg'); if (el) el.textContent = m; };
+
+  /* ---------- events ---------- */
+  root.addEventListener('change', e => {
+    const t = e.target;
+    if (t.id !== 'pl-import') reload();
+    if (t.dataset && t.dataset.t){
+      const keep = t.id;
+      if (t.checked) state.done[t.dataset.t] = true; else delete state.done[t.dataset.t];
+      save(); render(); const again = document.getElementById(keep); if (again) again.focus();
+      return;
+    }
+    if (t.id === 'pl-mock'){ state.mock = t.checked; save(); render(); const m = $('#pl-mock'); if (m) m.focus(); return; }
+    if (t.id === 'pl-test' || t.id === 'pl-ship'){
+      if (okDate(t.value)){                                   // Chrome fires change per typed segment (year 2 → 0002): skip half-typed dates
+        state[t.id === 'pl-test' ? 'testDate' : 'shipDate'] = t.value; save();
+        /* no render(): rebuilding the page would drop focus from this input mid-typing */
+        root.querySelector('.pl-counts').innerHTML = countsHTML();
+        const c = root.querySelector('.pl-chart'); if (c) c.outerHTML = chartSVG(sortedScores());
+      }
+      return;
+    }
+    if (t.id === 'pl-goal' && t.value){ state.goal = Math.max(1, Math.min(99, Math.round(+t.value) || 50)); save(); render(); return; }
+    if (t.id === 'pl-import' && t.files && t.files[0]){
+      const f = t.files[0], rd = new FileReader();
+      rd.onload = () => {
+        try {
+          const raw = JSON.parse(String(rd.result)), src = raw && raw.app === 'asvab-plan' ? raw.plan : raw;
+          if (!src || typeof src !== 'object' || Array.isArray(src) || !('done' in src || 'scores' in src)) throw new Error('not a plan');
+          const inc = clean(src);
+          reload();
+          const before = Object.keys(state.done).length, ids = new Set(state.scores.map(x => x.id));
+          const same = (a, b) => a.d === b.d && a.s === b.s && (a.n || '') === (b.n || '');
+          Object.assign(state.done, inc.done);                  // merge: nothing already ticked or logged is lost
+          inc.scores.forEach(x => { if (!ids.has(x.id) && !state.scores.some(y => same(x, y))) state.scores.push(x); });
+          if (okDate(src.testDate)) state.testDate = inc.testDate;
+          if (okDate(src.shipDate)) state.shipDate = inc.shipDate;
+          if (+src.goal >= 1 && +src.goal <= 99) state.goal = inc.goal;
+          save(); msg = `Loaded backup: ${Object.keys(state.done).length - before} more tasks ticked, ${state.scores.length} scores in the log.`; render();
+        } catch(err){ say('That file isn’t a plan backup.'); }
+      };
+      rd.readAsText(f);
+      t.value = '';
+    }
+  });
+  root.addEventListener('click', e => {
+    const go = e.target.closest('[data-go]');
+    if (go){ launch(go.dataset.go.split(',')); return; }
+    const c = e.target.closest('[data-w]');
+    if (c){ selWeek = +c.dataset.w; render(); const b = root.querySelector(`[data-w="${selWeek}"]`); if (b) b.focus(); return; }
+    const j = e.target.closest('[data-jump]');
+    if (j){ selWeek = +j.dataset.jump; render(); $('#pl-week').scrollIntoView({behavior: 'smooth', block: 'start'}); return; }
+    const n = e.target.closest('[data-wn]');
+    if (n){ const v = +n.dataset.wn; selWeek = v === 0 ? curWeek() : Math.max(0, Math.min(WEEKS - 1, selWeek + v)); render(); return; }
+    const del = e.target.closest('[data-del]');
+    if (del){ reload(); state.scores = state.scores.filter(x => x.id !== del.dataset.del); save(); render(); return; }
+    if (e.target.id === 'pl-import-btn'){ $('#pl-import').click(); return; }
+    if (e.target.id === 'pl-export'){
+      const blob = new Blob([JSON.stringify({app: 'asvab-plan', v: 1, saved: iso(new Date()), plan: state}, null, 1)], {type: 'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = 'asvab-plan-backup-' + iso(new Date()) + '.json';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      say('Backup saved to your downloads. Load it on your other device.');
+    }
+  });
+  root.addEventListener('submit', e => {
+    if (e.target.id !== 'pl-add') return;
+    e.preventDefault();
+    const v = Math.round(+$('#pl-sc-val').value), d = $('#pl-sc-date').value, n = $('#pl-sc-note').value.trim();
+    if (!(v >= 1 && v <= 99) || !okDate(d)) return;
+    reload();
+    state.scores.push({id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5), d, s: v, n: n.slice(0, 80)});
+    save(); render();
+  });
+
+  /* ---------- finished sittings → score log ---------- */
+  document.addEventListener('asvab:finished', e => {
+    const r = e.detail;
+    if (!r || r.afqt === null || r.mock || r.answered < 0.5) return;       // with answers shown, or mostly skipped: not a real score
+    const what = r.mos ? r.mos + ' drill' : r.codes.length === 9 ? 'Full ASVAB' : r.codes.length === 4 ? 'AFQT only' : r.codes.join(' + ');
+    const entry = {id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5), d: iso(now()), s: r.afqt, cl: r.cl, n: 'Practice · ' + what + (r.timed ? '' : ' (untimed)'), auto: 1};
+    reload(); state.scores.push(entry); save(); render();
+    const body = $('#results-body'), rep = body && body.querySelector('.report');
+    if (rep) rep.insertAdjacentHTML('afterend', `<div class="pl-logged" id="pl-logged"><b>📅 Saved to your plan’s score log:</b> AFQT about <b>${r.afqt}</b> · 92A (CL) estimate about <b>${r.cl}</b> (needs 90). Open 📅 PLAN to see the trend.</div>`);
+  });
+
+  /* a tab left open past midnight: move Today (and the week, if it was on "now") to the new day */
+  function refresh(){
+    if (!shownDay || iso(now()) === shownDay) return;
+    const was = Math.min(WEEKS - 1, Math.max(0, Math.floor(diffDays(START, fromIso(shownDay)) / 7)));
+    if (selWeek === was) selWeek = curWeek();
+    reload(); render();
+  }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
+  window.addEventListener('focus', refresh);
+  window.addEventListener('pageshow', refresh);
+  setInterval(refresh, 60000);
+
+  render();
+  window.ASVAB_PLAN = {W, PHASES, WEEKS, tasksFor, launchFor, render, refresh,
+    state: () => JSON.parse(JSON.stringify(state)),
+    /* test hooks */ _today: (s, quiet) => { TODAY = s ? fromIso(s) : null; if (!quiet){ selWeek = curWeek(); render(); } }, _clean: clean};
+})();
+</script>
+
 <script>
 /* ================= v6.3 deep links =================
    #afqt · #full · #w209 · #only-GS … #only-AO, each with an optional
-   -mock / -exam suffix (no suffix = exam). The study planner links here.
+   -mock / -exam suffix (no suffix = exam). Kept for bookmarks and shared
+   links — the old separate planner page is now built in as 📅 PLAN.
    Read on load and on hashchange; the hash is cleared once read. A link
    picks Mock or Exam for that one sitting — the saved mode (asvab_mode)
    is left alone, so a Game / Study / Thai user drops to Exam only for

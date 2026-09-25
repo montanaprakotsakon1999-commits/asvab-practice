@@ -63,7 +63,7 @@ const state = page => page.evaluate(() => {
     mode: document.body.dataset.mode || 'exam',
     pill: (document.querySelector('[data-mode-sw].on') || {}).dataset?.modeSw || null,
     th: document.body.classList.contains('th'),
-    exam: vis('#screen-exam'), start: vis('#screen-start'), study: vis('#screen-study'),
+    exam: vis('#screen-exam'), start: vis('#screen-start'), study: vis('#screen-study'), plan: vis('#screen-plan'),
     game: vis('#screen-game'), results: vis('#screen-results'),
     ex: EX ? { mock: !!EX.mock, timed: !!EX.timed, modeAt: EX.modeAt,
                parts: EX.parts.map(p => p.name === '209 Words' ? 'W209' : p.code),
@@ -82,7 +82,7 @@ const noHScroll = page => page.evaluate(() => document.documentElement.scrollWid
 
 /* assert the page is on a freshly-linked sitting */
 function expectSitting(s, parts, mock, tag){
-  check(s.exam && !s.start && !s.study && !s.game && !s.results, `${tag}: exam screen should be the only screen showing`);
+  check(s.exam && !s.start && !s.study && !s.plan && !s.game && !s.results, `${tag}: exam screen should be the only screen showing`);
   check(!!s.ex, `${tag}: no sitting started`);
   if (!s.ex) return;
   check(JSON.stringify(s.ex.parts) === JSON.stringify(parts), `${tag}: parts ${JSON.stringify(s.ex.parts)}, want ${JSON.stringify(parts)}`);
@@ -136,8 +136,8 @@ try {
   }
 
   /* ---------- saved modes: drop to the linked mode for this launch only ---------- */
-  step('saved Game / Thai / Study / Mock / Exam: linked mode for this launch, saved mode kept');
-  for (const saved of ['game', 'gameth', 'study', 'mock', 'exam']){
+  step('saved Game / Thai / Study / Plan / Mock / Exam: linked mode for this launch, saved mode kept');
+  for (const saved of ['game', 'gameth', 'study', 'plan', 'mock', 'exam']){
     for (const [hash, parts, mock] of [['#only-AR', ['AR'], false], ['#afqt-mock', AFQT, true], ['#w209-exam', ['W209'], false]]){
       await setSaved(page, saved);
       await load(page, hash);
@@ -151,6 +151,7 @@ try {
     if (saved === 'game' || saved === 'gameth') check(s.game, `saved ${saved}: game hub should show after reload`);
     if (saved === 'gameth') check(s.th, 'saved gameth: Thai class should come back after reload');
     if (saved === 'study') check(s.study, 'saved study: study screen should show after reload');
+    if (saved === 'plan') check(s.plan && !s.start, 'saved plan: plan screen should show after reload');
   }
   await setSaved(page, null);
 

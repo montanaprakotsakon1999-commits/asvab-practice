@@ -80,7 +80,7 @@ try {
 
   step('🇹🇭 pill sits after GAME; mode persists');
   const pills = await page.$$eval('[data-mode-sw]', b => b.map(x => x.dataset.modeSw));
-  check(JSON.stringify(pills) === JSON.stringify(['study', 'exam', 'mock', 'game', 'gameth']), `mode pills are ${pills}`);
+  check(JSON.stringify(pills) === JSON.stringify(['plan', 'study', 'exam', 'mock', 'game', 'gameth']), `mode pills are ${pills}`);
   await page.click('[data-mode-sw="gameth"]');
   check(await page.isVisible('#screen-game') && await page.evaluate(() => ASVAB_GAME._th() && document.body.classList.contains('th')), 'Thai game not on');
   check(/gameth/.test(await page.evaluate(() => localStorage.getItem('asvab_mode')) || ''), 'gameth not saved');
