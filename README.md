@@ -4,6 +4,8 @@ A free, self-contained ASVAB practice exam that runs entirely in the browser —
 
 **Take the test:** https://montanaprakotsakon1999-commits.github.io/asvab-practice/
 
+**Mirror (Cloudflare):** https://asvab-practice.pages.dev/ — same file, redeployed automatically on every push
+
 ## What it does
 
 - All **9 subtests** (GS, AR, WK, PC, MK, EI, AS, MC, AO) with per-subtest timers scaled to the real paper test's pace

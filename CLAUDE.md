@@ -4,6 +4,7 @@ A free, single-file ASVAB practice exam site. It is **live and public**:
 
 - **Live site:** https://montanaprakotsakon1999-commits.github.io/asvab-practice/
 - **Repo:** https://github.com/montanaprakotsakon1999-commits/asvab-practice — public; GitHub Pages deploys automatically from `main`, root folder.
+- **Cloudflare mirror:** https://asvab-practice.pages.dev/ — Cloudflare Pages project `asvab-practice`, Git-connected to this repo, so every push to `main` redeploys it too (no build command, output = repo root, env `SKIP_DEPENDENCY_INSTALL=1` so the Playwright devDependency is never installed). Unknown paths there fall back to `index.html` with HTTP 200 (Pages SPA default), unlike GitHub Pages' 404.
 - The whole site is **one file: `index.html`**. No build system, no runtime dependencies, no server. `package.json` / `node_modules` / `tools/` are dev-only test tooling and are never loaded by the site.
 - This repo is public — never commit personal details. Machine-local context (local mirror paths, owner notes) lives in the gitignored `CLAUDE.local.md`.
 
@@ -15,8 +16,8 @@ A free, single-file ASVAB practice exam site. It is **live and public**:
    npm test          # validate.js + smoke.mjs + smoke54.mjs + gsmoke.mjs + mocksmoke.mjs + studysmoke.mjs + wordsmoke.mjs + thsmoke.mjs + linksmoke.mjs (~7 min)
    ```
    First time on a machine: `npm install && npx playwright install chromium`.
-3. Commit and push to `main`. Pages redeploys in ~1–2 minutes; verify with
-   `curl -s <live url> | wc -c` against `wc -c index.html`, and optionally `node tools/smoke.mjs <live url>`.
+3. Commit and push to `main`. GitHub Pages and Cloudflare Pages both redeploy in ~1–2 minutes; verify BOTH with
+   `curl -s <url> | md5` against `md5 index.html`, and optionally `node tools/linksmoke.mjs <url>` / `node tools/smoke.mjs <url>`.
 4. When convenient, sync the local mirrors listed in `CLAUDE.local.md`.
 
 ## Product rules
