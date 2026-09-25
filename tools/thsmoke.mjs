@@ -91,7 +91,7 @@ try {
   const cov = await page.evaluate(() => {
     const T = window.TH_DATA, bad = [], thai = /[฀-๿]/, tags = s => (String(s).match(/<[^>]+>/g) || []).join('');
     let n = 0;
-    for (const code in BANK) BANK[code].forEach(q => { if (!q.why) return; n++; const t = T.why[exKey(code, q)]; if (!t || !thai.test(t) && !/[\d=×÷]/.test(t)) bad.push('why ' + code + ' ' + String(q.q || '').slice(0, 30)); });
+    for (const code in BANK) BANK[code].forEach(q => { if (!q.why) return; n++; const t = T.why[exKey(code, q)]; if (!t || !thai.test(t)) bad.push('why ' + code + ' ' + String(q.q || '').slice(0, 30)); });
     GEN_AR.concat(GEN_MK).forEach(f => { if (!T.gens[f.name] || !thai.test(T.gens[f.name])) bad.push('gen ' + f.name); });
     ['__ao_con', '__ao_puz'].forEach(k => { if (!thai.test(T.gens[k] || '')) bad.push(k); });
     ['AR','MK','WK','PC'].forEach(c => { const en = ASVAB_STUDY.LESSONS[c], th = T.lessons[c];

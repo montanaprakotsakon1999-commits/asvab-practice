@@ -19,6 +19,7 @@ A free, self-contained ASVAB practice exam that runs entirely in the browser —
 - **🇹🇭 Thai + English game (เกม ไทย)** — the same lesson path with every menu, button and prompt in English and Thai, a Thai meaning on every word card (with a Thai voice), a Thai explanation after every answer, and Thai study guides. The questions stay in English, like the real test
 - **Mock test mode (📖 MOCK)** — no clock; after every question it shows whether you were right, the correct answer, why, and an example (a real-world case, a same-idea mini-problem with new numbers, or the word used in a sentence). Reading questions highlight the proof in the passage; Assembling Objects items explain what is wrong with every other figure
 - **Game mode (🎮 ASVAB Path)** — a lesson path for every subject, AFQT first (AR = Arithmetic Reasoning, MK = Mathematics Knowledge, WK = Word Knowledge, PC = Paragraph Comprehension), then GS, EI, AS, MC and AO. Short lessons with 5 hearts, missed questions come back, type-the-answer math, match-the-pairs vocab, crowns, treasure chests, unit reviews, a daily streak and XP goal, AFQT Mix and Fix-my-mistakes practice. In WK and PC lessons you can tap any word to hear it (browser speech) and open a meaning card — part of speech, a simple definition, synonyms — from an original built-in learner dictionary; passages can be read aloud
+- **Deep links (v6.3)** — open a sitting straight from a link: `#afqt`, `#full`, `#w209` (the 209-word test) or `#only-GS` … `#only-AO` (one subtest), with an optional `-mock` (tutor mode, no clock) or `-exam` (timed; the default) suffix — e.g. [`https://montanaprakotsakon1999-commits.github.io/asvab-practice/#only-AR-mock`](https://montanaprakotsakon1999-commits.github.io/asvab-practice/#only-AR-mock). The link starts that sitting on load and then clears itself; your saved mode (Study, Exam, Mock or Game) is not changed. Unknown links just open the home screen
 - Keyboard-friendly: A–D to answer, arrows to move, F to flag
 - **Dark mode by default**, with a light theme one click away (remembered per browser); printing always uses the light palette
 
@@ -45,6 +46,15 @@ It's one file. Download `index.html` and open it in any browser.
   - `tools/wordsmoke.mjs` — word voice + meaning cards (speech stubbed), dictionary coverage
   - `tools/thsmoke.mjs` — Thai + English game: Thai data coverage, bilingual screens, language switching
   - `tools/mocksmoke.mjs` — mock mode end to end: no clock, feedback after every answer, Show answer, proof highlights, 390 px
+  - `tools/linksmoke.mjs` — deep links: every link × suffix lands on the right sitting, mode and clock, hash cleared, saved mode kept, unknown hash = home, hashchange while open, 390 px
 - `CLAUDE.md` — project notes for AI-assisted sessions
 
 To add questions, append to the relevant `BANK_*` array — each item is `{q, c: [4 choices], a: correctIndex, why: explanation}` (PC items add `p: passageKey`).
+
+## Versions
+
+- **v6.3** — deep links (`#afqt`, `#full`, `#w209`, `#only-XX`, optional `-mock` / `-exam`) for the study planner, with the `linksmoke` test suite; Thai explanations added for 3 questions that only showed the math
+- **v6.2** — 🇹🇭 Thai + English game
+- **v6.1** — word voice + tap-a-word meaning cards in WK/PC
+- **v6** — Study mode (AFQT focus) + Game rebuilt as ASVAB Path
+- **v5.5** — Mock test mode, 872-question bank, AO puzzles
